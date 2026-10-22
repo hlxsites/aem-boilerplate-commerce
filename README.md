@@ -97,6 +97,16 @@ If your GitHub organization disallows the "Allow GitHub Actions to create and ap
 
 If you want to incorporate code changes made to this upstream boilerplate after you forked — for example, a new block or a bug fix in `scripts/` — you can do so by adding this repo as a git remote and merging selectively. This is entirely optional. Upstream changes may conflict with modifications you have made to your fork, so expect to resolve conflicts manually. There is no guarantee of a clean merge, and nothing in your project depends on staying in sync with the upstream boilerplate code.
 
+## Analytics loading
+
+Following the upstream [AEM consent gate](https://www.aem.live/developer/cmp-integration#how-consent-gating-works), the Adobe Commerce event SDK and collector (`scripts/consented.js`) load only after consent is granted. Without consent they are not loaded.
+
+- `scripts/consent-check.js` is a placeholder gate: `?consent=accept` (also `true`, `1`, `yes`) grants consent for the page load; anything else declines. It dispatches a `consent.update` event on `window`.
+- The Commerce ACDL keeps running and product view/purchase history is still recorded in `localStorage`; the history is only read and sent to the recommendation service after consent.
+- The `product-recommendations` block can still request recommendations without consent, but those requests carry no viewing history, purchase history or cart data. See the [block README](blocks/product-recommendations/README.md#consent).
+
+This gate is not a consent management platform. Merchants and implementation partners are expected to replace it with their own CMP integration and dispatch `consent.update` with `{ detail: { consented: true | false } }` when the shopper decides.
+
 ## Changelog
 
 Major changes to this boilerplate are described and documented as part of pull requests and tracked via the `changelog` tag. This log documents changes to the canonical starting point — not upgrades that forked implementations must apply. Review it if you are considering pulling specific upstream changes into your fork:

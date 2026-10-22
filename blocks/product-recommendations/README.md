@@ -14,21 +14,28 @@ The Product Recommendations block provides personalized product recommendations 
 | `currentsku` | string | undefined | Current product SKU. Only set this on pages where ACDL `productContext` is not populated. For cross-sell and upsell recommendation types (`viewed-viewed`, `viewed-bought`, `bought-bought`, `more-like-this`, `visual`) this value (from config or ACDL) is required for the unit to return results. | No | Takes precedence over ACDL-derived SKU; if set without `currentprice`, no price is passed to the service |
 | `currentprice` | number | undefined | Current product price as an anchor for dynamic/relative price filter operators. **May only be set together with `currentsku`.** Only needed for SKU-related recommendation types with dynamic or relative price filters when ACDL product context is unavailable. The value should match the effective price shown to the shopper (`specialPrice ?? regularPrice`). | No | Takes precedence over ACDL-derived price; has no effect if `currentsku` is not also set |
 
-<!-- ### URL Parameters
+### Consent
 
-No URL parameters directly affect this block's behavior. -->
+Recommendation requests remain available without consent. Upstream consent values (`accept`, `true`, `1`, `yes`; case-insensitive) produce a `consent.update` notification. Until an accepted notification, requests omit viewing history, purchase history, cart SKUs, and shopper-derived pricing. Explicitly authored `currentsku`/`currentprice` remain available without consent.
+The block updates its existing ProductList after acceptance rather than awaiting the event during decoration. Late-added blocks read the latest decision captured in Commerce memory. The upstream script remains unchanged; no preference is persisted and no CMP/revocation framework is supplied.
 
 ### Local Storage
 
 - `{storeViewCode|catalogViewId}:productViewHistory` - Stores user's product view history for recommendation context
 - `{storeViewCode|catalogViewId}:purchaseHistory` - Stores user's purchase history for recommendation context
 
+History recording is local and independent of consent. `getProductViewHistory()`
+and `getPurchaseHistory()` return undefined before acceptance without reading
+localStorage, so their inputs are omitted. The initializer retains its original
+shared Catalog Service endpoint and header configuration.
+
 ### Events
 
 #### Event Listeners
 
 - Adobe Data Layer (`adobeDataLayer:change`) for `pageContext`, `productContext`, `categoryContext`, and `shoppingCartContext` — triggers recommendation reload on significant changes
-- `productContext` changes also extract `pricing` (SKU + `specialPrice ?? regularPrice`) and pass it to the dropin as the `currentProduct` prop
+- `productContext` changes also extract pricing (`specialPrice ?? regularPrice`); shopper-derived prices are passed in `currentProduct` only with consent
+- `consent.update` — refreshes personal request inputs only when the decision changes; repeated denial does not reload the list
 
 #### Event Emitters
 
