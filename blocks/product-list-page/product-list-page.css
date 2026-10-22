@@ -81,6 +81,15 @@
     gap: var(--spacing-xxsmall);
 }
 
+.block.product-list-page .product-discovery-product-rating {
+    margin-block-start: var(--spacing-xxsmall);
+}
+
+.block.product-list-page .product-discovery-product-rating .dropin-star-rating__star svg {
+    height: 16px;
+    width: 16px;
+}
+
 /* Empty State */
 
 .block.product-list-page.product-list-page--empty .search__wrapper {
