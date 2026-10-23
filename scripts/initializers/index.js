@@ -12,6 +12,7 @@ const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c'
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
 let catalogServiceCacheControlAdded = false;
+let coreOptimizerHeadersAdded = false;
 let currentCustomerGroupId;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
@@ -104,6 +105,32 @@ const setupCatalogServiceCacheControl = () => {
   catalogServiceCacheControlAdded = true;
 };
 
+/**
+ * Ad-hoc solution for ACCS tenants with CCDM mode enabled: to resolve
+ * ProductInterface.price_range for requests to coreSaaS (e.g. get cart), Core needs the same
+ * AC-* headers as Catalog Service. Copy the current Catalog Service AC-* headers (static
+ * headers.cs plus the dynamic AC-View-ID, AC-Catalog-View-Access-Token and AC-Price-Book-ID)
+ * onto every Core request, so Core always matches Catalog Service.
+ */
+const setupCoreOptimizerHeaders = () => {
+  if (coreOptimizerHeadersAdded) {
+    return;
+  }
+
+  const isOptimizerHeader = (key) => key.toLowerCase().startsWith('ac-');
+  CORE_FETCH_GRAPHQL.addBeforeHook((request) => {
+    const { fetchGraphQlHeaders } = CS_FETCH_GRAPHQL.getConfig();
+    const headers = Object.fromEntries(
+      Object.entries(request.headers).filter(([key]) => !isOptimizerHeader(key)),
+    );
+    Object.entries(fetchGraphQlHeaders)
+      .filter(([key]) => isOptimizerHeader(key))
+      .forEach(([key, value]) => { headers[key] = value; });
+    return { ...request, headers };
+  });
+  coreOptimizerHeadersAdded = true;
+};
+
 const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
   if (adobeCommerceOptimizer?.priceBookId) {
     CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-ID', adobeCommerceOptimizer.priceBookId);
@@ -140,6 +167,7 @@ export default async function initializeDropins() {
     // Set Customer-Group-ID header
     setupCatalogServiceCacheControl();
     if (getConfigValue('adobe-commerce-optimizer')) {
+      setupCoreOptimizerHeaders();
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
       events.on('auth/group-uid', handleCustomerGroupUid, { eager: true });
