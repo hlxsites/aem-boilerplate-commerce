@@ -35,10 +35,20 @@ await initializeDropin(async () => {
     // In ACO mode AC-Price-Book-ID already encodes the customer group, so also sending
     // Magento-Customer-Group double-resolves it and drops the group price to regular.
     const acoMode = getConfigValue('adobe-commerce-optimizer') === true;
+
+    // Ad-hoc solution for ACCS tenants with CCDM mode enabled: to resolve
+    // ProductInterface.price_range for requests to coreSaaS (e.g. get cart), Core needs the
+    // same company-scoped catalog view headers as Catalog Service. Detected by ACO mode plus
+    // an AC-View-ID header in the headers.all config section.
+    const ccdmMode = acoMode && Object.keys(getConfigValue('headers')?.all ?? {}).some(
+      (key) => key.toLowerCase() === catalogViewIdKey,
+    );
     await initializers.mountImmediately(initialize, {
       fetchGraphQlModules: [CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL],
       groupGraphQlModules: acoMode ? [] : [CS_FETCH_GRAPHQL],
-      catalogViewGraphQlModules: [CS_FETCH_GRAPHQL],
+      catalogViewGraphQlModules: ccdmMode
+        ? [CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL]
+        : [CS_FETCH_GRAPHQL],
       catalogViewHeader: catalogViewKey,
       catalogViewDefault: csHeaders[catalogViewKey],
     });
