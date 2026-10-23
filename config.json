@@ -1,0 +1,31 @@
+
+{
+  "public": {
+    "default": {
+      "commerce-core-endpoint": "https://na1-qa.api.commerce.adobe.com/9bzpDHHqDNpSDntEZWNtXE/graphql",
+      "commerce-endpoint": "https://na1-qa.api.commerce.adobe.com/9bzpDHHqDNpSDntEZWNtXE/graphql",
+      "adobe-commerce-optimizer": true,
+      "commerce-companies-enabled": true,
+      "commerce-b2b-enabled": true,
+      "commerce-assets-enabled": false,
+      "headers": {
+        "all": {
+          "Store": "default"
+        },
+        "cs": {
+          "content-type": "application/json",
+          "AC-View-Id": "c56c5d90-b0dd-412a-9c44-89543a2ffc7b",
+          "AC-Environment-Id": "9bzpDHHqDNpSDntEZWNtXE",
+          "AC-Source-Locale": "default"
+        }
+      },
+      "analytics": {
+        "view-id": "c56c5d90-b0dd-412a-9c44-89543a2ffc7b",
+        "environment": "Testing",
+        "base-currency-code": "USD",
+        "locale": "default",
+        "environment-id": "9bzpDHHqDNpSDntEZWNtXE"
+      }
+    }
+  }
+}
