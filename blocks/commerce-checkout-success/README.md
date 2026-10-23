@@ -24,13 +24,14 @@ No localStorage keys are used by this block.
 - `@dropins/storefront-cart` (Gift options container for order items)
 - `@dropins/storefront-auth` (Sign Up modal)
 - `@dropins/tools` (UI Button, provider, initializers)
-- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`
+- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`, `blocks/commerce-checkout/utils.js` (`buildOrderDetailsUrl`, used by `showOrderConfirmation`)
 
 ## Public API
 
 - `default export decorate(block)` — Renders the success view into the provided block element.
 - `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account).
 - `export function preloadCheckoutSuccess()` — Preloads the checkout success CSS. Call this before `renderCheckoutSuccess`.
+- `export async function showOrderConfirmation(orderData)` — Block-agnostic mechanism to render the checkout success page from any other page/block (e.g. after an order is placed via an express payment button on a PDP, in the cart, or in the mini-cart). Pushes the order details URL to history, replaces the current page's `<main>` content with a freshly built `commerce-checkout-success` block/section, and renders it with `orderData`. Use this instead of `renderCheckoutSuccess` when the calling block doesn't already host a `commerce-checkout-success` container in the DOM.
 
 Example (programmatic):
 
@@ -42,6 +43,14 @@ preloadCheckoutSuccess();
 
 // Pass pre-fetched order data
 await renderCheckoutSuccess(container, { orderData });
+```
+
+Example (block-agnostic, e.g. from a PDP express checkout `onSuccess` handler):
+
+```js
+import { showOrderConfirmation } from './blocks/commerce-checkout-success/commerce-checkout-success.js';
+
+events.on('order/placed', showOrderConfirmation);
 ```
 
 ## Behavior

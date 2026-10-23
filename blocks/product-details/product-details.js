@@ -35,9 +35,6 @@ import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPa
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 // Libs
 import {
   rootLink,
@@ -53,7 +50,7 @@ import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import { showOrderConfirmationPage, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
@@ -550,31 +547,11 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  // Handle order placed event
-  events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
+  // Handle order placed event: render the checkout success page in place of the current
+  // page content, using the block-agnostic mechanism from commerce-checkout-success.js.
+  events.on('order/placed', showOrderConfirmationPage);
 
   return Promise.resolve();
-}
-
-/**
- * Handle order placed event
- * @param {Object} orderData - The order data
- * @param {Object} block - The block
- */
-async function handleOrderPlaced(orderData, block) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(block, { orderData });
 }
 
 async function setJsonLdProduct(product) {

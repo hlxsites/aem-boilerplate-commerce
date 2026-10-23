@@ -41,7 +41,13 @@ import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
-import { loadCSS } from '../../scripts/aem.js';
+import {
+  buildBlock,
+  decorateBlock,
+  decorateSections,
+  loadCSS,
+} from '../../scripts/aem.js';
+import { buildOrderDetailsUrl } from '../commerce-checkout/utils.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -276,6 +282,24 @@ export function preloadCheckoutSuccess() {
 
 export async function renderCheckoutSuccess(container, { orderData } = {}) {
   return renderCheckoutSuccessContent(container, { orderData });
+}
+
+export async function showOrderConfirmationPage(orderData) {
+  window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
+
+  const main = document.querySelector('main');
+  const block = buildBlock('commerce-checkout-success', '');
+  const section = document.createElement('div');
+  section.append(block);
+  main.replaceChildren(section);
+  decorateSections(main);
+  decorateBlock(block);
+  section.style.display = '';
+  section.dataset.sectionStatus = 'loaded';
+  block.dataset.blockStatus = 'loaded';
+
+  await preloadCheckoutSuccess();
+  await renderCheckoutSuccess(block, { orderData });
 }
 
 export default async function decorate(block) {
