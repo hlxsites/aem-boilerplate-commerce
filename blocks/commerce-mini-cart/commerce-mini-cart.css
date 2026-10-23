@@ -32,3 +32,14 @@
     letter-spacing: var(--type-details-caption-1-letter-spacing);
     color: var(--color-positive-800);
 }
+
+/* TEST ONLY (PAY-7186 local verification) — remove before committing/opening the PR */
+.commerce-mini-cart__test-order-button {
+  width: 100%;
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: #fde7e7;
+  border: 1px dashed #c00;
+  color: #c00;
+  cursor: pointer;
+}

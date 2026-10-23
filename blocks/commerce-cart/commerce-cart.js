@@ -40,6 +40,13 @@ import {
   renderCartItemPromotions,
 } from '../../scripts/commerce.js';
 
+// TEST ONLY (PAY-7186 local verification) — exercises the new block-agnostic
+// showOrderConfirmation() mechanism from a page other than PDP. Remove this
+// import and the button it powers before committing/opening the PR.
+import { showOrderConfirmationPage, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
+
 export default async function decorate(block) {
   // Configuration
   const {
@@ -89,6 +96,23 @@ export default async function decorate(block) {
 
   block.innerHTML = '';
   block.appendChild(fragment);
+
+  // TEST ONLY (PAY-7186 local verification) — bare button using a mocked
+  // order so we can confirm showOrderConfirmation() renders checkout success
+  // from the cart page, without placing a real order. Remove before
+  // committing/opening the PR.
+  const $testOrderButton = document.createElement('button');
+  $testOrderButton.type = 'button';
+  $testOrderButton.className = 'cart__test-order-button';
+  $testOrderButton.textContent = 'TEST: Show order success (mock)';
+  $testOrderButton.addEventListener('click', () => {
+    const mockOrderData = {
+      number: `TEST-${Date.now()}`,
+      token: 'test-guest-token',
+    };
+    showOrderConfirmationPage(mockOrderData);
+  });
+  $rightColumn.appendChild($testOrderButton);
 
   // Wishlist variables
   const routeToWishlist = rootLink('/wishlist');

@@ -78,6 +78,17 @@
     width: fit-content;
 }
 
+/* TEST ONLY (PAY-7186 local verification) — remove before committing/opening the PR */
+.cart__test-order-button {
+  width: 100%;
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-xsmall) var(--spacing-small);
+  background: #fde7e7;
+  border: 1px dashed #c00;
+  color: #c00;
+  cursor: pointer;
+}
+
 @media (min-width: 768px) {
   .cart__wrapper {
     flex-direction: row;

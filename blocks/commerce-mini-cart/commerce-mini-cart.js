@@ -24,6 +24,13 @@ import {
   renderCartItemPromotions,
 } from '../../scripts/commerce.js';
 
+// TEST ONLY (PAY-7186 local verification) — exercises the new block-agnostic
+// showOrderConfirmation() mechanism from a page other than PDP. Remove this
+// import and the button it powers before committing/opening the PR.
+import { showOrderConfirmationPage, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
+
 export default async function decorate(block) {
   const {
     'start-shopping-url': startShoppingURL = '',
@@ -217,6 +224,25 @@ export default async function decorate(block) {
 
       Footer: (ctx) => {
         renderCartItemPromotions(ctx);
+      },
+
+      // TEST ONLY (PAY-7186 local verification) — bare button using a mocked
+      // order so we can confirm showOrderConfirmation() renders checkout
+      // success from the mini-cart, without placing a real order. Remove
+      // before committing/opening the PR.
+      PreCheckoutSection: (ctx) => {
+        const $testOrderButton = document.createElement('button');
+        $testOrderButton.type = 'button';
+        $testOrderButton.className = 'commerce-mini-cart__test-order-button';
+        $testOrderButton.textContent = 'TEST: Show order success (mock)';
+        $testOrderButton.addEventListener('click', () => {
+          const mockOrderData = {
+            number: `TEST-${Date.now()}`,
+            token: 'test-guest-token',
+          };
+          showOrderConfirmationPage(mockOrderData);
+        });
+        ctx.appendSibling($testOrderButton);
       },
     },
   })(block);
