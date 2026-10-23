@@ -1,5 +1,6 @@
 import { render as provider } from '@dropins/storefront-cart/render.js';
 import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
+import { refreshCart } from '@dropins/storefront-cart/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {
@@ -36,6 +37,9 @@ import { showOrderConfirmation, preloadCheckoutSuccess } from '../commerce-check
 preloadCheckoutSuccess();
 
 export default async function decorate(block) {
+  // POC: expose the cart drop-in's refreshCart for manual testing from DevTools
+  window.refreshCart = refreshCart;
+
   const {
     'start-shopping-url': startShoppingURL = '',
     'cart-url': cartURL = '',
