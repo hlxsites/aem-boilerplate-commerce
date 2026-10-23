@@ -3,32 +3,19 @@ import { getCookie } from '@dropins/tools/lib.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { initializers } from '@dropins/tools/initializer.js';
 import { isAemAssetsEnabled } from '@dropins/tools/lib/aem/assets.js';
-import { getConfigValue, getHeaders, getRootPath } from '@dropins/tools/lib/aem/configs.js';
+import { getConfigValue, getRootPath } from '@dropins/tools/lib/aem/configs.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
 const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
-const PRICE_BOOK_HEADER = 'AC-Price-Book-ID';
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
 let catalogServiceCacheControlAdded = false;
+let coreOptimizerHeadersAdded = false;
 let currentCustomerGroupId;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
-
-const findHeaderKey = (headers, name) => Object.keys(headers ?? {})
-  .find((key) => key.toLowerCase() === name.toLowerCase());
-
-/**
- * Ad-hoc solution for ACCS tenants with CCDM mode enabled: to resolve
- * ProductInterface.price_range for requests to coreSaaS (e.g. get cart), Core needs the same
- * catalog view (AC-View-ID, AC-Catalog-View-Access-Token) and price book (AC-Price-Book-ID)
- * headers as Catalog Service. Detected by ACO mode plus an AC-View-ID header in the
- * headers.all config section.
- */
-export const isCcdmMode = () => getConfigValue('adobe-commerce-optimizer') === true
-  && Boolean(findHeaderKey(getConfigValue('headers')?.all, 'AC-View-ID'));
 
 const setAuthHeaders = (state) => {
   if (state) {
@@ -118,24 +105,37 @@ const setupCatalogServiceCacheControl = () => {
   catalogServiceCacheControlAdded = true;
 };
 
-const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
-  const priceBookId = adobeCommerceOptimizer?.priceBookId;
-  if (priceBookId) {
-    CS_FETCH_GRAPHQL.setFetchGraphQlHeader(PRICE_BOOK_HEADER, priceBookId);
-  } else {
-    CS_FETCH_GRAPHQL.removeFetchGraphQlHeader(PRICE_BOOK_HEADER);
+/**
+ * Ad-hoc solution for ACCS tenants with CCDM mode enabled: to resolve
+ * ProductInterface.price_range for requests to coreSaaS (e.g. get cart), Core needs the same
+ * AC-* headers as Catalog Service. Copy the current Catalog Service AC-* headers (static
+ * headers.cs plus the dynamic AC-View-ID, AC-Catalog-View-Access-Token and AC-Price-Book-ID)
+ * onto every Core request, so Core always matches Catalog Service.
+ */
+const setupCoreOptimizerHeaders = () => {
+  if (coreOptimizerHeadersAdded) {
+    return;
   }
-  if (isCcdmMode()) {
-    // Core is seeded from headers.all: keep that key casing (no duplicate header) and fall
-    // back to the static headers.all price book when none is resolved.
-    const allHeaders = getHeaders('all');
-    const coreKey = findHeaderKey(allHeaders, PRICE_BOOK_HEADER) || PRICE_BOOK_HEADER;
-    const corePriceBookId = priceBookId || allHeaders[coreKey];
-    if (corePriceBookId) {
-      CORE_FETCH_GRAPHQL.setFetchGraphQlHeader(coreKey, corePriceBookId);
-    } else {
-      CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader(coreKey);
-    }
+
+  const isOptimizerHeader = (key) => key.toLowerCase().startsWith('ac-');
+  CORE_FETCH_GRAPHQL.addBeforeHook((request) => {
+    const { fetchGraphQlHeaders } = CS_FETCH_GRAPHQL.getConfig();
+    const headers = Object.fromEntries(
+      Object.entries(request.headers).filter(([key]) => !isOptimizerHeader(key)),
+    );
+    Object.entries(fetchGraphQlHeaders)
+      .filter(([key]) => isOptimizerHeader(key))
+      .forEach(([key, value]) => { headers[key] = value; });
+    return { ...request, headers };
+  });
+  coreOptimizerHeadersAdded = true;
+};
+
+const setAdobeCommerceOptimizerHeader = (adobeCommerceOptimizer) => {
+  if (adobeCommerceOptimizer?.priceBookId) {
+    CS_FETCH_GRAPHQL.setFetchGraphQlHeader('AC-Price-Book-ID', adobeCommerceOptimizer.priceBookId);
+  } else {
+    CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('AC-Price-Book-ID');
   }
   events.emit('commerce/customer-context', adobeCommerceOptimizer);
 };
@@ -167,6 +167,7 @@ export default async function initializeDropins() {
     // Set Customer-Group-ID header
     setupCatalogServiceCacheControl();
     if (getConfigValue('adobe-commerce-optimizer')) {
+      setupCoreOptimizerHeaders();
       events.on('auth/adobe-commerce-optimizer', setAdobeCommerceOptimizerHeader, { eager: true });
     } else {
       events.on('auth/group-uid', handleCustomerGroupUid, { eager: true });

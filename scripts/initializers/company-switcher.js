@@ -6,7 +6,7 @@ import {
   getCatalogViewHeaderManager,
 } from '@dropins/storefront-company-switcher/api.js';
 import { getConfigValue, getHeaders } from '@dropins/tools/lib/aem/configs.js';
-import { initializeDropin, getUserTokenCookie, isCcdmMode } from './index.js';
+import { initializeDropin, getUserTokenCookie } from './index.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from '../commerce.js';
 
 // Hold Catalog Service requests until the catalog view headers are applied, and re-apply
@@ -38,10 +38,7 @@ await initializeDropin(async () => {
     await initializers.mountImmediately(initialize, {
       fetchGraphQlModules: [CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL],
       groupGraphQlModules: acoMode ? [] : [CS_FETCH_GRAPHQL],
-      // CCDM: Core also needs the company-scoped catalog view headers (see isCcdmMode).
-      catalogViewGraphQlModules: isCcdmMode()
-        ? [CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL]
-        : [CS_FETCH_GRAPHQL],
+      catalogViewGraphQlModules: [CS_FETCH_GRAPHQL],
       catalogViewHeader: catalogViewKey,
       catalogViewDefault: csHeaders[catalogViewKey],
     });
