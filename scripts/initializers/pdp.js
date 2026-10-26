@@ -40,27 +40,6 @@ await initializeDropin(async () => {
   // Inherit Fetch GraphQL Instance (Catalog Service)
   setEndpoint(CS_FETCH_GRAPHQL);
 
-  // LOCAL TEST ONLY (ACCS-1477): ?mockRating=<summary 0-100>,<count> injects review aggregates.
-  const mockRating = new URLSearchParams(window.location.search).get('mockRating');
-  if (mockRating) {
-    const [summary, count] = mockRating.split(',');
-    const withRating = (product) => product && ({
-      ...product,
-      attributes: [
-        ...(product.attributes ?? []),
-        { name: 'ac_rating_summary', label: 'Rating Summary', value: summary, roles: ['visible_in_pdp'] },
-        { name: 'ac_review_count', label: 'Review Count', value: count, roles: ['visible_in_pdp'] },
-      ],
-    });
-    CS_FETCH_GRAPHQL.addAfterHook((_, response) => {
-      if (!response?.data?.products) return response;
-      return {
-        ...response,
-        data: { ...response.data, products: response.data.products.map(withRating) },
-      };
-    });
-  }
-
   // Preload PDP assets immediately when this module is imported
   preloadPDPAssets();
 
