@@ -46,6 +46,7 @@
     "@dropins/storefront-order": "4.1.0",
     "@dropins/storefront-payment-services": "4.2.1",
     "@dropins/storefront-pdp": "3.4.0-alpha-20261002121707",
+    "@dropins/storefront-ratings-reviews": "file:vendor/storefront-ratings-reviews-1.0.1-d27ae9e.tgz",
     "@dropins/storefront-personalization": "3.2.2",
     "@dropins/storefront-product-discovery": "3.1.2",
     "@dropins/storefront-recommendations": "4.1.0-alpha1",

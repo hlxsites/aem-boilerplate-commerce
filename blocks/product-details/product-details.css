@@ -71,6 +71,12 @@
   margin-top: var(--spacing-xsmall);
 }
 
+.product-details .product-details__reviews {
+  display: grid;
+  gap: var(--spacing-big);
+  margin-block-start: var(--spacing-xxbig);
+}
+
 @media (min-width: 900px) {
   .product-details__wrapper {
     grid-template-columns: repeat(var(--grid-3-columns), 1fr);
