@@ -5,6 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '^24.22.1'
+          check-latest: true
       - name: Install Cypress dependencies
         run: npm ci
         working-directory: cypress

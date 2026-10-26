@@ -19,6 +19,11 @@ jobs:
         with:
           # Checkout the integration branch after PR merge
           ref: integration
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '^24.22.1'
+          check-latest: true
       - name: Install root dependencies
         run: npm ci
       - name: Install adobe aem cli dependencies

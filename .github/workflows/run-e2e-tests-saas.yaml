@@ -42,6 +42,11 @@ jobs:
           - "src/tests/b2c/verifyAuthUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserCheckoutWithoutPaymentServices.spec.js,src/tests/b2c/verifyGuestUserVirtualCheckoutWithoutPaymentServices.spec.js"
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: '^24.22.1'
+          check-latest: true
       - name: Set storefront config
         id: config
         run: |
