@@ -21,15 +21,6 @@ Alternatively, you can follow our [Guide](https://experienceleague.adobe.com/dev
 
 ## Installation
 
-Use patched Node.js 24 for development and CI (minimum **24.22.1**, per the [October 2026 security advisory](https://nodejs.org/en/blog/vulnerability/october-2026-security-releases)). The root `.nvmrc` selects this baseline; with [nvm](https://github.com/nvm-sh/nvm), run from the repository root:
-
-```bash
-nvm install
-nvm use
-```
-
-Select this runtime before running npm commands, local AEM CLI, or Git commits: Husky's block README and lockfile checks inherit the shell's Node. CI explicitly selects the latest release matching `^24.22.1` with `check-latest: true`. This version selection does not change package engine requirements or enable automatic npm lifecycle scripts.
-
 Run `npm install` to install dependencies.
 
 This repo's `.npmrc` sets `ignore-scripts=true`, which disables npm lifecycle scripts (`preinstall`/`install`/`postinstall`) for every package. This is a defense against npm supply-chain attacks that hide malicious code inside those scripts. One consequence is that `npm install` alone will **not** copy the drop-in assets into `scripts/__dropins__` or apply the GraphQL overrides defined in `build.mjs`.
