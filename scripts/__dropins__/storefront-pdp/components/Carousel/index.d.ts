@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './Carousel';
-export { Carousel as default } from './Carousel';
-//# sourceMappingURL=index.d.ts.map
+export * from './Carousel.js';
+export { Carousel as default } from './Carousel.js';

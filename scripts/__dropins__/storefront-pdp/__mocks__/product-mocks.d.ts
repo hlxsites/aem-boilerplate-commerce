@@ -150,7 +150,7 @@ export declare const MOCK_DATA_BUNDLE_TRANSFORMED: {
     };
     options: {
         id: string;
-        type: "text" | "image" | "color" | "dropdown";
+        type: "image" | "text" | "color" | "dropdown";
         typename: "ProductViewOptionValueProduct" | "ProductViewOptionValueSwatch" | "ProductViewOptionValueConfiguration";
         label: string;
         required: boolean;
@@ -329,4 +329,3 @@ export declare const MOCK_AC_CUSTOMIZABLE_OPTIONS_TRANSFORMED: {
         range?: undefined;
     })[];
 };
-//# sourceMappingURL=product-mocks.d.ts.map
