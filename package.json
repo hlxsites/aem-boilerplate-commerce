@@ -50,7 +50,7 @@
     "@dropins/storefront-product-discovery": "3.1.2",
     "@dropins/storefront-recommendations": "4.1.0-alpha1",
     "@dropins/storefront-wishlist": "3.5.0",
-    "@dropins/tools": "2.1.0"
+    "@dropins/tools": "3.0.0-alpha-20261019152403"
   },
   "overrides": {
     "@adobe/alloy": {
