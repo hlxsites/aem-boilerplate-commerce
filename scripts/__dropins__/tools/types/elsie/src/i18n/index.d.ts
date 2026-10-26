@@ -198,6 +198,15 @@ export declare const definition: {
                     noItemsSelected: string;
                 };
             };
+            StarRating: {
+                label: string;
+                symbolLabel: string;
+                valueLabel: string;
+                compactCount: string;
+                zeroReviews: string;
+                oneReview: string;
+                reviews: string;
+            };
         };
     };
     en_US: {
@@ -389,6 +398,15 @@ export declare const definition: {
                     itemsSelectedDescription: string;
                     noItemsSelected: string;
                 };
+            };
+            StarRating: {
+                label: string;
+                symbolLabel: string;
+                valueLabel: string;
+                compactCount: string;
+                zeroReviews: string;
+                oneReview: string;
+                reviews: string;
             };
         };
     };
@@ -583,6 +601,15 @@ export declare const getDefinitionByLanguage: (lang: Lang) => {
                 itemsSelectedDescription: string;
                 noItemsSelected: string;
             };
+        };
+        StarRating: {
+            label: string;
+            symbolLabel: string;
+            valueLabel: string;
+            compactCount: string;
+            zeroReviews: string;
+            oneReview: string;
+            reviews: string;
         };
     };
 };

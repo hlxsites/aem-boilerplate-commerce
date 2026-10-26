@@ -1,6 +1,6 @@
 # @adobe-commerce/elsie
 
-## 3.0.0-alpha-20261019152403
+## 3.0.0-alpha-20261021202251
 
 ### Major Changes
 
@@ -138,6 +138,8 @@
   imports from Elsie's dependency tree so isolated consumers can run
   `elsie storybook` and `elsie storybook build` without installing the Storybook
   CLI themselves.
+- 410f411: feat: add `StarRating` component that displays a 0-5 rating with
+  partial star fill, optional value, review count and accessible label
 - 25ba0c5: Share the named `a11yTestRunnerConfig` Storybook configuration
   through `@adobe-commerce/elsie/storybook/test-runner`. Consumers can replace
   their duplicate `.storybook/test-runner.ts` hooks with an import and remove
