@@ -1,3 +1,5 @@
+import { Skeleton, SkeletonRow, provider as UI } from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
 import { config, getProductRating, getProductReviews } from '@dropins/storefront-ratings-reviews/api.js';
 import { render as reviewsRenderer } from '@dropins/storefront-ratings-reviews/render.js';
 import { Rating } from '@dropins/storefront-ratings-reviews/containers/Rating.js';
@@ -33,6 +35,15 @@ export default async function renderReviews(block, sku) {
       showCount: true,
       scope,
       slots: {
+        Loading: async (ctx) => {
+          const placeholder = document.createElement('div');
+          await UI.render(Skeleton, {
+            className: 'product-details__rating-skeleton',
+            'aria-hidden': true,
+            children: h(SkeletonRow, { variant: 'row', size: 'small', fullWidth: true }),
+          })(placeholder);
+          ctx.appendChild(placeholder);
+        },
         Error: ratingStatus(labels.Rating?.error ?? 'Unable to load rating.'),
         Unavailable: ratingStatus(labels.Rating?.unavailable ?? 'Rating is unavailable.'),
       },

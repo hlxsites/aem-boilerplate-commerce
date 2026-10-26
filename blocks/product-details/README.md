@@ -56,6 +56,12 @@ of displayed review items. The current integration does not include a
 distribution graph, Troop Leader badge, pagination controls, sorting, review
 submission, or helpfulness voting.
 
+The Review container supplies its own loading skeleton and localized status
+message. The average Rating container exposes loading state but no default visual
+placeholder, so this block fills its `Loading` slot with the shared drop-in
+Skeleton components. Both containers expose `aria-busy`; the decorative
+skeletons are hidden from assistive technology and do not block purchase controls.
+
 ### Localization
 
 PDP labels are loaded through `placeholders/pdp.json`. Cart action labels use the
@@ -138,9 +144,18 @@ When customizing [reviews.js](./reviews.js), retain the same scope on related co
 
 ## Development
 
-The ratings/reviews dependency temporarily uses the repository-local `vendor/storefront-ratings-reviews-1.0.1-d27ae9e.tgz` snapshot. A remote checkout does not need a sibling repository. Include the archive and generated `scripts/__dropins__/storefront-ratings-reviews/` assets when delivering the branch; `.hlxignore` excludes the archive from remote delivery.
+Two dependencies temporarily use repository-local compiled snapshots:
 
-Replace the snapshot with a published dependency when [ACCS-2171](https://jira.corp.adobe.com/browse/ACCS-2171) is complete. The current feature branch also has unpublished PDP/product-discovery vendored changes; wholesale drop-in regeneration can overwrite those assets unless their package versions are aligned.
+| Package | Archive | Source commit |
+| --- | --- | --- |
+| Ratings/reviews | `vendor/storefront-ratings-reviews-1.0.1-d27ae9e.tgz` | `d27ae9e53d19dc9373b6473e26c207bbac395291` |
+| PDP | `vendor/storefront-pdp-3.3.2-5af110c.tgz` | `5af110ca2da8c367753b043d95e3a0352fd4efdc` (`ACCS-1477-product-rating`) |
+
+The PDP snapshot includes `ProductRating` and reproduces the feature branch's existing vendored PDP assets. Its source package version is `3.3.2`; the formerly configured `3.4.0` alpha did not include that container.
+
+A remote checkout does not need sibling repositories. Include the archives and generated drop-in assets when delivering the branch; `.hlxignore` excludes the archives from remote delivery.
+
+Replace the ratings/reviews snapshot with a published dependency when [ACCS-2171](https://jira.corp.adobe.com/browse/ACCS-2171) is complete, and the PDP snapshot when a published version includes the matching rating implementation. The feature branch still has unpublished product-discovery vendored changes; wholesale drop-in regeneration can overwrite those assets.
 
 With the local AEM server running against the ratings/reviews feature content, run the focused browser tests from the repository root:
 

@@ -17,8 +17,12 @@ function visitProduct({
   ratingError = false,
   reviewError = false,
   unavailable = false,
+  responseGate,
 } = {}) {
   const requests = { rating: 0, reviews: 0 };
+  const reply = (req, body) => (responseGate
+    ? responseGate.then(() => req.reply(body))
+    : req.reply(body));
   cy.intercept('**/graphql*', (req) => {
     const url = new URL(req.url);
     const query = req.body?.query ?? url.searchParams.get('query') ?? '';
@@ -38,7 +42,7 @@ function visitProduct({
       expect(variables.skus).to.deep.equal(['ADB102']);
       expect(req.headers['magento-website-code']).to.equal('base');
       req.alias = 'productRating';
-      req.reply(ratingError ? { errors: [{ message: 'Rating service unavailable' }] } : {
+      return reply(req, ratingError ? { errors: [{ message: 'Rating service unavailable' }] } : {
         data: {
           products: unavailable ? [] : [{
             sku: 'ADB102',
@@ -53,7 +57,7 @@ function visitProduct({
       requests.reviews += 1;
       expect(variables).to.deep.equal({ sku: 'ADB102', pageSize: 20, currentPage: 1 });
       req.alias = 'productReviews';
-      req.reply(reviewError && requests.reviews === 1
+      return reply(req, reviewError && requests.reviews === 1
         ? { errors: [{ message: 'Review service unavailable' }] }
         : {
           data: {
@@ -109,6 +113,25 @@ describe('PDP ratings and reviews', () => {
     cy.get('.product-details__rating').should('not.be.empty');
     cy.get(`${region} .ratingsreviews-pagination`).should('not.exist');
     cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
+  });
+
+  it('shows loading skeletons without blocking purchase controls, then removes them', () => {
+    let release;
+    const responseGate = new Cypress.Promise((resolve) => { release = resolve; });
+    visitProduct({ responseGate });
+    cy.get(`${region} .ratingsreviews-rating`).should('have.attr', 'aria-busy', 'true');
+    cy.get(`${region} .product-details__rating-skeleton`).should('be.visible')
+      .and('have.attr', 'aria-hidden', 'true');
+    cy.get(`${region} .ratingsreviews-review`).should('have.attr', 'aria-busy', 'true');
+    cy.get(`${region} .ratingsreviews-review__skeleton`).should('be.visible');
+    cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
+    cy.then(() => release());
+    cy.wait(['@productRating', '@productReviews']);
+    cy.get(`${region} .ratingsreviews-rating`).should('have.attr', 'aria-busy', 'false');
+    cy.get(`${region} .ratingsreviews-review`).should('have.attr', 'aria-busy', 'false');
+    cy.get(`${region} .product-details__rating-skeleton`).should('not.exist');
+    cy.get(`${region} .ratingsreviews-review__skeleton`).should('not.exist');
+    cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
   });
 
   it('does not mount or request review data when store reviews are disabled', () => {

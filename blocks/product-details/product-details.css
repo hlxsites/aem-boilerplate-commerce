@@ -77,6 +77,11 @@
   margin-block-start: var(--spacing-xxbig);
 }
 
+.product-details .product-details__rating-skeleton {
+  width: 12rem;
+  max-width: 100%;
+}
+
 @media (min-width: 900px) {
   .product-details__wrapper {
     grid-template-columns: repeat(var(--grid-3-columns), 1fr);
