@@ -9,6 +9,8 @@ import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../comm
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
 const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
+// Catalog Service headers mirrored onto Core GraphQL requests in ACO mode (case-insensitive).
+const CORE_OPTIMIZER_HEADERS = ['AC-View-ID', 'AC-Price-Book-ID', 'AC-Catalog-View-Access-Token'];
 const getWebsitePath = () => getRootPath() || '/';
 const clearCookie = (name) => { document.cookie = `${name}=; path=/; Max-Age=0`; };
 let catalogServiceCacheControlAdded = false;
@@ -108,16 +110,17 @@ const setupCatalogServiceCacheControl = () => {
 /**
  * Ad-hoc solution for ACCS tenants with CCDM mode enabled: to resolve
  * ProductInterface.price_range for requests to coreSaaS (e.g. get cart), Core needs the same
- * AC-* headers as Catalog Service. Copy the current Catalog Service AC-* headers (static
- * headers.cs plus the dynamic AC-View-ID, AC-Catalog-View-Access-Token and AC-Price-Book-ID)
- * onto every Core request, so Core always matches Catalog Service.
+ * catalog view and price book headers as Catalog Service. Copy the current Catalog Service
+ * values of CORE_OPTIMIZER_HEADERS (static headers.cs or set dynamically) onto every Core
+ * request, so Core always matches Catalog Service.
  */
 const setupCoreOptimizerHeaders = () => {
   if (coreOptimizerHeadersAdded) {
     return;
   }
 
-  const isOptimizerHeader = (key) => key.toLowerCase().startsWith('ac-');
+  const allowList = CORE_OPTIMIZER_HEADERS.map((key) => key.toLowerCase());
+  const isOptimizerHeader = (key) => allowList.includes(key.toLowerCase());
   CORE_FETCH_GRAPHQL.addBeforeHook((request) => {
     const { fetchGraphQlHeaders } = CS_FETCH_GRAPHQL.getConfig();
     const headers = Object.fromEntries(
