@@ -2,6 +2,8 @@
 
 Note - Following commands expects local server is running at <http://127.0.0.1:3000/>.
 
+Before changing into `cypress`, select the repository's patched Node.js 24 runtime with `nvm install && nvm use` from the repository root (see [Installation](../README.md#installation)). Use the same shell for local Cypress, Percy, and `npm run check:shards`; CI selects Node 24 with a minimum of **24.22.1**.
+
 1. Clone the repo and change directory to `cypress`
 2. Run `npm install`
 3. Run `npm run cypress:open`

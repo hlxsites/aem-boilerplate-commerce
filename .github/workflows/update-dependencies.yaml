@@ -19,11 +19,12 @@ jobs:
         # actions/checkout@v4.2.2
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Set up Node.js
+      - name: Set up Node.js 24
         # actions/setup-node@v4.4.0
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 20
+          node-version: '^24.22.1'
+          check-latest: true
 
       - name: Snapshot package.json before updates
         run: cp package.json /tmp/pkg_before.json

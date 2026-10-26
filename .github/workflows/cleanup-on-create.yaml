@@ -18,10 +18,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Use Node.js 20
+      - name: Use Node.js 24
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: '^24.22.1'
+          check-latest: true
       - name: Remove Helper Files
         run: | 
           rm -rf \
