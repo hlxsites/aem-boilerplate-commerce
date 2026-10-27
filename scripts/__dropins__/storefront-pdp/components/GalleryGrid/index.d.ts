@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './GalleryGrid';
-export { GalleryGrid as default } from './GalleryGrid';
-//# sourceMappingURL=index.d.ts.map
+export * from './GalleryGrid.js';
+export { GalleryGrid as default } from './GalleryGrid.js';

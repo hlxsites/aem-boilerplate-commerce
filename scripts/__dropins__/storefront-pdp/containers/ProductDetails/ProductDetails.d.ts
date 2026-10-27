@@ -1,9 +1,23 @@
+/**
+ * ADOBE CONFIDENTIAL
+ * __________________
+ * Copyright 2023 Adobe
+ * All Rights Reserved.
+ * __________________
+ * NOTICE: All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ */
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps, SlotMethod, ResolveImageUrlOptions } from '@dropins/tools/types/elsie/src/lib';
-import { ButtonProps } from '@dropins/tools/types/elsie/src/components';
-import { ProductModel } from '../../data/models';
-
-type IconType = keyof typeof import('@dropins/tools/types/elsie/src/icons');
+import { Container, SlotProps, SlotMethod, ResolveImageUrlOptions } from '@dropins/tools/lib';
+import { ButtonProps } from '@dropins/tools/components';
+import { ProductModel } from '../../data/models/index.js';
+type IconType = keyof typeof import('@dropins/tools/icons');
 /** @deprecated This type is part of the deprecated ProductDetails component. */
 export type Values = {
     sku: string;
@@ -94,4 +108,3 @@ export interface ProductDetailsProps extends HTMLAttributes<HTMLDivElement> {
  */
 export declare const ProductDetails: Container<ProductDetailsProps, ProductModel | null>;
 export {};
-//# sourceMappingURL=ProductDetails.d.ts.map

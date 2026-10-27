@@ -68,4 +68,3 @@ export interface RawCustomizableOptionsAttributeValue extends Omit<CustomizableO
     selectable: RawSelectableOption[];
     shopperInput: RawShopperInputOption[];
 }
-//# sourceMappingURL=customizable-options-model.d.ts.map

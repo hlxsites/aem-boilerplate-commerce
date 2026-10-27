@@ -16,4 +16,4 @@
 export * from './product-model';
 export * from './values-model';
 export * from './customizable-options-model';
-//# sourceMappingURL=index.d.ts.map
+export * from './product-rating-model';
