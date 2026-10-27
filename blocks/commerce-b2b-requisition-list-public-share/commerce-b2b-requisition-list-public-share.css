@@ -1,0 +1,16 @@
+/* Styles are provided by the SharedRequisitionList dropin container */
+
+/* The dropin sizes the product thumbnail via width/height HTML attributes
+   only; this boilerplate's global `main img` reset (styles/styles.css)
+   overrides those with `width/height: auto`, so pin the size back down here. */
+.commerce-b2b-requisition-list-public-share .shared-requisition-list__product img {
+  width: 48px;
+  height: 48px;
+  max-width: 48px;
+}
+
+/* The dropin renders status/error alerts with no bottom margin, leaving them
+   flush against the next section (preview details, items table). */
+.commerce-b2b-requisition-list-public-share .dropin-in-line-alert {
+  margin-bottom: var(--spacing-small);
+}

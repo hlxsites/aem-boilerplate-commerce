@@ -1,5 +1,7 @@
 # @dropins/storefront-company-management
 
+## 1.5.0
+
 ## 1.5.0-beta.1
 
 ### Patch Changes

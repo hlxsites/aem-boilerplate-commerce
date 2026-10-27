@@ -1,5 +1,11 @@
 # @dropins/storefront-purchase-order
 
+## 1.2.2
+
+### Patch Changes
+
+- 7ace201: Bump "@adobe-commerce/elsie" from 2.0.0 to 2.1.0-beta.2
+
 ## 1.2.2-beta.0
 
 ### Patch Changes
