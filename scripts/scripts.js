@@ -143,6 +143,10 @@ function buildAutoBlocks(main) {
     if (metaSku && !pdpBlock) {
       buildPDPBlock(main);
     }
+    const productDetails = main.querySelector('.product-details');
+    if (productDetails && !main.querySelector('.product-reviews')) {
+      productDetails.after(buildBlock('product-reviews', { elems: [] }));
+    }
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }

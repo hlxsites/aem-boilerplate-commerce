@@ -63,7 +63,6 @@ export default async function decorate(block) {
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   let product = eventProduct?.sku ? eventProduct : null;
-  const reviewSku = product?.sku;
 
   const labels = await fetchPlaceholders();
 
@@ -420,14 +419,6 @@ export default async function decorate(block) {
       events.emit('pdp/data', refreshedProduct);
     }
   });
-
-  if (reviewSku) {
-    import('./reviews.js')
-      .then(({ default: renderReviews }) => renderReviews(block, reviewSku))
-      .catch((error) => {
-        console.error('[Product Reviews] Failed to initialize PDP reviews:', error);
-      });
-  }
 
   return Promise.resolve();
 }

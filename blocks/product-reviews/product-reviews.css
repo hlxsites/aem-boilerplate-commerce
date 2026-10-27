@@ -1,0 +1,14 @@
+.product-reviews {
+  display: grid;
+  gap: var(--spacing-big);
+  margin-block-start: var(--spacing-xxbig);
+}
+
+.product-reviews[hidden] {
+  display: none;
+}
+
+.product-reviews .product-reviews__rating-skeleton {
+  width: 12rem;
+  max-width: 100%;
+}
