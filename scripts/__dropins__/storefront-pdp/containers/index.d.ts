@@ -22,6 +22,7 @@ export * from './ProductDescription';
 export * from './ProductAttributes';
 export * from './ProductGiftCardOptions';
 export * from './ProductDownloadableOptions';
+export * from './ProductCustomizableOptions';
 export * from './ProductGallery';
 export * from './ProductHeader';
 //# sourceMappingURL=index.d.ts.map

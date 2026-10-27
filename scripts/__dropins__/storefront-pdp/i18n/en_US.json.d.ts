@@ -80,6 +80,14 @@ declare const _default: {
         "label": "View sample for {label}"
       }
     },
+    "CustomizableOptions": {
+      "Required": {
+        "label": "Required"
+      },
+      "FileUnsupported": {
+        "label": "File upload is not supported."
+      }
+    },
     "Carousel": {
       "label": "Carousel",
       "Next": {

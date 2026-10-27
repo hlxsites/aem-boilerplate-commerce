@@ -13,7 +13,8 @@ export interface ReCaptchaInitProps {
     badge_position?: string;
     language_code?: string;
     failure_message?: string;
-    theme: string;
+    theme?: string;
+    recaptcha_type?: ReCaptchaType;
 }
 export interface ReCaptchaProps extends ReCaptchaInitProps {
     forms?: string[];

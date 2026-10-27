@@ -11,6 +11,8 @@ import {
   buildBlock,
 } from './aem.js';
 import {
+  buildPDPBlock,
+  getProductSku,
   loadCommerceEager,
   loadCommerceLazy,
   initializeCommerce,
@@ -135,6 +137,12 @@ function buildAutoBlocks(main) {
       });
     }
     buildWidgetAutoBlocks(main);
+    // auto-block PDP
+    const metaSku = getProductSku();
+    const pdpBlock = document.querySelector('.product-details');
+    if (metaSku && !pdpBlock) {
+      buildPDPBlock(main);
+    }
   } catch (error) {
     console.error('Auto Blocking failed', error);
   }
@@ -230,7 +238,7 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
-  loadHeader(doc.querySelector('header'));
+  loadHeader(doc.querySelector('body > header'));
 
   const main = doc.querySelector('main');
   await loadSections(main);
@@ -239,9 +247,9 @@ async function loadLazy(doc) {
   const element = hash ? doc.getElementById(hash.substring(1)) : false;
   if (hash && element) element.scrollIntoView();
 
-  loadFooter(doc.querySelector('footer'));
+  loadFooter(doc.querySelector('body > footer'));
 
-  loadCommerceLazy();
+  await loadCommerceLazy();
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
@@ -252,7 +260,7 @@ async function loadLazy(doc) {
  * without impacting the user experience.
  */
 function loadDelayed() {
-  window.setTimeout(() => import('./delayed.js'), 3000);
+  import('./consent-check.js');
   // load anything that can be postponed to the latest here
 }
 
