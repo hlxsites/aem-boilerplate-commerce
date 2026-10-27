@@ -21,7 +21,7 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
-  fetchPlaceholders, getProductLink, getStoreIdentifier,
+  fetchPlaceholders, getProductLink, getStoreIdentifier, isConsentGranted,
 } from '../../scripts/commerce.js';
 
 // Initializers
@@ -48,9 +48,10 @@ function getValidViewEntry(entry) {
 
 /**
  * Gets product view history from localStorage
- * @returns {Array} - Array of view history items
+ * @returns {Array|undefined} History items, or undefined when access is not allowed
  */
 export function getProductViewHistory() {
+  if (!isConsentGranted()) return undefined;
   const storeIdentifier = getStoreIdentifier();
   try {
     if (!storeIdentifier) {
@@ -90,9 +91,10 @@ function getValidPurchaseEntry(entry) {
 
 /**
  * Gets purchase history from localStorage
- * @returns {Array} - Array of purchase history items
+ * @returns {Array|undefined} History items, or undefined when access is not allowed
  */
 export function getPurchaseHistory() {
+  if (!isConsentGranted()) return undefined;
   const storeIdentifier = getStoreIdentifier();
   try {
     if (!storeIdentifier) {
@@ -135,7 +137,6 @@ export default async function decorate(block) {
     </div>
   `);
 
-  const $list = fragment.querySelector('.recommendations__list');
   const $wrapper = fragment.querySelector('.recommendations__wrapper');
 
   block.appendChild(fragment);
@@ -143,11 +144,13 @@ export default async function decorate(block) {
   let visibility = !isMobile;
   let isLoading = false;
   let loadTimeout = null;
+  let recommendationList;
+  let reloadPending = false;
+  let consented = isConsentGranted();
 
   async function loadRecommendation(
     context,
     isVisible,
-    container,
     forceReload = false,
   ) {
     // Only load once the recommendation becomes visible
@@ -157,28 +160,18 @@ export default async function decorate(block) {
 
     // Prevent multiple simultaneous loads
     if (isLoading) {
+      reloadPending = reloadPending || forceReload;
       return;
     }
 
-    // Only proceed if container is empty or force reload is requested
-    if (container.children.length > 0 && !forceReload) {
+    // Reuse the mounted list unless its request context changed.
+    if (recommendationList && !forceReload) {
       return;
     }
 
     isLoading = true;
 
-    // Clear container if reloading
-    if (forceReload) {
-      container.innerHTML = '';
-    }
-
     const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
-
-    // Get product view history
-    context.userViewHistory = getProductViewHistory();
-
-    // Get purchase history
-    context.userPurchaseHistory = getPurchaseHistory();
 
     let recommendationsData = null;
 
@@ -205,7 +198,7 @@ export default async function decorate(block) {
       if (isACO) {
         if (currentprice != null) {
           resolvedPrice = Number(currentprice);
-        } else if (!skuFromConfig) {
+        } else if (!skuFromConfig && consented) {
           resolvedPrice = context.currentProductPrice ?? null;
         }
       }
@@ -213,14 +206,22 @@ export default async function decorate(block) {
         ? { sku: resolvedSku, ...(resolvedPrice != null && { price: resolvedPrice }) }
         : undefined;
 
-      await Promise.all([
+      const requestContext = {
+        currentProduct,
+        cartSkus: consented ? context.cartSkus : undefined,
+        userViewHistory: getProductViewHistory(),
+        userPurchaseHistory: getPurchaseHistory(),
+      };
+      if (recommendationList) {
+        recommendationList.setProps((prev) => ({ ...prev, ...requestContext }));
+        return;
+      }
+
+      [recommendationList] = await Promise.all([
         provider.render(ProductList, {
           routeProduct: createProductLink,
           recId: recid,
-          currentProduct,
-          cartSkus: context.cartSkus,
-          userViewHistory: context.userViewHistory,
-          userPurchaseHistory: context.userPurchaseHistory,
+          ...requestContext,
           slots: {
             Footer: (ctx) => {
               const wrapper = document.createElement('div');
@@ -308,20 +309,35 @@ export default async function decorate(block) {
       ]);
     } finally {
       isLoading = false;
+      if (reloadPending) {
+        reloadPending = false;
+        debouncedLoadRecommendation(true);
+      }
     }
   }
 
   const context = {};
   // Debounced loader to prevent excessive API calls
   function debouncedLoadRecommendation(forceReload = false) {
+    reloadPending = reloadPending || forceReload;
     if (loadTimeout) {
       clearTimeout(loadTimeout);
     }
 
     loadTimeout = setTimeout(() => {
-      loadRecommendation(context, visibility, $list, forceReload);
+      const reload = reloadPending;
+      reloadPending = false;
+      loadRecommendation(context, visibility, reload);
     }, 300); // 300ms debounce
   }
+
+  window.addEventListener('consent.update', () => {
+    const next = isConsentGranted();
+    if (next !== consented) {
+      consented = next;
+      debouncedLoadRecommendation(true);
+    }
+  });
 
   // Track previous context values to detect significant changes
   let previousContext = {};
@@ -355,7 +371,7 @@ export default async function decorate(block) {
     previousContext = { ...context };
 
     // Load or reload recommendations based on whether significant changes occurred
-    if (hasSignificantChanges && $list.children.length > 0) {
+    if (hasSignificantChanges && recommendationList) {
       // Force reload if recommendations already exist and context changed significantly
       debouncedLoadRecommendation(true);
     } else {
