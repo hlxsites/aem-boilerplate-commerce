@@ -24,6 +24,7 @@ import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescri
 import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
 import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
 import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
+import ProductCustomizableOptions from '@dropins/storefront-pdp/containers/ProductCustomizableOptions.js';
 
 // Libs
 import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
@@ -33,8 +34,8 @@ import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
-// Function to update the Add to Cart button text
-function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
+// Function to update the Add to Cart button text and its accessible name
+function updateAddToCartButtonText(addToCartInstance, inCart, labels, productName) {
   const buttonText = inCart
     ? labels.Global?.UpdateProductInCart
     : labels.Global?.AddProductToCart;
@@ -42,6 +43,7 @@ function updateAddToCartButtonText(addToCartInstance, inCart, labels) {
     addToCartInstance.setProps((prev) => ({
       ...prev,
       children: buttonText,
+      'aria-label': `${buttonText} ${productName}`,
     }));
   }
 }
@@ -86,6 +88,7 @@ export default async function decorate(block) {
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
         <div class="product-details__gift-card-options"></div>
+        <div class="product-details__customizable-options"></div>
         <div class="product-details__configuration">
           <div class="product-details__options"></div>
           <div class="product-details__quantity"></div>
@@ -110,6 +113,7 @@ export default async function decorate(block) {
   const $options = fragment.querySelector('.product-details__options');
   const $quantity = fragment.querySelector('.product-details__quantity');
   const $giftCardOptions = fragment.querySelector('.product-details__gift-card-options');
+  const $customizableOptions = fragment.querySelector('.product-details__customizable-options');
   const $addToCart = fragment.querySelector('.product-details__buttons__add-to-cart');
   const $wishlistToggleBtn = fragment.querySelector('.product-details__buttons__add-to-wishlist');
   // Kept mounted at all times so the "Adding to Cart" status is reliably
@@ -153,6 +157,7 @@ export default async function decorate(block) {
     _options,
     _quantity,
     _giftCardOptions,
+    _customizableOptions,
     _description,
     _attributes,
     wishlistToggleBtn,
@@ -215,6 +220,9 @@ export default async function decorate(block) {
     // Configuration  Gift Card Options
     pdpRendered.render(ProductGiftCardOptions, {})($giftCardOptions),
 
+    // Configuration  Customizable Options
+    pdpRendered.render(ProductCustomizableOptions, {})($customizableOptions),
+
     // Description
     pdpRendered.render(ProductDescription, {})($description),
 
@@ -230,7 +238,9 @@ export default async function decorate(block) {
   ]);
 
   // Configuration – Button - Add to Cart
+  const getProductName = () => product?.name || product?.sku;
   const addToCart = await UI.render(Button, {
+    'aria-label': `${labels.Global?.AddProductToCart} ${getProductName()}`,
     children: labels.Global?.AddProductToCart,
     icon: h(Icon, { source: 'Cart' }),
     onClick: async () => {
@@ -306,7 +316,7 @@ export default async function decorate(block) {
         });
       } finally {
         // Reset button text using the helper function which respects the current mode
-        updateAddToCartButtonText(addToCart, isUpdateMode, labels);
+        updateAddToCartButtonText(addToCart, isUpdateMode, labels, getProductName());
         // Re-enable button, unless the current variant is out of stock
         addToCart.setProps((prev) => ({
           ...prev,
@@ -322,6 +332,7 @@ export default async function decorate(block) {
     product = data?.sku ? data : product;
     isOutOfStock = data?.inStock === false;
     addToCart.setProps((prev) => ({ ...prev, disabled: isOutOfStock }));
+    updateAddToCartButtonText(addToCart, isUpdateMode, labels, getProductName());
   }, { eager: true });
 
   events.on('pdp/valid', (valid) => {
@@ -383,7 +394,7 @@ export default async function decorate(block) {
       isUpdateMode = itemIsInCart;
 
       // Update button text based on whether the item is in the cart
-      updateAddToCartButtonText(addToCart, itemIsInCart, labels);
+      updateAddToCartButtonText(addToCart, itemIsInCart, labels, getProductName());
     },
     { eager: true },
   );

@@ -9,10 +9,22 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
+  buildBlock,
   getMetadata,
   readBlockConfig,
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
+
+let consentGranted = false;
+
+/** Returns the latest upstream consent notification for this document. */
+export function isConsentGranted() {
+  return consentGranted;
+}
+
+window.addEventListener('consent.update', ({ detail }) => {
+  consentGranted = detail?.consented === true;
+});
 
 /**
  * Sanitizes the given string by:
@@ -51,14 +63,6 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 // Environment checks
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
 export const IS_EW = new URL(window.location.href).searchParams.get('quick-edit') === 'on';
-
-/**
- * Product template paths - pages that are templates and should use
- * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
- */
-export const PRODUCT_TEMPLATE_PATHS = [
-  'products/default',
-];
 
 // PATHS
 export const SUPPORT_PATH = '/support';
@@ -107,6 +111,8 @@ export const authPrivacyPolicyConsentSlot = {
     link.href = PRIVACY_POLICY_PATH;
     link.target = '_blank';
     link.textContent = 'Privacy Policy';
+    link.style.textDecoration = 'underline';
+    link.style.textUnderlineOffset = '6px';
 
     wrapper.append(
       'By creating an account, you acknowledge that you have read and agree to our ',
@@ -313,7 +319,6 @@ export async function loadCommerceLazy() {
   // Initialize Adobe Client Data Layer
   await import('./acdl/adobe-client-data-layer.min.js');
 
-  // Track history
   trackHistory();
 }
 
@@ -639,30 +644,11 @@ function getSkuFromUrl() {
 function getDefaultSkuFromBlock() {
   const productDetailsBlock = document.querySelector('.product-details.block');
   if (!productDetailsBlock) {
-    console.warn('No product-details block found');
     return null;
   }
 
   const config = readBlockConfig(productDetailsBlock);
-  if (!config.defaultsku) {
-    console.warn('No defaultSku found in product-details block');
-    return null;
-  }
-  return config.defaultsku;
-}
-
-/**
- * Checks if the current page is a product template page.
- * @returns {boolean} True if the current page matches a product template path
- */
-export function isProductTemplate() {
-  const root = getRootPath();
-  const { pathname } = window.location;
-
-  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
-    const fullPath = root ? `${root}${templatePath}` : templatePath;
-    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
-  });
+  return config.defaultsku || null;
 }
 
 /**
@@ -704,14 +690,14 @@ export function getProductLink(urlKey, sku) {
 }
 
 /**
- * Gets the product SKU from metadata or URL fallback.
- * @returns {string|null} The SKU from metadata or URL, or null if not found
+ * Gets the current page's product sku, preferring the default SKU from the
+ * product-details block in authoring environments.
+ * @returns {string|null} The SKU from metadata, url, or block config
  */
 export function getProductSku() {
-  if (isProductTemplate() && (IS_DA || IS_EW)) {
-    return getDefaultSkuFromBlock();
+  if (IS_DA || IS_EW) {
+    return getMetadata('sku') || getDefaultSkuFromBlock();
   }
-
   return getMetadata('sku') || getSkuFromUrl();
 }
 
@@ -746,15 +732,17 @@ export function getStoreIdentifier() {
  * Tracks user browsing and purchase history for recommendations.
  * Stores product view history and purchase history in localStorage.
  */
+let historyTrackingInitialized = false;
+
 function trackHistory() {
-  if (!getConsent('commerce-recommendations')) {
+  if (historyTrackingInitialized) {
     return;
   }
-  // Store product view history in session storage
   const storeIdentifier = getStoreIdentifier();
   if (storeIdentifier) {
+    historyTrackingInitialized = true;
     window.adobeDataLayer.push((dl) => {
-      dl.addEventListener('adobeDataLayer:change', (event) => {
+      const recordProductView = (event) => {
         // Speculation Rules prerendering pushes productContext once immediately and
         // again on activation. Ignore the prerender-only push so hovering a link
         // doesn't record a view that never actually happened.
@@ -766,8 +754,14 @@ function trackHistory() {
         viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
         viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
         window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
-      }, { path: 'productContext' });
+      };
+      dl.addEventListener('adobeDataLayer:change', recordProductView, {
+        path: 'productContext',
+      });
       dl.addEventListener('place-order', () => {
+        if (document.prerendering) {
+          return;
+        }
         const shoppingCartContext = dl.getState('shoppingCartContext');
         if (!shoppingCartContext) {
           return;
@@ -855,16 +849,6 @@ export function checkIsAuthenticated() {
 }
 
 /**
- * Check if consent was given for a specific topic.
- * @param {*} topic Topic identifier
- * @returns {boolean} True if consent was given
- */
-export function getConsent(_topic) {
-  console.warn('getConsent not implemented');
-  return true;
-}
-
-/**
  * Automatically links modal functionality to elements
  * @param {Element} element - The element to attach modal functionality to
  */
@@ -910,4 +894,20 @@ export function decorateSections(main) {
     section.dataset.sectionStatus = 'initialized';
     section.style.display = 'none';
   });
+}
+
+/**
+ * Injects a product-details block into the first child of main.
+ * @param {Element} main The main element
+ */
+export function buildPDPBlock(main) {
+  const block = buildBlock('product-details', { elems: [] });
+  const targetSection = main.querySelector(':scope > div:first-child');
+  if (targetSection) {
+    targetSection.prepend(block);
+  } else {
+    const section = document.createElement('div');
+    section.append(block);
+    main.prepend(section);
+  }
 }

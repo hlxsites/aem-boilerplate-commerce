@@ -14,4 +14,5 @@
  * from Adobe.
  */
 export * from './product-transform';
+export * from './customizable-options-transform';
 //# sourceMappingURL=index.d.ts.map

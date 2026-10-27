@@ -22,7 +22,7 @@ jobs:
           # Shard 1 — Auth & account flows
           # Add here if: spec tests sign-in/sign-out, account management pages,
           # authenticated-user wishlist, or event SDK initialization.
-          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js"
+          - "src/tests/b2c/verifyAuthUserCheckout.spec.js,src/tests/b2c/verifyUserAccount.spec.js,src/tests/b2c/verifyAuthUserWishlistFeature.spec.js,src/tests/b2c/events/auth.spec.js,src/tests/b2c/events/product-page-view.spec.js,src/tests/b2c/events/initialization.spec.js,src/tests/b2c/events/consent.spec.js"
           # Shard 2 — Guest checkout flows
           # Add here if: spec tests guest checkout (including virtual products),
           # guest wishlist, or event SDK calls fired during cart/checkout/order flows.
