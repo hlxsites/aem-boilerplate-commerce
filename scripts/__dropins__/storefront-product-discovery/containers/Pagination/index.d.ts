@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './Pagination';
-export { Pagination as default } from './Pagination';
-//# sourceMappingURL=index.d.ts.map
+export * from './Pagination.js';
+export { Pagination as default } from './Pagination.js';
