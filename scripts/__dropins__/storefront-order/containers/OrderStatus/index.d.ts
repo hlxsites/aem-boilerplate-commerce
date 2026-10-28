@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderStatus';
-export { OrderStatus as default } from './OrderStatus';
+export * from './OrderStatus.js';
+export { OrderStatus as default } from './OrderStatus.js';

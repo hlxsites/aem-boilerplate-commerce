@@ -15,5 +15,7 @@ export interface CheckboxProps extends Omit<HTMLAttributes<HTMLInputElement>, 's
     error?: boolean;
     label?: string | VNode | VNode[];
     description?: string | VNode | VNode[];
+    value?: string;
+    checked?: boolean;
 }
 export declare const Checkbox: FunctionComponent<CheckboxProps>;

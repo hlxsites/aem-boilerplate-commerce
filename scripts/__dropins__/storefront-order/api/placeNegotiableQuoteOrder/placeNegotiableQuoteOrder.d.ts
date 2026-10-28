@@ -6,5 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models';
+import { OrderDataModel } from '../../data/models/index.js';
 export declare const placeNegotiableQuoteOrder: (quoteUid: string) => Promise<OrderDataModel | null | undefined>;

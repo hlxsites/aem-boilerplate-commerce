@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { CustomerDetailsContentProps } from '../../types';
+import { CustomerDetailsContentProps } from '../../types/index.js';
 export declare const CustomerDetailsContent: FunctionComponent<CustomerDetailsContentProps>;

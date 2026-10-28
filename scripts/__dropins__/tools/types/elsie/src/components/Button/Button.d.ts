@@ -32,5 +32,6 @@ export interface ButtonProps extends Omit<HTMLAttributes<HTMLButtonElement | HTM
      * which is announced regardless of where focus is.
      */
     loadingLabel?: string;
+    value?: string;
 }
 export declare const Button: FunctionComponent<ButtonProps>;

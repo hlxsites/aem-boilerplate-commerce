@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/src/lib';
-import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
+import { SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '@dropins/tools/components';
 import { OrderDataModel, OrderItemModel, OrdersReturnItemsPropsModel, OrdersReturnPropsModel, PageInfoProps } from '../data/models';
 export interface IconConfig {
     size: '12' | '16' | '24' | '32' | '64' | '80' | undefined;

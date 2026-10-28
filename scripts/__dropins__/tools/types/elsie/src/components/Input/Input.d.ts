@@ -7,8 +7,8 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
-export interface InputProps extends Omit<HTMLAttributes<HTMLInputElement>, 'size' | 'icon'> {
+import { HTMLAttributes, InputHTMLAttributes } from 'preact/compat';
+export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'icon'> {
     id?: string;
     name?: string;
     variant?: 'primary' | 'secondary';

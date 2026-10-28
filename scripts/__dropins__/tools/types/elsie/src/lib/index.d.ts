@@ -26,3 +26,4 @@ export * from './get-path-value';
 export * from './get-cookie';
 export * from './get-price-formatter';
 export * from './format-calendar-date';
+export * from './sanitize-html';
