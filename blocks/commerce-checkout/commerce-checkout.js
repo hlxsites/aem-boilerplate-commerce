@@ -21,7 +21,6 @@ import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import {
-  buildOrderDetailsUrl,
   displayOverlaySpinner,
   removeOverlaySpinner,
 } from './utils.js';
@@ -75,7 +74,11 @@ import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import {
+  renderCheckoutSuccess,
+  preloadCheckoutSuccess,
+  buildOrderDetailsUrl,
+} from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
