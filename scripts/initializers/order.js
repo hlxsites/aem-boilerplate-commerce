@@ -42,6 +42,18 @@ await initializeDropin(async () => {
     },
   };
 
+  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
+    && pathname === ORDER_DETAILS_PATH) {
+    const { createMockOrder, MOCK_ORDER_TOKEN } = await import('../mocks/order.js');
+    if (orderRef === MOCK_ORDER_TOKEN) {
+      await initializers.mountImmediately(initialize, {
+        langDefinitions,
+        orderData: createMockOrder(orderNumber || undefined),
+      });
+      return;
+    }
+  }
+
   const pathsRequiringRedirects = [
     ORDER_DETAILS_PATH,
     CUSTOMER_ORDER_DETAILS_PATH,
