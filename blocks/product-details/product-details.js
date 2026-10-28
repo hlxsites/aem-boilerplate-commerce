@@ -190,6 +190,9 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
+  const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
+    .then(showOrderConfirmationPage)
+    .catch(console.error);
 
   const [
     _galleryMobile,
@@ -294,7 +297,7 @@ export default async function decorate(block) {
           }];
         },
       },
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -311,7 +314,7 @@ export default async function decorate(block) {
 
     PaymentServices.render(GooglePay, {
       location: PaymentLocation.PRODUCT_DETAIL,
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -328,7 +331,7 @@ export default async function decorate(block) {
 
     PaymentServices.render(PayPalButtons, {
       location: PaymentLocation.PRODUCT_DETAIL,
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -546,10 +549,6 @@ export default async function decorate(block) {
       payPalButtons.setProps((prev) => ({ ...prev, hidden: false }));
     }
   }, { eager: true });
-
-  // Handle order placed event: render the checkout success page in place of the current
-  // page content, using the block-agnostic mechanism from commerce-checkout-success.js.
-  events.on('order/placed', showOrderConfirmationPage);
 
   return Promise.resolve();
 }
