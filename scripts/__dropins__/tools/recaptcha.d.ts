@@ -1,1 +1,1 @@
-export * from './types/recaptcha/src/index'
+export * from './types/recaptcha/src/index';

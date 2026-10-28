@@ -21,4 +21,3 @@ export interface Cart {
         name: string;
     }>;
 }
-//# sourceMappingURL=events-catalog.d.ts.map

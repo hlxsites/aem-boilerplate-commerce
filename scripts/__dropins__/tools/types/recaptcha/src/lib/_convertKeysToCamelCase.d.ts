@@ -11,4 +11,3 @@ export declare const convertKeysToCamelCase: (obj: {
 }) => {
     [key: string]: string | number | boolean;
 };
-//# sourceMappingURL=_convertKeysToCamelCase.d.ts.map
