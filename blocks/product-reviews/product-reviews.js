@@ -53,11 +53,13 @@ export default async function decorate(block) {
   if (!requestedSku) throw new Error('A product SKU is required to display product reviews.');
 
   const scope = `product-reviews-${crypto.randomUUID()}`;
-  const rating = document.createElement('div');
-  rating.className = 'product-reviews__rating';
-  const reviews = document.createElement('div');
-  reviews.className = 'product-reviews__list';
-  block.append(rating, reviews);
+  const fragment = document.createRange().createContextualFragment(`
+    <div class="product-reviews__rating"></div>
+    <div class="product-reviews__list"></div>
+  `);
+  const rating = fragment.querySelector('.product-reviews__rating');
+  const reviews = fragment.querySelector('.product-reviews__list');
+  block.appendChild(fragment);
   block.hidden = false;
 
   await Promise.all([
