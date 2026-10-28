@@ -25,4 +25,3 @@ export type CountryData = {
     }>;
     isDefaultCountry?: boolean;
 };
-//# sourceMappingURL=countriesAndRegionsQueries.d.ts.map

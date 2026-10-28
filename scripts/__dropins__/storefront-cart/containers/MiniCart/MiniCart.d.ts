@@ -1,8 +1,36 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartModel } from '../../data/models';
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-
+import { ImageProps } from '@dropins/tools/components';
+export interface MiniCartActionsContext {
+    data: CartModel | null;
+    checkout: {
+        show: boolean;
+        disabled: boolean;
+        url: string | undefined;
+        initiate: () => void;
+    };
+    viewCart: {
+        show: boolean;
+        url: string | undefined;
+    };
+}
 export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     routeProduct?: (item: CartModel['items'][0]) => string;
     routeCart?: () => string;
@@ -12,6 +40,7 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
         ProductList?: SlotProps;
         ProductListFooter?: SlotProps;
         PreCheckoutSection?: SlotProps;
+        Actions?: SlotProps<MiniCartActionsContext>;
         Thumbnail?: SlotProps<{
             item: CartModel['items'][number];
             defaultImageProps: ImageProps;
@@ -88,4 +117,3 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     confirmBeforeDelete?: boolean;
 }
 export declare const MiniCart: Container<MiniCartProps, CartModel | null>;
-//# sourceMappingURL=MiniCart.d.ts.map
