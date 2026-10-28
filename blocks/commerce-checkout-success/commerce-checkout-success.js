@@ -34,6 +34,7 @@ import {
   rootLink,
   SUPPORT_PATH,
   authPrivacyPolicyConsentSlot,
+  ORDER_DETAILS_PATH,
 } from '../../scripts/commerce.js';
 
 // Ensure order drop-in initializer side effects are applied
@@ -47,7 +48,9 @@ import {
   decorateSections,
   loadCSS,
 } from '../../scripts/aem.js';
-import { buildOrderDetailsUrl } from '../commerce-checkout/utils.js';
+
+// Block-level
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -300,6 +303,24 @@ export async function showOrderConfirmationPage(orderData) {
 
   await preloadCheckoutSuccess();
   await renderCheckoutSuccess(block, { orderData });
+}
+
+/**
+ * Builds the order details URL based on authentication status
+ * @param {Object} orderData - Order data containing number and token
+ * @param {string} orderDetailsPath - Path to the order details page
+ * @returns {string} The constructed order details URL
+ */
+export function buildOrderDetailsUrl(orderData, orderDetailsPath = ORDER_DETAILS_PATH) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  return token
+    ? rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}`)
+    : rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 }
 
 export default async function decorate(block) {
