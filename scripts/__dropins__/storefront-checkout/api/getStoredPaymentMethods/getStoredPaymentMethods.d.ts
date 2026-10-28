@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,21 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CartModel } from '../../models/cart-model';
-export declare const cart: CartModel;
-export declare const sampleDataCart: CartModel;
-export declare const sampleDataWithCoupons: CartModel;
-export declare const sampleDataWithGiftCodes: CartModel;
-export declare const sampleGiftWrappingConfig: {
-    design: string;
-    uid: string;
-    selected: boolean;
-    image: {
-        url: string;
-        label: string;
-    };
-    price: {
-        currency: string;
-        value: number;
-    };
-}[];
+import { PaymentMethod } from '../../data/models/payment-method';
+export declare const getStoredPaymentMethods: () => Promise<PaymentMethod[]>;

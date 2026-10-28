@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models';
-import { NormalizeAddressProps, UseCustomerDetails } from '../../types';
+import { OrderDataModel } from '../../data/models/index.js';
+import { NormalizeAddressProps, UseCustomerDetails } from '../../types/index.js';
 export declare const useCustomerDetails: ({ orderData }: UseCustomerDetails) => {
     order: OrderDataModel | undefined;
     normalizeAddress: {

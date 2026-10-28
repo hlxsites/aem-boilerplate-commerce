@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { ReturnOrderMessageProps } from '../../types/createReturn.types';
+import { ReturnOrderMessageProps } from '../../types/createReturn.types.js';
 export declare const ReturnOrderMessage: FunctionComponent<ReturnOrderMessageProps>;

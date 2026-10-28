@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderItemProps, OrderProps, QueryType, ResponseData } from '../../types';
+import { OrderItemProps, OrderProps, QueryType, ResponseData } from '../../types/index.js';
 import { OrderDataModel, OrderItemModel, TransformedData } from '../models';
 export declare const transformConfigurableOptions: (item: OrderItemProps) => Record<string, string> | undefined;
 export declare const transformBundleOptions: (data: any) => {

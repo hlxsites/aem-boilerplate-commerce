@@ -1,6 +1,6 @@
 # @adobe-commerce/elsie
 
-## 3.0.0-alpha-20261019152403
+## 3.0.0-beta.0
 
 ### Major Changes
 

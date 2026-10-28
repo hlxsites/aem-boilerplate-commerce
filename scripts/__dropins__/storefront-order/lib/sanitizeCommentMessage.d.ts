@@ -17,7 +17,7 @@
  * Sanitizes an order-comment string down to a fixed allowlist of inline
  * formatting tags (`<br>`, `<b>`, `<i>`) with no attributes. Everything
  * else — any other tag, any attribute (href, src, onerror, etc.) — is
- * stripped. Safe to use with dangerouslySetInnerHTML because DOMPurify
- * guarantees only this allowlisted markup can survive sanitize().
+ * stripped using Elsie's shared sanitizer with the order-comment policy,
+ * rather than its broader default formatting allowlist.
  */
 export declare function sanitizeCommentMessage(message: string): string;

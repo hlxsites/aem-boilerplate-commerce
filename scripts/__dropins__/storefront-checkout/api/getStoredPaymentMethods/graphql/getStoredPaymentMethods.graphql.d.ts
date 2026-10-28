@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2025 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,7 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Wishlist } from '../../models/wishlist';
-export declare const wishlist: Wishlist;
-export declare const wishlistWithConfigurableProduct: Wishlist;
-export declare const wishlistWithConfiguredProduct: Wishlist;
+export declare const getStoredPaymentMethodsQuery = "\n  query getStoredPaymentMethods {\n    customerPaymentTokens {\n      items {\n        details\n        payment_method_code\n        public_hash\n        type\n      }\n    }\n  }\n";

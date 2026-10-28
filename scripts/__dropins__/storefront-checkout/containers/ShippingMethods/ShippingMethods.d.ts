@@ -17,7 +17,7 @@
 import { ShippingMethodItemSlot } from '../../components/ShippingMethods';
 import { ShippingMethod } from '../../data/models';
 import { Filter, TitleProps, UIComponentType } from '../../types';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 /**
  * Context provided to the ShippingMethodItem slot.

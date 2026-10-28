@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderSearchForm';
-export { OrderSearchForm as default } from './OrderSearchForm';
+export * from './OrderSearchForm.js';
+export { OrderSearchForm as default } from './OrderSearchForm.js';

@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './SignUp';
-export { SignUp as default } from './SignUp';
+export * from './SignUp.d.ts';
+export { SignUp as default } from './SignUp.d.ts';
