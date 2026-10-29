@@ -38,7 +38,7 @@ async function loadReviews(block, requestedSku, scope) {
 
   await Promise.all([
     getProductRating(sku, { scope }),
-    getProductReviews(sku, { pageSize: 20, currentPage: 1, scope }),
+    getProductReviews(sku, { pageSize: 5, currentPage: 1, scope }),
   ].map((request) => request.catch((error) => {
     console.error('[Product Reviews] Failed to load review data:', error);
   })));
