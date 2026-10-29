@@ -897,6 +897,8 @@ export declare enum BatchMutationStatus {
 export type BillingAddressInput = {
     /** Defines a billing address. */
     address?: InputMaybe<CartAddressInput>;
+    /** The unique ID from the company's address book that uniquely identifies the address to be used for billing. */
+    company_address_id?: InputMaybe<Scalars['ID']['input']>;
     /** An ID from the customer's address book that uniquely identifies the address to be used for billing. */
     customer_address_id?: InputMaybe<Scalars['Int']['input']>;
     /** The unique ID from the customer's address book that uniquely identifies the address to be used for billing. */
@@ -12336,6 +12338,8 @@ export type ShipmentTracking = {
 export type ShippingAddressInput = {
     /** Defines a shipping address. */
     address?: InputMaybe<CartAddressInput>;
+    /** The unique ID from the company's address book that uniquely identifies the address to be used for shipping. */
+    company_address_id?: InputMaybe<Scalars['ID']['input']>;
     /** An ID from the customer's address book that uniquely identifies the address to be used for shipping. */
     customer_address_id?: InputMaybe<Scalars['Int']['input']>;
     /** The unique ID from the customer's address book that uniquely identifies the address to be used for shipping. */

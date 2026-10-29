@@ -15,9 +15,9 @@
  * from Adobe.
  *******************************************************************/
 import { Wishlist, Item } from '../data/models';
-export declare function setPersistedWishlistData(data: Wishlist | null): void;
-export declare function getPersistedWishlistData(guest?: boolean): Wishlist | {};
-export declare function clearPersistedLocalStorage(): void;
+export declare function setPersistedWishlistData(data: Wishlist | null, listKey?: string): void;
+export declare function getPersistedWishlistData(guest?: boolean, listKey?: string): Wishlist | {};
+export declare function clearPersistedLocalStorage(listKey?: string): void;
 export declare function getWishlistItemFromStorage(productSku: string, optionUIDs?: string[]): any;
 export declare function getAllItemsCacheVersion(): number;
 export declare function setPersistedAllWishlistItems(items: Item[]): void;

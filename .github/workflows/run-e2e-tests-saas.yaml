@@ -87,7 +87,7 @@ jobs:
   # their names embed the spec list, so every shard change needs a manual
   # branch-protection edit. Require this job instead.
   cypress-saas-run:
-    if: always()
+    if: always() && github.repository == 'hlxsites/aem-boilerplate-commerce'
     needs: cypress-saas-groups
     runs-on: ubuntu-latest
     steps:

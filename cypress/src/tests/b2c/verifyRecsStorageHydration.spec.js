@@ -34,6 +34,9 @@ function waitForProductContextSku(sku) {
   cy.window().should((win) => {
     const ctx = win.adobeDataLayer?.getState?.('productContext');
     expect(ctx?.sku, 'productContext.sku').to.equal(sku);
+    const identifier = getStoreViewIdentifier(win);
+    const history = JSON.parse(win.localStorage.getItem(`${identifier}:productViewHistory`) || '[]');
+    expect(history.map((entry) => entry.sku), 'product history recorded').to.include(sku);
   });
 }
 
