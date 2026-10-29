@@ -9,6 +9,7 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   buildPDPBlock,
@@ -142,6 +143,17 @@ function buildAutoBlocks(main) {
     const pdpBlock = document.querySelector('.product-details');
     if (metaSku && !pdpBlock) {
       buildPDPBlock(main);
+    }
+    const productDetails = main.querySelector('.product-details');
+    if (productDetails && !main.querySelector('.product-reviews')) {
+      const pagination = main.querySelector('.product-reviews-pagination');
+      const scope = (pagination && readBlockConfig(pagination).scope?.trim())
+        || `product-reviews-${crypto.randomUUID()}`;
+      const reviews = buildBlock('product-reviews', [['scope', scope]]);
+      productDetails.after(reviews);
+      if (!pagination) {
+        reviews.after(buildBlock('product-reviews-pagination', [['scope', scope]]));
+      }
     }
   } catch (error) {
     console.error('Auto Blocking failed', error);

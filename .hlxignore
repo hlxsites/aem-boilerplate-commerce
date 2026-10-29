@@ -10,6 +10,7 @@ test/*
 postinstall.js
 build.mjs
 cypress/
+vendor/
 tools/picker/src/*
 tools/pdp-metadata/*
 plugins/experimentation/documentation/images/*
