@@ -347,10 +347,6 @@ export default async function decorate(block) {
     sessionStorage.removeItem(SHIPPING_ADDRESS_DATA_KEY);
     sessionStorage.removeItem(BILLING_ADDRESS_DATA_KEY);
 
-    const url = buildOrderDetailsUrl(orderData);
-
-    window.history.pushState({}, '', url);
-
     await renderCheckoutSuccess(block, { orderData });
   }
 

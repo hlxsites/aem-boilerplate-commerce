@@ -187,4 +187,146 @@ export declare const MOCK_DATA_BUNDLE_TRANSFORMED: {
         }[];
     }[];
 };
+export declare const MOCK_AC_CUSTOMIZABLE_OPTIONS_RAW: {
+    schemaVersion: number;
+    selectable: ({
+        id: string;
+        label: string;
+        renderType: string;
+        type: string;
+        required: string;
+        sortOrder: string;
+        values: {
+            id: string;
+            label: string;
+            price: string;
+            priceType: string;
+            sku: string;
+            sortOrder: string;
+            isDefault: boolean;
+        }[];
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        type: string;
+        required: string;
+        sortOrder: string;
+        values: {
+            id: string;
+            label: string;
+            price: string;
+            priceType: string;
+            sku: null;
+            sortOrder: string;
+            isDefault: boolean;
+        }[];
+    })[];
+    shopperInput: ({
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        price: string;
+        sku: string;
+        sortOrder: string;
+        range: {
+            to: string;
+        };
+        productSku: string;
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        price: string;
+        sku: null;
+        sortOrder: string;
+        range: {
+            to: string;
+        };
+        productSku: string;
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        sku: null;
+        sortOrder: string;
+        productSku: string;
+        price?: undefined;
+        range?: undefined;
+    })[];
+};
+export declare const MOCK_AC_CUSTOMIZABLE_OPTIONS_TRANSFORMED: {
+    schemaVersion: number;
+    selectable: ({
+        id: string;
+        label: string;
+        renderType: string;
+        type: string;
+        required: string;
+        sortOrder: string;
+        values: {
+            id: string;
+            label: string;
+            price: number;
+            priceType: string;
+            sku: string;
+            sortOrder: string;
+            isDefault: boolean;
+        }[];
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        type: string;
+        required: string;
+        sortOrder: string;
+        values: {
+            id: string;
+            label: string;
+            price: number;
+            priceType: string;
+            sku: null;
+            sortOrder: string;
+            isDefault: boolean;
+        }[];
+    })[];
+    shopperInput: ({
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        price: number;
+        sku: string;
+        sortOrder: string;
+        range: {
+            to: string;
+        };
+        productSku: string;
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        price: number;
+        sku: null;
+        sortOrder: string;
+        range: {
+            to: string;
+        };
+        productSku: string;
+    } | {
+        id: string;
+        label: string;
+        renderType: string;
+        required: string;
+        price: undefined;
+        sku: null;
+        sortOrder: string;
+        productSku: string;
+        range?: undefined;
+    })[];
+};
 //# sourceMappingURL=product-mocks.d.ts.map

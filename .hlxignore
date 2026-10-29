@@ -13,5 +13,5 @@ cypress/
 tools/picker/src/*
 tools/pdp-metadata/*
 plugins/experimentation/documentation/images/*
+sync-block-collection.sh
 !.well-known
-_*.json

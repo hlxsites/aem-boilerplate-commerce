@@ -30,6 +30,7 @@ import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 
 // Commerce helpers
 import {
+  decorateSections,
   fetchPlaceholders,
   rootLink,
   SUPPORT_PATH,
@@ -42,12 +43,7 @@ import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
-import {
-  buildBlock,
-  decorateBlock,
-  decorateSections,
-  loadCSS,
-} from '../../scripts/aem.js';
+import { buildBlock, decorateBlock, loadCSS } from '../../scripts/aem.js';
 
 // Block-level
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
@@ -283,13 +279,11 @@ export function preloadCheckoutSuccess() {
   return loadCSS(`${window.hlx.codeBasePath}/blocks/commerce-checkout-success/commerce-checkout-success.css`);
 }
 
-export async function renderCheckoutSuccess(container, { orderData } = {}) {
-  return renderCheckoutSuccessContent(container, { orderData });
-}
-
-export async function showOrderConfirmationPage(orderData) {
-  window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
-
+/**
+ * Replaces the content of <main> with a new, decorated checkout success block.
+ * @returns {HTMLElement} The block element
+ */
+function mountCheckoutSuccessBlock() {
   const main = document.querySelector('main');
   const block = buildBlock('commerce-checkout-success', '');
   const section = document.createElement('div');
@@ -300,9 +294,17 @@ export async function showOrderConfirmationPage(orderData) {
   section.style.display = '';
   section.dataset.sectionStatus = 'loaded';
   block.dataset.blockStatus = 'loaded';
+  return block;
+}
+
+export async function renderCheckoutSuccess(container, { orderData } = {}) {
+  if (orderData) {
+    window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
+  }
 
   await preloadCheckoutSuccess();
-  await renderCheckoutSuccess(block, { orderData });
+
+  return renderCheckoutSuccessContent(container ?? mountCheckoutSuccessBlock(), { orderData });
 }
 
 /**

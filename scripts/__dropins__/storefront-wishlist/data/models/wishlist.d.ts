@@ -22,6 +22,7 @@ export interface PageInfo {
 }
 export interface Wishlist {
     id: string;
+    name?: string;
     updated_at: string;
     sharing_code: string;
     items_count: number;
