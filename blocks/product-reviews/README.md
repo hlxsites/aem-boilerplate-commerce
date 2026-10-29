@@ -11,12 +11,14 @@ Displays an average Rating and the first page of approved reviews using the rati
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `sku` | string | Page product SKU | Product whose reviews are displayed. Takes precedence over page metadata and URL context. |
+| `scope` | string | Generated per instance | Event scope shared by this review list, its rating, and an optional separate pagination block. Use a unique value for each independent review list. |
 
 Example authored block:
 
 | Product Reviews | |
 | --- | --- |
 | sku | ADB102 |
+| scope | main-reviews |
 
 Without an authored SKU, the block uses `getProductSku()`: `sku` metadata before the SKU in `/products/{urlKey}/{sku}`. In authoring modes (`dapreview` or `quick-edit=on`), the shared helper falls back to Product Details' authored `defaultsku` instead of the URL; supply `sku` to author reviews independently.
 
@@ -33,7 +35,7 @@ Authors can place the block in any section, including pages without Product Deta
 | `isProductReviewsEnabled` | Normalized `product_reviews_enabled` store config | Must be `true`; otherwise the block remains hidden and makes no SKU, rating, or review requests. |
 | `allowGuestsToWriteProductReviews` | Normalized backend store config | Does not restrict read-only reviews. |
 | `pageSize` / `currentPage` | Fixed block defaults | First 20 reviews on page 1. No block or URL overrides. |
-| `scope` | Generated per instance | Private `product-reviews-<UUID>` shared by containers and their requests. |
+| `scope` | Authored or generated per instance | Configured scope, or private `product-reviews-<UUID>`, shared by containers and their requests. |
 
 The shared ratings/reviews initializer inherits `CS_FETCH_GRAPHQL` and its tenant headers. The Router must support `STORE_CONFIG_QUERY`, catalog `products(skus:)` with `sku` and rating attributes, and `REVIEWS_QUERY`.
 
@@ -53,7 +55,7 @@ Override labels through `placeholders/ratings-reviews.json` using dotted keys. T
 
 ### Events
 
-The block does not directly emit or listen to PDP events. Drop-in APIs publish the following events, consumed by the containers in the same private scope:
+The block does not directly emit or listen to PDP events. Drop-in APIs publish the following events, consumed by the containers in the same scope:
 
 | Event | Payload | Purpose |
 | --- | --- | --- |
@@ -63,7 +65,7 @@ The block does not directly emit or listen to PDP events. Drop-in APIs publish t
 | `rating/result`, `reviews/result` | `{ request, result }` | Matching normalized result, possibly `null`. |
 | `rating/error`, `reviews/error` | String or `null` | Independent error state. |
 
-Retain the same scope on related container props and API calls. Do not synthesize result events or share a scope across block instances.
+Retain the same scope on related container props and API calls. A separate Product Reviews Pagination block must use the same configured scope as the review list it controls. Do not synthesize result events or share a scope between independent review lists. Without a configured scope, this block stays isolated using a generated scope.
 
 ## Behavior Patterns
 

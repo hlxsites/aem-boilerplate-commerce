@@ -45,14 +45,14 @@ async function loadReviews(block, requestedSku, scope) {
 }
 
 export default async function decorate(block) {
-  const { sku: authoredSku } = readBlockConfig(block);
+  const { sku: authoredSku, scope: authoredScope } = readBlockConfig(block);
   block.replaceChildren();
   block.hidden = true;
   if (config.getConfig()?.isProductReviewsEnabled !== true || !block.isConnected) return;
   const requestedSku = authoredSku?.trim() || getProductSku();
   if (!requestedSku) throw new Error('A product SKU is required to display product reviews.');
 
-  const scope = `product-reviews-${crypto.randomUUID()}`;
+  const scope = authoredScope?.trim() || `product-reviews-${crypto.randomUUID()}`;
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-reviews__rating"></div>
     <div class="product-reviews__list"></div>
