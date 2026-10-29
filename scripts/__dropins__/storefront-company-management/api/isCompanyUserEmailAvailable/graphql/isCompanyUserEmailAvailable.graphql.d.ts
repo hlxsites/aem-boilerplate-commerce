@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const IS_COMPANY_USER_EMAIL_AVAILABLE = "\n  query isCompanyUserEmailAvailable($email: String!) {\n    isCompanyUserEmailAvailable(email: $email) { is_email_available }\n  }\n";
+export declare const IS_COMPANY_USER_EMAIL_AVAILABLE = "\n  query isCompanyUserEmailAvailable($email: String!) {\n    isCompanyUserEmailAvailable(email: $email) {\n      is_email_available\n    }\n  }\n";

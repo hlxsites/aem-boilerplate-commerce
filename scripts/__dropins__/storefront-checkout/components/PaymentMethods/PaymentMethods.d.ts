@@ -21,14 +21,22 @@ import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 interface ExtendedPaymentMethod extends PaymentMethodConfig, PaymentMethod {
 }
+export interface StoredPaymentMethodOption {
+    content: VNode | null;
+    method: PaymentMethod;
+    selected: boolean;
+}
 export interface PaymentMethodsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
     error?: string | null;
     busy?: boolean;
+    isExpanded?: boolean;
     onDismissError?: () => void;
+    onPayAnotherWay?: () => void;
     onSelectionChange?: (value: PaymentMethod) => void;
     options?: ExtendedPaymentMethod[];
     paymentMethodContent?: VNode;
     selection: PaymentMethod | null;
+    storedOptions?: StoredPaymentMethodOption[];
     title?: VNode;
     UIComponentType?: UIComponentType;
 }

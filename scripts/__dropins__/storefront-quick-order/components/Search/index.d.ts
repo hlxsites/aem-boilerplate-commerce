@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Search';
-export { Search as default } from './Search';
-//# sourceMappingURL=index.d.ts.map
+export * from './Search.js';
+export { Search as default } from './Search.js';

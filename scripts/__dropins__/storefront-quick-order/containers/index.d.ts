@@ -14,8 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderMultipleSku/QuickOrderMultipleSku';
-export * from './QuickOrderCsvUpload/QuickOrderCsvUpload';
-export * from './QuickOrderItems/QuickOrderItems';
-export * from './QuickOrderVariantsGrid/QuickOrderVariantsGrid';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderMultipleSku/QuickOrderMultipleSku.js';
+export * from './QuickOrderCsvUpload/QuickOrderCsvUpload.js';
+export * from './QuickOrderItems/QuickOrderItems.js';
+export * from './QuickOrderVariantsGrid/QuickOrderVariantsGrid.js';

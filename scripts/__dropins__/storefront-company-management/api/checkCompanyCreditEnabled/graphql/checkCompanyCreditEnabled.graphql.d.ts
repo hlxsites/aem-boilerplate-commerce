@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const CHECK_COMPANY_CREDIT_ENABLED = "\n query CHECK_COMPANY_CREDIT_ENABLED {\n   storeConfig{\n     company_credit_enabled\n   }\n  }\n";
+export declare const CHECK_COMPANY_CREDIT_ENABLED = "\n  query CHECK_COMPANY_CREDIT_ENABLED {\n    storeConfig {\n      company_credit_enabled\n    }\n  }\n";

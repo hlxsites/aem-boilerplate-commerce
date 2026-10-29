@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderCsvUpload';
-export { QuickOrderCsvUpload as default } from './QuickOrderCsvUpload';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderCsvUpload.js';
+export { QuickOrderCsvUpload as default } from './QuickOrderCsvUpload.js';

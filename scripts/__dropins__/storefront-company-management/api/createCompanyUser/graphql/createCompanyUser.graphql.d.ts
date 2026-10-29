@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const CREATE_COMPANY_USER = "\n  mutation createCompanyUser($input: CompanyUserCreateInput!) {\n    createCompanyUser(input: $input) { __typename user { id structure_id email firstname lastname job_title } }\n  }\n";
+export declare const CREATE_COMPANY_USER = "\n  mutation createCompanyUser($input: CompanyUserCreateInput!) {\n    createCompanyUser(input: $input) {\n      __typename\n      user {\n        id\n        structure_id\n        email\n        firstname\n        lastname\n        job_title\n      }\n    }\n  }\n";

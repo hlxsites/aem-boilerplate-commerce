@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { NegotiableQuoteTemplateListEntry } from '../../data/models';
 export interface QuoteTemplatesListTableProps extends HTMLAttributes<HTMLDivElement> {
     pageSize?: number;

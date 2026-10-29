@@ -1,9 +1,24 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2025 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/types/elsie/src/lib';
-import { ImageProps } from '@dropins/tools/types/elsie/src/components';
-import { Item, RecommendationUnitModel } from '../../data/models';
-import { CurrentProduct } from '../../api/getRecommendationsByUnitIds/getRecommendationsByUnitIds';
-
+import { Container, SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '@dropins/tools/components';
+import { Item, RecommendationUnitModel } from '../../data/models/index.js';
+import type { CurrentProduct } from '../../api/getRecommendationsByUnitIds/getRecommendationsByUnitIds.js';
 export interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
     label?: string;
     recId?: string;
@@ -43,4 +58,3 @@ export interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
     };
 }
 export declare const ProductList: Container<ProductListProps>;
-//# sourceMappingURL=ProductList.d.ts.map

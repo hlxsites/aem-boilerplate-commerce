@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './getStoreConfig';
-//# sourceMappingURL=index.d.ts.map
+export * from './getStoreConfig.js';

@@ -30,4 +30,3 @@ export interface CartItem {
  * Extracts SKU, quantity, parent SKU, and product options
  */
 export declare const buildCartItem: (formData: FormData) => CartItem;
-//# sourceMappingURL=buildCartItem.d.ts.map

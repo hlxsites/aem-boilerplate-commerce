@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PlaceOrderResponse } from '../types';
+import { PlaceOrderResponse } from '../types/index.js';
 export declare class PlaceOrderError extends Error {
     constructor(message: string);
 }

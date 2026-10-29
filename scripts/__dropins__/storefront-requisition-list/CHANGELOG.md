@@ -1,5 +1,12 @@
 # @dropins/storefront-requisition-list
 
+## 2.0.1-beta.0
+
+### Patch Changes
+
+- 5094b6d: Migrate development tooling to Elsie v3 and pnpm, and upgrade shared
+  workflows to v7.
+
 ## 2.0.0
 
 ### Major Changes

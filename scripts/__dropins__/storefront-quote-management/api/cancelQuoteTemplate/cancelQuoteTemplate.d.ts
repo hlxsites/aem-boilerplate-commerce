@@ -10,4 +10,4 @@ export interface CancelQuoteTemplateParams {
     templateId: string;
     comment?: string;
 }
-export declare const cancelQuoteTemplate: (params: CancelQuoteTemplateParams) => Promise<any>;
+export declare const cancelQuoteTemplate: (params: CancelQuoteTemplateParams) => Promise<import("../../data/models").NegotiableQuoteTemplateModel>;

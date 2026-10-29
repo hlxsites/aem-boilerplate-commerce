@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CustomerOrdersReturnModel } from '../../data/models';
+import { CustomerOrdersReturnModel } from '../../data/models/index.js';
 export declare const getCustomerOrdersReturn: (pageSize?: number, currentPage?: number) => Promise<CustomerOrdersReturnModel | null>;

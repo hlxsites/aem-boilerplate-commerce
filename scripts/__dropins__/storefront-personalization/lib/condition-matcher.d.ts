@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PersonalizationData } from "../data/models";
+import { PersonalizationData } from '../data/models';
 export default function conditionsMatched(actual: PersonalizationData, configured: PersonalizationData): boolean;

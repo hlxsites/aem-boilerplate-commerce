@@ -14,8 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import { Render } from '@dropins/tools/lib';
 /**
  * Render instance for the company switcher drop-in.
  * Wraps the Provider component to handle initialization and rendering.
  */
-export declare const render: any;
+export declare const render: Render;

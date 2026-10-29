@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderNotificationBanner';
-export { QuickOrderNotificationBanner as default } from './QuickOrderNotificationBanner';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderNotificationBanner.js';
+export { QuickOrderNotificationBanner as default } from './QuickOrderNotificationBanner.js';

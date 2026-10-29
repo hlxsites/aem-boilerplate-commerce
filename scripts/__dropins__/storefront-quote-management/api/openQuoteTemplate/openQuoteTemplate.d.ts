@@ -9,4 +9,4 @@
 export interface OpenQuoteTemplateParams {
     templateId: string;
 }
-export declare const openQuoteTemplate: (params: OpenQuoteTemplateParams) => Promise<any>;
+export declare const openQuoteTemplate: (params: OpenQuoteTemplateParams) => Promise<import("../../data/models").NegotiableQuoteTemplateModel>;

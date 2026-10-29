@@ -72,4 +72,3 @@ export interface GraphQLResponse {
     };
 }
 export {};
-//# sourceMappingURL=recommendations-model.d.ts.map

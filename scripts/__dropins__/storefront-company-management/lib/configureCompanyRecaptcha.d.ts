@@ -16,6 +16,6 @@
  *******************************************************************/
 /**
  * Registers company create with the shared reCAPTCHA module and initializes the badge/script.
- * Relies on @adobe-commerce/recaptcha batching COMPANY_CREATE via typeDefaultForm (tools 1.2+).
+ * COMPANY_CREATE is opt-in; include it when fetching the shared form configuration.
  */
 export declare const configureCompanyRecaptcha: () => Promise<void>;

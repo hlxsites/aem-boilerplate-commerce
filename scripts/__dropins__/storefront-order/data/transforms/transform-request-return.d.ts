@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { RequestReturnResponse } from '../../types';
-import { RequestReturnModel } from '../models';
+import { RequestReturnResponse } from '../../types/index.js';
+import { RequestReturnModel } from '../models/index.js';
 export declare const transformRequestReturn: (response: RequestReturnResponse) => RequestReturnModel | {};
