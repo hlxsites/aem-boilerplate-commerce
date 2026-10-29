@@ -17,11 +17,10 @@
 import { Initializer, Model } from '@dropins/tools/lib';
 import type { UIProviderProps } from '@dropins/tools/components/UIProvider';
 import { StoreConfigModel } from '../getStoreConfig';
-import { ProductRatingModel, ProductReviewModel, ProductReviewsModel } from '../../data/models/index.js';
+import { ProductReviewModel, ProductReviewsModel } from '../../data/models/index.js';
 type ConfigProps = Partial<StoreConfigModel> & {
     langDefinitions?: UIProviderProps['langDefinitions'];
     models?: {
-        ProductRatingModel?: Model<ProductRatingModel>;
         ProductReviewModel?: Model<ProductReviewModel>;
         ProductReviewsModel?: Model<ProductReviewsModel>;
     };

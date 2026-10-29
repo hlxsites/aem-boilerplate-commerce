@@ -15,5 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './store-models';
-export * from './rating-models';
 export * from './review-models';

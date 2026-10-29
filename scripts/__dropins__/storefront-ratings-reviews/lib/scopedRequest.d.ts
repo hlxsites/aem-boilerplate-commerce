@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export type EventChannel = 'reviews' | 'rating';
+export type EventChannel = 'reviews';
 export type UntypedEventBus = {
     emit: (event: string, payload: unknown, options?: {
         scope?: string;

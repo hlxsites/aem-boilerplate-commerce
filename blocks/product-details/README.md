@@ -2,91 +2,58 @@
 
 ## Overview
 
-The Product Details block composes product detail, cart, and wishlist drop-ins. It displays product information and options and lets shoppers add or update a cart item. The header rating belongs to the PDP drop-in; the separate [Product Reviews block](../product-reviews/README.md) owns the review list and lower aggregate rating.
+The Product Details block provides comprehensive product detail page functionality using multiple @dropins/storefront-pdp containers. It handles product display, configuration, cart operations, wishlist integration, and SEO optimization with dynamic mode switching between add and update operations.
 
 ## Integration
 
-### Block Configuration
+<!-- ### Block Configuration
 
-The block uses the PDP initializer to resolve the product and load its data. Product identification follows these rules:
-
-- On storefront pages, `sku` page metadata takes precedence over the SKU in `/products/{urlKey}/{sku}`.
-- In authoring modes (`dapreview` present or `quick-edit=on`), `sku` metadata takes precedence over the authored `defaultsku` block configuration.
-
-| Configuration Key | Type | Default | Description | Required | Side Effects |
-| --- | --- | --- | --- | --- | --- |
-| `defaultsku` | string | None | Fallback SKU for authoring when `sku` page metadata is absent. Ignored for normal storefront product identification. | No | Selects the product previewed in the editor. |
+No block configuration is read via `readBlockConfig()`. The block uses dynamic product data and URL parameters. -->
 
 ### URL Parameters
 
-| Parameter | Format | Behavior |
-| --- | --- | --- |
-| `itemUid` | Cart item UID | Selects update mode only when the UID matches an item in the current `cart/data` payload. Otherwise, the block stays in add mode. |
-| `optionsUIDs` | Comma-separated option UIDs | Passed to PDP initialization to preselect product options. Wishlist updates use the current selection; an explicitly empty `optionsUIDs=` clears option UIDs from the wishlist context. |
-| `dapreview` | Presence of the parameter | Enables authoring SKU resolution through page metadata or `defaultsku`. |
-| `quick-edit` | `on` | Enables the same authoring SKU resolution. Other values do not enable this mode. |
-
-After a successful cart-item update, the block redirects to the localized cart page with the matching `itemUid` query parameter.
+- `itemUid` - Item UID for cart update mode (when present, enables update mode instead of add mode)
+- `optionsUIDs` - Product option UIDs for wishlist context (empty string treated as base product with no options)
 
 <!-- ### Local Storage
 
-This block does not directly read or write localStorage. Imported drop-ins manage their own persistence. -->
-
-### Localization
-
-PDP labels are loaded through `placeholders/pdp.json`. Cart action labels use the
-shared `Global` dictionary, including `AddProductToCart`, `UpdateProductInCart`,
-`AddingToCart`, and `UpdatingInCart`.
+No localStorage keys are used by this block. -->
 
 ### Events
 
 #### Event Listeners
 
-These listeners belong to [product-details.js](./product-details.js).
+- `events.on('pdp/data', callback)` - Listens for product/variant data changes to track stock status (`inStock`) and gate the add to cart button when out of stock
+- `events.on('pdp/valid', callback)` - Listens for product configuration validity changes to enable/disable add to cart button
+- `events.on('pdp/values', callback)` - Listens for product option value changes to update wishlist context
+- `events.on('wishlist/alert', callback)` - Listens for wishlist action alerts to show notifications
+- `events.on('cart/data', callback)` - Listens for cart data changes to determine update mode
+<!-- #### Event Emitters
 
-| Event | Payload used | Effect |
-| --- | --- | --- |
-| `pdp/data` | Product data, including `sku` and `inStock` | Updates the current product, purchase-button stock state, and action label. Replays the last event on subscription. |
-| `pdp/valid` | Boolean | Updates purchase-button availability using configuration validity and current stock state. Replays the last event. |
-| `pdp/values` | Reads current selection through `getProductConfigurationValues()` | Updates the WishlistToggle product and option UIDs. Replays the last event. |
-| `wishlist/alert` | `{ action, item }` | Renders a wishlist alert, scrolls it into view, and clears it after five seconds. |
-| `cart/data` | Cart data with `items[].uid` | Checks whether `itemUid` exists in the cart and updates add/update mode and button text. Replays the last event. |
-| `commerce/customer-context` | Payload is not read | Refetches the current product with the selected option UIDs so pricing reflects the new customer context. |
-
-#### Event Emitters
-
-- `pdp/data`: emitted with refreshed product data after a `commerce/customer-context` refetch succeeds.
-
-Cart and wishlist operations also produce their respective drop-in events. The block delegates those operations to the drop-in APIs rather than emitting replacement result events itself.
+No events are emitted by this block. -->
 
 ## Behavior Patterns
 
 ### Page Context Detection
 
-- **Add mode**: the current cart does not contain the requested `itemUid`. Valid selections are passed to `addProductsToCart`.
-- **Update mode**: the current cart contains the requested `itemUid`. Selections and the UID are passed to `updateProductsFromCart`, then the shopper returns to the cart.
-- **Product configuration**: PDP containers manage options and quantity; validity and stock events update purchase availability.
+- **Add Mode**: When no itemUid in URL, operates in add-to-cart mode
+- **Update Mode**: When itemUid in URL, operates in update-cart mode with different button text and behavior
+- **Product Configuration**: Validates product options and enables/disables add to cart button accordingly
+- **Stock Status**: Disables the add to cart button when the current product or refined variant is out of stock. Stock gating is layered on top of configuration validity, so the button is disabled if either signal indicates the product cannot be added.
+- **Wishlist Context**: Updates wishlist context based on current product configuration
 
 ### User Interaction Flows
 
-1. **Product display**: renders the gallery, header rating, price, short description, options, quantity, full description, and attributes.
-2. **Cart action**: adds the current configuration or updates a matching cart item. The button shows progress and a live status announces the operation.
-3. **Wishlist action**: toggles wishlist membership using the current product selection and displays the resulting alert.
-4. **SEO**: prerendering is responsible for metadata and JSON-LD. The block does not write SEO metadata at runtime.
+1. **Initialization**: Block renders product gallery, header, price, options, quantity, and action buttons
+2. **Product Configuration**: Users can select product options with real-time validation
+3. **Add to Cart**: Users can add products to cart or update existing cart items
+4. **Wishlist Management**: Users can add/remove products from wishlist
+5. **Image Gallery**: Users can view product images in desktop thumbnail or mobile carousel format
+6. **SEO Optimization**: Meta tags, page title, and JSON-LD structured data are expected to be set by a prerendering solution; the block does not write any SEO metadata at runtime
 
 ### Error Handling
 
-- **Cart requests**: show a dismissible alert with the returned error message and restore the purchase-button label after the operation.
-
-## Development
-
-The PDP dependency temporarily uses the repository-local compiled snapshot
-`vendor/storefront-pdp-3.3.2-5af110c.tgz`, built from
-`5af110ca2da8c367753b043d95e3a0352fd4efdc` (`ACCS-1477-product-rating`).
-
-The PDP snapshot includes `ProductRating` and reproduces the feature branch's existing vendored PDP assets. Its source package version is `3.3.2`; the formerly configured `3.4.0` alpha did not include that container.
-
-A remote checkout does not need a sibling repository. Include the archive and
-generated PDP assets when delivering the branch; `.hlxignore` excludes the archive
-from remote delivery. Replace the snapshot when a published version includes the
-matching rating implementation.
+- **Configuration Errors**: If product configuration is invalid, disables add to cart button
+- **API Errors**: If cart operations fail, shows error alerts with dismiss functionality
+- **Image Rendering Errors**: If product images fail to load, the image slots handle fallback behavior
+- **Fallback Behavior**: Always falls back to appropriate mode based on URL parameters and cart state

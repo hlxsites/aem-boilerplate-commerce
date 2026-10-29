@@ -12,32 +12,26 @@ const review = {
 function visitProduct({
   enabled = true,
   guestWriting = true,
-  count = 31,
   items = [review, { ...review, nickname: 'Another shopper' }],
-  ratingError = false,
   reviewError = false,
+  configError = false,
   unavailable = false,
   responseGate,
-  skuResponseGate,
-  sku = 'ADB102',
   requestedSku = 'adb102',
   authored = false,
   standalone = false,
   metadataSku,
-  skuError = false,
-  missingProduct = false,
+  isolatedRetry = false,
 } = {}) {
-  const requests = { sku: 0, rating: 0, reviews: 0 };
-  const reply = (req, body) => (responseGate
-    ? responseGate.then(() => req.reply(body))
-    : req.reply(body));
+  const requests = { catalog: 0, reviews: 0 };
   cy.intercept('**/graphql*', (req) => {
     const url = new URL(req.url);
     const query = req.body?.query ?? url.searchParams.get('query') ?? '';
     const variables = req.body?.variables ?? JSON.parse(url.searchParams.get('variables') ?? '{}');
     if (query.includes('STORE_CONFIG_QUERY')) {
-      req.alias = 'reviewsConfig';
-      req.reply({
+      const isReviewsConfig = query.includes('allow_guests_to_write_product_reviews');
+      if (isReviewsConfig) req.alias = 'reviewsConfig';
+      req.reply(configError && isReviewsConfig ? { errors: [{ message: 'Configuration unavailable' }] } : {
         data: {
           storeConfig: {
             product_reviews_enabled: enabled ? '1' : '0',
@@ -45,49 +39,31 @@ function visitProduct({
           },
         },
       });
-    } else if (query.includes('PRODUCT_REVIEWS_SKU_QUERY')) {
-      requests.sku += 1;
-      expect(variables.skus).to.deep.equal([requestedSku]);
-      req.alias = 'reviewSku';
-      const body = skuError ? { errors: [{ message: 'Catalog unavailable' }] } : {
-        data: { products: missingProduct ? [] : [{ sku }] },
-      };
-      return skuResponseGate ? skuResponseGate.then(() => req.reply(body)) : req.reply(body);
-    } else if (query.includes('PRODUCT_RATING_QUERY')) {
-      requests.rating += 1;
-      expect(variables.skus).to.deep.equal([sku]);
-      expect(req.headers['magento-website-code']).to.equal('base');
-      req.alias = 'productRating';
-      return reply(req, ratingError ? { errors: [{ message: 'Rating service unavailable' }] } : {
-        data: {
-          products: unavailable ? [] : [{
-            sku,
-            attributes: [
-              { name: 'ac_rating_summary', value: count ? '92' : '0' },
-              { name: 'ac_review_count', value: String(count) },
-            ],
-          }],
-        },
-      });
+    } else if (query.includes('PRODUCT_RATING_QUERY') || query.includes('PRODUCT_REVIEWS_SKU_QUERY')) {
+      requests.catalog += 1;
+      throw new Error('The review integration must not request Catalog Service operations.');
     } else if (query.includes('REVIEWS_QUERY')) {
       requests.reviews += 1;
-      expect(variables).to.deep.equal({ sku, pageSize: 20, currentPage: 1 });
+      expect(variables).to.deep.equal({ sku: requestedSku, pageSize: 20, currentPage: 1 });
+      if (isolatedRetry && requests.reviews > 1) {
+        expect(url.pathname).to.equal('/reviews-core-test/graphql');
+        expect(req.headers['x-reviews-core-test']).to.equal('core');
+        expect(req.headers).not.to.have.property('x-reviews-catalog-test');
+      }
       req.alias = 'productReviews';
-      return reply(req, reviewError && requests.reviews === 1
+      const body = reviewError && requests.reviews === 1
         ? { errors: [{ message: 'Review service unavailable' }] }
         : {
           data: {
             reviews: unavailable ? null : {
               items,
-              page_info: {
-                current_page: 1,
-                page_size: 20,
-                total_pages: count ? 2 : 0,
-              },
+              page_info: { current_page: 1, page_size: 20, total_pages: items.length ? 2 : 0 },
             },
           },
-        });
+        };
+      return responseGate ? responseGate.then(() => req.reply(body)) : req.reply(body);
     }
+    return undefined;
   });
   if (authored || standalone || metadataSku) {
     cy.request(productUrl).then(({ body }) => {
@@ -113,15 +89,11 @@ function visitProduct({
   return requests;
 }
 
-function emitEvent(name, payload, scope) {
+function runModule(source) {
   cy.window().then((win) => new Cypress.Promise((resolve, reject) => {
     const script = win.document.createElement('script');
     script.type = 'module';
     script.nonce = 'aem';
-    const source = `
-      import { events } from '${win.location.origin}/scripts/__dropins__/tools/event-bus.js';
-      events.emit(${JSON.stringify(name)}, ${JSON.stringify(payload)}, ${JSON.stringify({ scope })});
-    `;
     const url = win.URL.createObjectURL(new win.Blob([source], { type: 'text/javascript' }));
     script.src = url;
     script.onload = () => {
@@ -132,25 +104,33 @@ function emitEvent(name, payload, scope) {
     script.onerror = () => {
       script.remove();
       win.URL.revokeObjectURL(url);
-      reject(new Error('Unable to publish the test event.'));
+      reject(new Error('Unable to execute the test module.'));
     };
     win.document.head.appendChild(script);
   }));
 }
 
+function emitEvent(name, payload, scope) {
+  cy.location('origin').then((origin) => runModule(`
+    import { events } from '${origin}/scripts/__dropins__/tools/event-bus.js';
+    events.emit(${JSON.stringify(name)}, ${JSON.stringify(payload)}, ${JSON.stringify({ scope })});
+  `));
+}
+
 describe('Product reviews block', () => {
-  it('composes the aggregate and first review page without replacing the header rating', () => {
-    visitProduct();
-    cy.wait(['@productRating', '@productReviews']);
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', '31 reviews');
-    cy.get(`${region} h2`).should('contain.text', '31 reviews');
+  it('renders the first review page without duplicating the PDP header rating', () => {
+    const requests = visitProduct();
+    cy.wait('@productReviews');
+    cy.get(`${region} h2`).should('have.text', 'Reviews');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
     cy.get('.product-details__rating').should('not.be.empty');
+    cy.get(`${region} .ratingsreviews-rating`).should('not.exist');
     cy.get(`${region} .ratingsreviews-pagination`).should('not.exist');
     cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
     cy.get(region).should('have.length', 1);
     cy.get('.product-details .product-reviews').should('not.exist');
-    cy.get('.product-details').parent().next().should('have.class', 'product-reviews-wrapper');
+    cy.get('.product-details').parent().next().should('have.class', 'product-reviews-wrapper')
+      .then(() => expect(requests).to.deep.equal({ catalog: 0, reviews: 1 }));
   });
 
   it('respects authored placement without injecting another block', () => {
@@ -161,79 +141,55 @@ describe('Product reviews block', () => {
   });
 
   it('renders an authored SKU without a Product Details block', () => {
-    visitProduct({ standalone: true, requestedSku: 'OTHER-SKU', sku: 'OTHER-SKU' });
-    cy.wait(['@reviewSku', '@productRating', '@productReviews']);
+    visitProduct({ standalone: true, requestedSku: 'OTHER-SKU' });
+    cy.wait('@productReviews');
     cy.get('.product-details').should('not.exist');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
   });
 
   it('prefers page SKU metadata to the product URL', () => {
     visitProduct({ metadataSku: 'ADB102', requestedSku: 'ADB102' });
-    cy.wait(['@reviewSku', '@productRating', '@productReviews']);
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', '31 reviews');
-  });
-
-  it('keeps reviews hidden and purchasing available when SKU resolution fails', () => {
-    const requests = visitProduct({ skuError: true });
-    cy.wait('@reviewSku');
-    cy.get(region).should('not.be.visible');
-    cy.get('.product-details__buttons__add-to-cart button').should('be.visible').then(() => {
-      expect(requests).to.deep.equal({ sku: 1, rating: 0, reviews: 0 });
-    });
-  });
-
-  it('does not delay purchase controls while the canonical SKU is loading', () => {
-    let release;
-    const skuResponseGate = new Cypress.Promise((resolve) => { release = resolve; });
-    visitProduct({ skuResponseGate });
-    cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
-    cy.get(`${region} .ratingsreviews-review__skeleton`).should('be.visible');
-    cy.then(() => release());
-    cy.wait(['@reviewSku', '@productRating', '@productReviews']);
-    cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
-  });
-
-  it('does not request review data for an unresolved product', () => {
-    const requests = visitProduct({ missingProduct: true });
-    cy.wait('@reviewSku');
-    cy.get(region).should('not.be.visible').then(() => {
-      expect(requests).to.deep.equal({ sku: 1, rating: 0, reviews: 0 });
-    });
+    cy.wait('@productReviews');
+    cy.get(`${region} h2`).should('have.text', 'Reviews');
   });
 
   it('requires an authored SKU when standalone page context has none', () => {
     const requests = visitProduct({ standalone: true, requestedSku: '' });
     cy.get(region).should('have.attr', 'data-block-status', 'loaded')
       .and('not.be.visible').then(() => {
-        expect(requests).to.deep.equal({ sku: 0, rating: 0, reviews: 0 });
+        expect(requests).to.deep.equal({ catalog: 0, reviews: 0 });
       });
   });
 
-  it('shows loading skeletons without blocking purchase controls, then removes them', () => {
+  it('uses the drop-in loading skeleton without blocking purchase controls', () => {
     let release;
     const responseGate = new Cypress.Promise((resolve) => { release = resolve; });
     visitProduct({ responseGate });
-    cy.get(`${region} .ratingsreviews-rating`).should('have.attr', 'aria-busy', 'true');
-    cy.get(`${region} .product-reviews__rating-skeleton`).should('be.visible')
-      .and('have.attr', 'aria-hidden', 'true');
     cy.get(`${region} .ratingsreviews-review`).should('have.attr', 'aria-busy', 'true');
-    cy.get(`${region} .ratingsreviews-review__skeleton`).should('be.visible');
+    cy.get(`${region} .ratingsreviews-review__skeleton`).should('be.visible')
+      .and('have.attr', 'aria-hidden', 'true');
     cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
     cy.then(() => release());
-    cy.wait(['@productRating', '@productReviews']);
-    cy.get(`${region} .ratingsreviews-rating`).should('have.attr', 'aria-busy', 'false');
+    cy.wait('@productReviews');
     cy.get(`${region} .ratingsreviews-review`).should('have.attr', 'aria-busy', 'false');
-    cy.get(`${region} .product-reviews__rating-skeleton`).should('not.exist');
     cy.get(`${region} .ratingsreviews-review__skeleton`).should('not.exist');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
   });
 
-  it('does not mount or request review data when store reviews are disabled', () => {
+  it('does not request review data when store reviews are disabled', () => {
     const requests = visitProduct({ enabled: false });
     cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
     cy.get(region).should('not.be.visible').and('be.empty').then(() => {
-      expect(requests).to.deep.equal({ sku: 0, rating: 0, reviews: 0 });
+      expect(requests).to.deep.equal({ catalog: 0, reviews: 0 });
     });
+  });
+
+  it('fails closed when the Core store configuration request fails', () => {
+    const requests = visitProduct({ configError: true, standalone: true, requestedSku: 'ADB102' });
+    cy.get(region).should('have.attr', 'data-block-status', 'loaded')
+      .and('not.be.visible').and('be.empty').then(() => {
+        expect(requests).to.deep.equal({ catalog: 0, reviews: 0 });
+      });
   });
 
   it('allows guests to read reviews when guest writing is disabled', () => {
@@ -241,31 +197,37 @@ describe('Product reviews block', () => {
     cy.get(`${region} .ratingsreviews-review__list`).should('contain.text', 'Test shopper');
   });
 
-  it('renders a confirmed zero-review state', () => {
-    visitProduct({ count: 0, items: [] });
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', 'No reviews');
+  it('renders an empty page without inventing an aggregate or total', () => {
+    visitProduct({ items: [] });
+    cy.get(`${region} h2`).should('have.text', 'Reviews');
     cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'No reviews on this page.');
+    cy.get(`${region} .ratingsreviews-review__list`).should('not.exist');
   });
 
-  it('keeps the review list and purchasing available when the aggregate fails', () => {
-    visitProduct({ ratingError: true });
-    cy.get(`${region} .product-reviews__rating [role="status"]`)
-      .should('contain.text', 'Unable to load rating.');
-    cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
-    cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
-  });
-
-  it('keeps the aggregate available and retries a failed review request', () => {
+  it('keeps purchasing available and retries a failed review request', () => {
     visitProduct({ reviewError: true });
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', '31 reviews');
     cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'Unable to load reviews.');
+    cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
     cy.contains(`${region} button`, 'Try again').click();
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
   });
 
-  it('distinguishes unavailable data from an empty review collection', () => {
+  it('keeps retry requests on Core when Catalog endpoint and headers change', () => {
+    visitProduct({ reviewError: true, standalone: true, requestedSku: 'ADB102', isolatedRetry: true });
+    cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'Unable to load reviews.');
+    cy.location('origin').then((origin) => runModule(`
+      import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL } from '${origin}/scripts/commerce.js';
+      CORE_FETCH_GRAPHQL.setEndpoint('${origin}/reviews-core-test/graphql');
+      CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('x-reviews-core-test', 'core');
+      CS_FETCH_GRAPHQL.setEndpoint('${origin}/reviews-catalog-test/graphql');
+      CS_FETCH_GRAPHQL.setFetchGraphQlHeader('x-reviews-catalog-test', 'catalog');
+    `));
+    cy.contains(`${region} button`, 'Try again').click();
+    cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
+  });
+
+  it('distinguishes unavailable data from an empty review page', () => {
     visitProduct({ unavailable: true });
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', 'Rating is unavailable.');
     cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'Reviews are unavailable.');
     cy.get(`${region} .ratingsreviews-review__list`).should('not.exist');
   });
@@ -280,28 +242,26 @@ describe('Product reviews block', () => {
 
   it('does not refetch reviews when quantity changes', () => {
     const requests = visitProduct();
-    cy.wait(['@productRating', '@productReviews']);
+    cy.wait('@productReviews');
     cy.get('.product-details__quantity input').clear().type('2').blur();
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2).then(() => {
-      expect(requests).to.deep.equal({ sku: 1, rating: 1, reviews: 1 });
+      expect(requests).to.deep.equal({ catalog: 0, reviews: 1 });
     });
   });
 
   it('preserves the page review SKU when PDP publishes a variant', () => {
     const requests = visitProduct();
-    cy.wait(['@productRating', '@productReviews']);
+    cy.wait('@productReviews');
     emitEvent('pdp/data', { sku: 'OTHER-VARIANT', inStock: true });
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2).then(() => {
-      expect(requests).to.deep.equal({ sku: 1, rating: 1, reviews: 1 });
+      expect(requests).to.deep.equal({ catalog: 0, reviews: 1 });
     });
   });
 
-  it('ignores rating and review errors from unrelated scopes', () => {
+  it('ignores review errors from unrelated scopes', () => {
     visitProduct();
-    cy.wait(['@productRating', '@productReviews']);
-    emitEvent('rating/error', 'Unrelated rating failure', 'another-product');
+    cy.wait('@productReviews');
     emitEvent('reviews/error', 'Unrelated review failure', 'another-product');
-    cy.get(`${region} .product-reviews__rating`).should('contain.text', '31 reviews');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
     cy.get(`${region} .ratingsreviews-review__status`).should('be.empty');
   });

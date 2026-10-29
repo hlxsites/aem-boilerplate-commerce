@@ -15,5 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './transform-store-config';
-export * from './transform-product-rating';
 export * from './transform-product-reviews';
