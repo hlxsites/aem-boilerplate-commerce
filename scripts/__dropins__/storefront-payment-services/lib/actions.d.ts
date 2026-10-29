@@ -1,5 +1,5 @@
 import { PaymentServicesSDK } from '@adobe-commerce/payment-services-sdk';
-import { CreditCardFormHandle } from './creditCardForm';
+import { CreditCardFormHandle } from './creditCard';
 
 /**
  * Finalize Payment Services drop-in initialization with "ready" status.

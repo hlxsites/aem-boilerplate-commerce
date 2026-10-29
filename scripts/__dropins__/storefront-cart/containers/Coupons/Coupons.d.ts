@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 export interface CouponsProps extends HTMLAttributes<HTMLDivElement> {
 }
 export declare const Coupons: Container<CouponsProps>;

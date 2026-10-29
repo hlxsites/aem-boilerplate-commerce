@@ -242,14 +242,14 @@ describe("Seller Assisted Buying", () => {
       testUserEmail = `${random}${sign_up.email}`;
 
       cy.log(`Test user email: ${testUserEmail}`);
-      cy.get(fields.authFormUserEmail).eq(1).clear({ force: true });
-      cy.get(fields.authFormUserEmail).eq(1).type(testUserEmail);
+      cy.get(fields.authFormUserEmail).eq(0).clear({ force: true });
+      cy.get(fields.authFormUserEmail).eq(0).type(testUserEmail);
       cy.get(fields.authFormUserFirstName).clear();
       cy.get(fields.authFormUserFirstName).type(sign_up.firstName);
       cy.get(fields.authFormUserLastName).clear();
       cy.get(fields.authFormUserLastName).type(sign_up.lastName);
-      cy.get(fields.authFormUserPassword).eq(1).clear();
-      cy.get(fields.authFormUserPassword).eq(1).type(sign_up.password);
+      cy.get(fields.authFormUserPassword).eq(0).clear();
+      cy.get(fields.authFormUserPassword).eq(0).type(sign_up.password);
 
       cy.log("Step 3: Enabling Remote Shopping Assistance checkbox");
       cy.get('[data-testid="remoteShoppingAssistanceConsent"]', {
@@ -310,6 +310,7 @@ describe("Seller Assisted Buying", () => {
 
       cy.log("Step 14: Logging out before OTP admin login");
       cy.get('.nav-dropdown-button').click();
+      cy.get('.nav-auth-menu-panel').should('be.visible');
       cy.contains('button', /sign out|logout/i).click();
       resetAuthStateAndOpenLogin();
 

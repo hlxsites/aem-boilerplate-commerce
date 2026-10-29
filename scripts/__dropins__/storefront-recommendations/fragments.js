@@ -9,6 +9,8 @@ const e=`
     visibility
     inStock
     images {
+      label
+      roles
       url
     }
     urlKey

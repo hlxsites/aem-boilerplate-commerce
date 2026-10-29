@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { CheckoutError } from '../../data/models/checkout';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 export interface ServerErrorProps {
     autoScroll?: boolean;
     onRetry?: (error: CheckoutError | null) => void;

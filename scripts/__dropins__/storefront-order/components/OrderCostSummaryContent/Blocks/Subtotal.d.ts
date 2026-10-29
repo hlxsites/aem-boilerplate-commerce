@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../../data/models';
-import { TaxTypes } from '../../../types';
+import { OrderDataModel } from '../../../data/models/index.js';
+import { TaxTypes } from '../../../types/index.js';
 type translationsTypes = Record<string, string>;
 export declare const Subtotal: ({ translations, order, subtotalInclTax, subtotalExclTax, shoppingOrdersDisplaySubtotal, }: {
     translations: translationsTypes;

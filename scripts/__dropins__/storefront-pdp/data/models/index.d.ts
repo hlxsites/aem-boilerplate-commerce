@@ -15,4 +15,4 @@
  */
 export * from './product-model';
 export * from './values-model';
-//# sourceMappingURL=index.d.ts.map
+export * from './customizable-options-model';
