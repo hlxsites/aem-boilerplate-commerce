@@ -26,7 +26,11 @@ A small Catalog Service query resolves the canonical SKU before requesting ratin
 
 ### Placement
 
-Authors can place the block in any section, including pages without Product Details. Shared page auto-blocking inserts a sibling Product Reviews block after Product Details only when no Product Reviews block is already authored. Authored placement is preserved. Normal AEM block loading loads the block's JavaScript and CSS; Product Details does not initialize it.
+Authors can place the block in any section, including pages without Product Details. Shared page auto-blocking inserts sibling Product Reviews and Product Reviews Pagination blocks after Product Details only when no Product Reviews block is already authored. Both generated blocks use the same unique scope.
+
+If a pagination block is already authored, the generated reviews block uses that pager's configured scope instead of adding another pager. Authored reviews retain their placement and are not given an automatic pager; author a separate Product Reviews Pagination block with a matching scope when navigation is wanted.
+
+Normal AEM block loading loads each block's JavaScript and CSS; Product Details does not initialize either block.
 
 ### Store Configuration
 
