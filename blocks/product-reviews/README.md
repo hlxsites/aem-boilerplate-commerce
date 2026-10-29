@@ -2,10 +2,12 @@
 
 ## Overview
 
-Displays the first page of approved reviews using the ratings/reviews drop-in.
+Displays approved reviews using the ratings/reviews drop-in.
 The standalone block owns its placement, page SKU, and initial request. It does
 not import Product Details or subscribe to PDP events. The PDP header rating
 remains separate; this block does not render a second aggregate rating.
+A separate [Product Reviews Pagination block](../product-reviews-pagination/README.md)
+can navigate the list using the same configured scope.
 
 ## Integration
 
@@ -46,7 +48,7 @@ JavaScript and CSS; Product Details does not initialize it.
 | --- | --- | --- |
 | `isProductReviewsEnabled` | Normalized `product_reviews_enabled` store config | Must be `true`; otherwise the block remains hidden and makes no review requests. |
 | `allowGuestsToWriteProductReviews` | Normalized backend store config | Does not restrict read-only reviews. |
-| `pageSize` / `currentPage` | Fixed block defaults | First 20 reviews on page 1. No block or URL overrides. |
+| `pageSize` / `currentPage` | Fixed initial block defaults | First 20 reviews on page 1. Pagination requests subsequent pages with the same page size. No block or URL overrides. |
 | `scope` | Authored or generated per instance | Configured scope, or private `product-reviews-<UUID>`, shared by the Review container and its requests. |
 
 The initializer inherits `CORE_FETCH_GRAPHQL`, including its endpoint and headers,
@@ -113,7 +115,8 @@ The refactored package has no
   standard AEM block loader's error logging.
 - Store configuration failures are logged by the initializer and keep reviews
   disabled. Guest-writing permission does not gate reading.
-- Aggregate totals/graphs, badges, pagination controls, sorting, submission, and
+- Pagination controls belong to the separate Product Reviews Pagination block.
+  Aggregate totals/graphs, badges, sorting, submission, and
   helpfulness voting remain deferred or outside this block's current scope.
 
 ## Development
