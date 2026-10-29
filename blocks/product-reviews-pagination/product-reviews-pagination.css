@@ -1,0 +1,9 @@
+.product-reviews-pagination {
+  min-width: 0;
+  margin-block: var(--spacing-medium);
+}
+
+.product-reviews-pagination[hidden],
+.product-reviews-pagination:has(.ratingsreviews-pagination[hidden]) {
+  display: none;
+}

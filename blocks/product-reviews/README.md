@@ -2,7 +2,7 @@
 
 ## Overview
 
-Displays an average Rating and the first page of approved reviews using the ratings/reviews drop-in. This block owns its rendering, styling, SKU resolution, loading states, and requests. It does not import Product Details or subscribe to PDP events. The PDP header rating remains separate.
+Displays an average Rating and approved reviews using the ratings/reviews drop-in. This block owns its rendering, styling, SKU resolution, loading states, and initial requests. A separate [Product Reviews Pagination block](../product-reviews-pagination/README.md) can navigate the list using the same configured scope. It does not import Product Details or subscribe to PDP events. The PDP header rating remains separate.
 
 ## Integration
 
@@ -34,7 +34,7 @@ Authors can place the block in any section, including pages without Product Deta
 | --- | --- | --- |
 | `isProductReviewsEnabled` | Normalized `product_reviews_enabled` store config | Must be `true`; otherwise the block remains hidden and makes no SKU, rating, or review requests. |
 | `allowGuestsToWriteProductReviews` | Normalized backend store config | Does not restrict read-only reviews. |
-| `pageSize` / `currentPage` | Fixed block defaults | First 20 reviews on page 1. No block or URL overrides. |
+| `pageSize` / `currentPage` | Fixed initial block defaults | First 20 reviews on page 1. Pagination requests subsequent pages with the same page size. No block or URL overrides. |
 | `scope` | Authored or generated per instance | Configured scope, or private `product-reviews-<UUID>`, shared by containers and their requests. |
 
 The shared ratings/reviews initializer inherits `CS_FETCH_GRAPHQL` and its tenant headers. The Router must support `STORE_CONFIG_QUERY`, catalog `products(skus:)` with `sku` and rating attributes, and `REVIEWS_QUERY`.
@@ -76,7 +76,7 @@ Retain the same scope on related container props and API calls. A separate Produ
 - List failures retain the aggregate and expose the drop-in retry control.   Aggregate failures retain the list and show a localized error.
 - Missing SKU leaves the block hidden and rejects decoration through the standard AEM block loader's error logging. Catalog errors and unresolved products hide the block and log an explicit `[Product Reviews]` error. Data requests do not delay section loading; purchase controls are independent.
 - Configuration failures are logged by the initializer and keep reviews disabled.
-- Distribution graphs, badges, pagination controls, sorting, submission, and helpfulness voting remain out of scope.
+- Pagination controls belong to the separate Product Reviews Pagination block. Distribution graphs, badges, sorting, submission, and helpfulness voting remain out of scope.
 
 ## Development
 

@@ -23,6 +23,9 @@ function visitProduct({
   requestedSku = 'adb102',
   authored = false,
   scope,
+  pagination = false,
+  paginationScope = scope,
+  paginationFirst = false,
   standalone = false,
   metadataSku,
   skuError = false,
@@ -100,9 +103,12 @@ function visitProduct({
       if (authored || standalone) {
         const scopeRow = scope ? `<div><div>scope</div><div>${scope}</div></div>` : '';
         const block = `<div class="product-reviews"><div><div>sku</div><div>${requestedSku}</div></div>${scopeRow}</div>`;
+        const pagerScope = paginationScope ? `<div><div>scope</div><div>${paginationScope}</div></div>` : '';
+        const pager = pagination ? `<div class="product-reviews-pagination">${pagerScope}</div>` : '';
+        const blocks = paginationFirst ? `${pager}${block}` : `${block}${pager}`;
         html = standalone
-          ? html.replace(/<main>[\s\S]*?<\/main>/, `<main><div>${block}</div></main>`)
-          : html.replace('</main>', `<div>${block}</div></main>`);
+          ? html.replace(/<main>[\s\S]*?<\/main>/, `<main><div>${blocks}</div></main>`)
+          : html.replace('</main>', `<div>${blocks}</div></main>`);
       }
       const path = standalone ? '/reviews-test' : productUrl;
       cy.intercept('GET', path, { body: html, headers: { 'content-type': 'text/html' } });
@@ -177,6 +183,40 @@ describe('Product reviews block', () => {
     cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'Unable to load reviews.');
     cy.contains(`${region} button`, 'Try again').click();
     cy.wait('@productReviews');
+    cy.get(`${region} .ratingsreviews-review__list`).should('be.visible');
+  });
+
+  it('renders a separate pager without Product Details or duplicate initial requests', () => {
+    const requests = visitProduct({
+      standalone: true, requestedSku: 'ADB102', scope: 'main-reviews', pagination: true,
+    });
+    cy.get('.product-details').should('not.exist');
+    cy.get('.product-reviews-pagination nav').should('be.visible');
+    cy.contains('.product-reviews-pagination button', /^2$/).should('be.visible');
+    cy.get(`${region} .ratingsreviews-pagination`).should('not.exist').then(() => {
+      expect(requests).to.deep.equal({ sku: 1, rating: 1, reviews: 1 });
+    });
+  });
+
+  it('keeps a pager without a matching review scope hidden', () => {
+    visitProduct({
+      standalone: true,
+      requestedSku: 'ADB102',
+      scope: 'main-reviews',
+      pagination: true,
+      paginationScope: 'another-list',
+    });
+    cy.get(`${region} .ratingsreviews-review__list`).should('be.visible');
+    cy.get('.product-reviews-pagination').should('not.be.visible');
+    cy.get('.product-reviews-pagination .ratingsreviews-pagination').should('have.attr', 'hidden');
+  });
+
+  it('keeps pagination with a missing scope hidden instead of using unscoped events', () => {
+    visitProduct({
+      standalone: true, requestedSku: 'ADB102', scope: 'main-reviews', pagination: true, paginationScope: '',
+    });
+    cy.get('.product-reviews-pagination').should('have.attr', 'data-block-status', 'loaded')
+      .and('not.be.visible').and('be.empty');
     cy.get(`${region} .ratingsreviews-review__list`).should('be.visible');
   });
 
