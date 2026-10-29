@@ -1,5 +1,13 @@
 # @dropins/storefront-quote-management
 
+## 1.3.1-beta.0
+
+### Patch Changes
+
+- 0fac1f3: Migrate to pnpm and Elsie v3, including updated Preact peers and
+  shared build, test, lint, and Storybook tooling. Upgrade shared CI workflows
+  and actions to v7.
+
 ## 1.3.0
 
 ### Minor Changes

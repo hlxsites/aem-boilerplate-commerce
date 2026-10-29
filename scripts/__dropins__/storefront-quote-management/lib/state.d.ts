@@ -7,6 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { StoreConfigModel } from '../data/models';
+import { State } from '../types/state.types';
 export declare const DEFAULT_PERMISSIONS: {
     requestQuote: boolean;
     editQuote: boolean;

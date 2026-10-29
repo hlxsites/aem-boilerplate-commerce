@@ -15,9 +15,9 @@
  * from Adobe.
  *******************************************************************/
 import { Item } from '../../data/models';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { GiftOptionsViewProps, GiftOptionsDataSourcesProps, GiftFormDataType, ProductGiftOptionsConfig, GiftOptionsReadOnlyViewProps } from '../../types';
-import { ImageNodeRenderProps, ImageProps } from '../../../node_modules/@dropins/tools/src/components';
+import { ImageNodeRenderProps, ImageProps } from '@dropins/tools/components';
 export interface GiftOptionsProps {
     item: Item | ProductGiftOptionsConfig;
     view?: GiftOptionsViewProps;

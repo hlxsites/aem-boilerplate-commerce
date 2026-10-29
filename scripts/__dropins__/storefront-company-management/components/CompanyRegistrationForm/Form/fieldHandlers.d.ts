@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import React from 'react';
+import type React from 'preact/compat';
 import { CompanyFormData } from '../../../data/models/company';
 import { FieldsProps } from '../../../types/form.types';
 export type FieldChangeHandler = (key: string, value: string | string[] | number | boolean) => void;

@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CsvFileInput';
-export { CsvFileInput as default } from './CsvFileInput';
-//# sourceMappingURL=index.d.ts.map
+export * from './CsvFileInput.js';
+export { CsvFileInput as default } from './CsvFileInput.js';

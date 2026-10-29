@@ -6,6 +6,7 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
+import { PriceProps } from '@dropins/tools/components';
 import { CartItemModel as NegotiableQuoteItemModel, StoreConfigModel } from '../data/models';
 export interface PriceCalculatorOptions {
     dictionary: Record<string, string>;
@@ -15,8 +16,8 @@ export interface PriceCalculatorOptions {
  * Get price props for an item
  */
 export declare const getPriceProps: (item: NegotiableQuoteItemModel, options: PriceCalculatorOptions) => {
-    amount: any;
-    currency: any;
+    amount: number;
+    currency: string;
     style: {
         font: string;
     };
@@ -26,8 +27,8 @@ export declare const getPriceProps: (item: NegotiableQuoteItemModel, options: Pr
  * Get savings amount props for an item
  */
 export declare const getSavingsAmount: (item: NegotiableQuoteItemModel) => {
-    amount: any;
-    currency: any;
+    amount: number | undefined;
+    currency: string | undefined;
     style: {
         font: string;
     };
@@ -37,6 +38,10 @@ export declare const getSavingsAmount: (item: NegotiableQuoteItemModel) => {
  * Calculate total price props and discount props for an item
  */
 export declare const getTotalPriceProps: (item: NegotiableQuoteItemModel, options: PriceCalculatorOptions) => {
-    totalProps: any;
-    discountProps: any;
+    totalProps: PriceProps & {
+        'data-testid'?: string;
+    };
+    discountProps: (PriceProps & {
+        'data-testid'?: string;
+    }) | null;
 };

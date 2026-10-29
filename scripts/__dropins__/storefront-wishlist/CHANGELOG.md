@@ -1,5 +1,23 @@
 # @dropins/storefront-wishlist
 
+## 3.5.1-beta.0
+
+### Patch Changes
+
+- 21e24a7: Fix WCAG 2.5.3 (Label in Name) on `WishlistToggle`. The accessible
+  name now starts with the button's visible label when there is one, so screen
+  reader and voice control users hear what they see. Icon-only buttons are
+  unaffected. Adds the `Wishlist.Wishlist.ariaLabelWithVisibleLabel` key.
+- 9cc796b: Migrate the development toolchain and independent Cypress test
+  project to pnpm, and pin `@adobe-commerce/elsie` to
+  `3.0.0-alpha-20261014104406`.
+
+  Update shared ESLint, Jest, TypeScript, Prettier, and Storybook configuration
+  for elsie v3, adopt its explicit test helpers, and align Preact and Signals
+  dependencies. Replace npm and Yarn lockfiles, scripts, and setup instructions
+  with pnpm equivalents, including release-age protection and explicit
+  dependency build permissions. The public Wishlist API is unchanged.
+
 ## 3.5.0
 
 ### Minor Changes

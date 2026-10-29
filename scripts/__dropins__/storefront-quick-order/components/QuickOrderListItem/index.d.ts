@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderListItem';
-export { QuickOrderListItem as default } from './QuickOrderListItem';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderListItem.js';
+export { QuickOrderListItem as default } from './QuickOrderListItem.js';

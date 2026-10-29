@@ -16,7 +16,7 @@
  *******************************************************************/
 import { CustomerAddressesModel } from '../data/models';
 import { FieldsProps } from './form.types';
-import { SlotProps } from '@dropins/tools/src/lib';
+import { SlotProps } from '@dropins/tools/lib';
 export interface DefaultCheckBox extends Omit<FieldsProps, 'options'> {
 }
 export interface AddressCardContext {

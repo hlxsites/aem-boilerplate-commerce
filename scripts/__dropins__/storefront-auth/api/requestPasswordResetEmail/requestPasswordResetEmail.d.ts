@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PasswordResetEmailModel } from '../../data/models';
+import { PasswordResetEmailModel } from '../../data/models/index.d.ts';
 export declare const requestPasswordResetEmail: (email: string) => Promise<PasswordResetEmailModel>;

@@ -14,10 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './useQuickOrderMultipleSku';
-export * from './useQuickOrderCsvUpload';
-export * from './useQuickOrderItems';
-export * from './useItemSearch';
-export * from './useSearch';
-export * from './useQuickOrderVariantsData';
-//# sourceMappingURL=index.d.ts.map
+export * from './useQuickOrderMultipleSku.js';
+export * from './useQuickOrderCsvUpload.js';
+export * from './useQuickOrderItems.js';
+export * from './useItemSearch.js';
+export * from './useSearch.js';
+export * from './useQuickOrderVariantsData.js';

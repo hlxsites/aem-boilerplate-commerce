@@ -331,12 +331,12 @@ import{events as g}from"@dropins/tools/event-bus.js";import{verifyReCaptcha as N
   }
   ${z}
 `,ie=async(n,t)=>p(xt,{variables:{orderId:n,confirmationKey:t}}).then(async({errors:e,data:i})=>{var r,l,_,a;const u=[...(r=i==null?void 0:i.confirmCancelOrder)!=null&&r.errorV2?[(l=i==null?void 0:i.confirmCancelOrder)==null?void 0:l.errorV2]:[],...e??[]];let c=null;return(_=i==null?void 0:i.confirmCancelOrder)!=null&&_.order&&(c=m((a=i==null?void 0:i.confirmCancelOrder)==null?void 0:a.order),g.emit("order/data",c)),u.length>0?f(u):c}),$t=`
-  mutation setPaymentMethodAndPlaceOrder($cartId: String!, $paymentMethod: PaymentMethodInput!) {
+  mutation setPaymentMethodAndPlaceOrder(
+    $cartId: String!
+    $paymentMethod: PaymentMethodInput!
+  ) {
     setPaymentMethodOnCart(
-      input: {
-        cart_id: $cartId
-        payment_method: $paymentMethod
-      }
+      input: { cart_id: $cartId, payment_method: $paymentMethod }
     ) {
       cart {
         selected_payment_method {

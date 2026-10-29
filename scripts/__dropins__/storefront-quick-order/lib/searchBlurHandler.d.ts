@@ -35,4 +35,3 @@ export declare const createBlurHandler: (options: BlurHandlerOptions, delay?: nu
  * Clears blur timeout if exists
  */
 export declare const clearBlurTimeout: (timeoutRef: number | null) => void;
-//# sourceMappingURL=searchBlurHandler.d.ts.map

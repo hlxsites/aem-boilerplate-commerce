@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_COMPANY_HIERARCHY: string;
+export declare const GET_COMPANY_HIERARCHY = "\n  query getCompanyHierarchy {\n    customer {\n      companies(input: {}) {\n        items {\n          id\n          name\n          status\n          is_admin\n        }\n      }\n      company_hierarchy {\n        parent {\n          ...COMPANY_HIERARCHY_ITEM_FRAGMENT\n        }\n        children {\n          ...COMPANY_HIERARCHY_ITEM_FRAGMENT\n        }\n      }\n    }\n  }\n  \n  fragment COMPANY_HIERARCHY_ITEM_FRAGMENT on CompanyBasicInfo {\n    id\n    is_admin\n    legal_name\n    name\n    status\n    __typename\n  }\n\n";

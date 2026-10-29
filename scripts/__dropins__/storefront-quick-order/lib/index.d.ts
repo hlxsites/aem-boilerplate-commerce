@@ -34,4 +34,3 @@ export * from './productOptionsStorage';
 export * from './searchBlurHandler';
 export * from './searchKeyboardNavigation';
 export * from './isItemValid';
-//# sourceMappingURL=index.d.ts.map

@@ -16,4 +16,4 @@ export interface UpdateQuoteTemplateItemQuantitiesParams {
     templateId: string;
     items: NegotiableQuoteTemplateItemQuantityInput[];
 }
-export declare const updateQuoteTemplateItemQuantities: (params: UpdateQuoteTemplateItemQuantitiesParams) => Promise<any>;
+export declare const updateQuoteTemplateItemQuantities: (params: UpdateQuoteTemplateItemQuantitiesParams) => Promise<import("../../data/models").NegotiableQuoteTemplateModel>;

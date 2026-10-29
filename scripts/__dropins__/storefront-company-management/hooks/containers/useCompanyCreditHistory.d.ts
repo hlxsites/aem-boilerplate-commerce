@@ -43,4 +43,4 @@ export interface UseCompanyCreditHistoryReturn {
     handlePageChange: (page: number) => void;
     refreshCreditHistory: () => Promise<void>;
 }
-export declare const useCompanyCreditHistory: ({ initialParams, translations }: UseCompanyCreditHistoryProps) => UseCompanyCreditHistoryReturn;
+export declare const useCompanyCreditHistory: ({ initialParams, translations, }: UseCompanyCreditHistoryProps) => UseCompanyCreditHistoryReturn;

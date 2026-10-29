@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { TitleProps } from '../../types';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 interface ValidationError {
     email: string;

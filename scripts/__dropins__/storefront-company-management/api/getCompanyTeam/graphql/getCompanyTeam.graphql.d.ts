@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_COMPANY_TEAM = "\n  query getCompanyTeam($id: ID!) {\n    company { team(id: $id) { id name description } }\n  }\n";
+export declare const GET_COMPANY_TEAM = "\n  query getCompanyTeam($id: ID!) {\n    company {\n      team(id: $id) {\n        id\n        name\n        description\n      }\n    }\n  }\n";

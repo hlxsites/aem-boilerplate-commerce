@@ -1,7 +1,8 @@
 import { CompanyModel } from '../../data/models';
+import { Country } from '../../data/models/country';
 import { UseCompanyProfileProps } from '../../types/hook.types';
-export declare const useCompanyProfile: ({ handleSetInLineAlert, editFormRef }: UseCompanyProfileProps) => {
-    company: any;
+export declare const useCompanyProfile: ({ handleSetInLineAlert, editFormRef, }: UseCompanyProfileProps) => {
+    company: CompanyModel | null;
     countries: Country[];
     loading: boolean;
     submitLoading: boolean;

@@ -1,5 +1,16 @@
 # @dropins/storefront-purchase-order
 
+## 1.2.3-beta.0
+
+### Patch Changes
+
+- 1642b98: Migrate the repository and Cypress tests to pnpm, and upgrade Elsie
+  to v3 alpha with updated shared configs, Storybook integration, and explicit
+  test-kit imports.
+- 1642b98: Use Elsie's bundled Vite configuration and MSW integrations instead
+  of direct Vite, MSW, and MSW Storybook addon dependencies, removing the local
+  Vite config and asset type shim.
+
 ## 1.2.2
 
 ### Patch Changes

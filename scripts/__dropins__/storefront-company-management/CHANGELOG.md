@@ -1,5 +1,16 @@
 # @dropins/storefront-company-management
 
+## 1.5.1-beta.0
+
+### Patch Changes
+
+- 19fa578: Keep region options synchronized with the selected country so Picker
+  cannot reapply a previous country's auto-selected region. Update registration
+  tests to cover both manual selection and single-region auto-selection.
+- 19fa578: Migrate the repository and Cypress tooling to pnpm and upgrade Elsie
+  to v3 alpha, updating shared configs, test-kit imports, and Storybook tooling.
+  Explicitly enable B2B reCAPTCHA configuration for company registration.
+
 ## 1.5.0
 
 ## 1.5.0-beta.1

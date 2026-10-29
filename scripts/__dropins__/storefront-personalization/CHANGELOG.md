@@ -1,5 +1,11 @@
 # @dropins/storefront-personalization
 
+## 3.2.3-beta.0
+
+### Patch Changes
+
+- 48aef98: Migrate to PNPM, Elsie v3, and storefront workflows v7.
+
 ## 3.2.2
 
 ### Patch Changes

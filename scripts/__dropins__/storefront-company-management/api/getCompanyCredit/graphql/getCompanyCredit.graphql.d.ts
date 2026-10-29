@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const GET_COMPANY_CREDIT = "\n  query GET_COMPANY_CREDIT \n    {\n        company {\n            credit {\n                available_credit {\n                    currency\n                    value\n                }\n                credit_limit {\n                    currency\n                    value\n                }\n                outstanding_balance {\n                    currency\n                    value\n                }\n            }\n        }\n    }\n";
+export declare const GET_COMPANY_CREDIT = "\n  query GET_COMPANY_CREDIT {\n    company {\n      credit {\n        available_credit {\n          currency\n          value\n        }\n        credit_limit {\n          currency\n          value\n        }\n        outstanding_balance {\n          currency\n          value\n        }\n      }\n    }\n  }\n";

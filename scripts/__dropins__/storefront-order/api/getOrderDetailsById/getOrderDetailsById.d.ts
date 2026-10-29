@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { QueryType, GetOrderDetailsByIdProps } from '../../types';
-import { TransformedData } from '../../data/models';
+import { QueryType, GetOrderDetailsByIdProps } from '../../types/index.js';
+import { TransformedData } from '../../data/models/index.js';
 export declare const getOrderDetailsById: <T extends QueryType>({ orderId, returnRef, queryType, returnsPageSize, }: GetOrderDetailsByIdProps) => Promise<TransformedData<T>>;

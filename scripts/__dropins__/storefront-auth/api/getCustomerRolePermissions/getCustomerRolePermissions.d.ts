@@ -6,7 +6,7 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { PermissionsModel } from '../../data/models';
+import { PermissionsModel } from '../../data/models/index.d.ts';
 /**
  * Gets user role permissions with caching
  */

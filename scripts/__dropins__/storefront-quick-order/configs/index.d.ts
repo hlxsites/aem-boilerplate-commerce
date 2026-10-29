@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './order-item.config';
-export * from './search-filter.config';
-//# sourceMappingURL=index.d.ts.map
+export * from './order-item.config.js';
+export * from './search-filter.config.js';

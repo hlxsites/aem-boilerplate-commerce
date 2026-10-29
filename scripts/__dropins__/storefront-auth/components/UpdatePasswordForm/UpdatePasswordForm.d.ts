@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { UpdatePasswordFormProps } from '../../types';
+import { UpdatePasswordFormProps } from '../../types/index.d.ts';
 export declare const UpdatePasswordForm: FunctionComponent<UpdatePasswordFormProps>;

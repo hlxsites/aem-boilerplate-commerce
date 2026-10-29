@@ -6,4 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export declare const render: any;
+import { Render } from '@dropins/tools/lib';
+export declare const render: Render;

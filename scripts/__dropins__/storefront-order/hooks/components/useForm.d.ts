@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FormValues, useFormProps } from '../../types';
+import { FormValues, useFormProps } from '../../types/index.js';
 export declare const useForm: ({ fieldsConfig, onSubmit }: useFormProps) => {
     formData: FormValues;
     errors: Record<string, string>;
