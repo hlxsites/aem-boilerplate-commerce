@@ -50,7 +50,7 @@ import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
 import {
-  showOrderConfirmationPage,
+  renderCheckoutSuccess,
   preloadCheckoutSuccess,
 } from '../commerce-checkout-success/commerce-checkout-success.js';
 
@@ -176,7 +176,7 @@ export default async function decorate(block) {
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
   const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
-    .then(showOrderConfirmationPage)
+    .then((orderData) => renderCheckoutSuccess(null, { orderData }))
     .catch(console.error);
 
   const [
