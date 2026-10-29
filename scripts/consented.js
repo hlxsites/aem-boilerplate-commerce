@@ -1,0 +1,67 @@
+// add functionality that requires user consent here (analytics, martech, etc.)
+import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
+import { getUserTokenCookie } from './initializers/index.js';
+
+async function initAnalytics() {
+  try {
+    // Load Commerce events SDK and collector
+    // only if "analytics" has been added to the config.
+    const analyticsConfig = getConfigValue('analytics');
+
+    if (analyticsConfig) {
+      window.adobeDataLayer.push(
+        {
+          storefrontInstanceContext: {
+            baseCurrencyCode: analyticsConfig['base-currency-code'],
+            environment: analyticsConfig.environment,
+            environmentId: analyticsConfig['environment-id'],
+            storeCode: analyticsConfig['store-code'],
+            storefrontTemplate: 'EDS',
+            storeId: parseInt(analyticsConfig['store-id'], 10),
+            storeName: analyticsConfig['store-name'],
+            storeUrl: analyticsConfig['store-url'],
+            storeViewCode: analyticsConfig['store-view-code'],
+            storeViewCurrencyCode: analyticsConfig['base-currency-code'],
+            storeViewId: parseInt(analyticsConfig['store-view-id'], 10),
+            storeViewName: analyticsConfig['store-view-name'],
+            websiteCode: analyticsConfig['website-code'],
+            websiteId: parseInt(analyticsConfig['website-id'], 10),
+            websiteName: analyticsConfig['website-name'],
+            viewId: analyticsConfig['view-id'], // applicable for ACO storefronts
+            // setting locale if defined, applicable for ACO storefronts
+            ...(analyticsConfig.locale && { locale: analyticsConfig.locale }),
+          },
+        },
+        {
+          eventForwardingContext: {
+            commerce: true,
+            aep: !!(analyticsConfig['aep-ims-org-id'] && analyticsConfig['aep-datastream-id']),
+          },
+        },
+        {
+          shopperContext: {
+            shopperId: getUserTokenCookie() ? 'logged-in' : 'guest',
+          },
+        },
+        {
+          aepContext: {
+            imsOrgId: analyticsConfig['aep-ims-org-id'],
+            datastreamId: analyticsConfig['aep-datastream-id'],
+          },
+        },
+      );
+
+      // Load events SDK before its collector subscribes to retained ACDL events.
+      await import('./commerce-events-sdk.js');
+      await import('./commerce-events-collector.js');
+    }
+  } catch (error) {
+    console.warn('Error initializing analytics', error);
+  }
+}
+
+if (document.prerendering) {
+  document.addEventListener('prerenderingchange', initAnalytics, { once: true });
+} else {
+  initAnalytics();
+}

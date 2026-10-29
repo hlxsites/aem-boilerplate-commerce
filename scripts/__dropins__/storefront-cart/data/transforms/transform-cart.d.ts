@@ -14,5 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CartModel } from '../models';
+import { CartModel, type AvailableFreeGiftRule } from '../models';
+export declare function transformAvailableFreeGifts(rules: any[] | null | undefined): AvailableFreeGiftRule[];
+/** Supports Commerce `is_salable` and legacy mesh fields that still expose `is_available`. */
+export declare function resolveIsSalable(item: {
+    is_salable?: boolean | null;
+    is_available?: boolean | null;
+}): boolean;
 export declare function transformCart(data: any): CartModel | null;

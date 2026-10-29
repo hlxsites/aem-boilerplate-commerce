@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './cart-model';
+export * from './free-gift-selection';
 export * from './shipping-models';
 export * from './store-models';
 export * from './gift-card-account';

@@ -39,12 +39,24 @@ export interface AddressInput {
 }
 export interface ShippingAddressInput extends ExtensibleInput {
     address?: AddressInput;
+    /**
+     * Identifies an address from the company address book. Required instead of
+     * `customerAddressId` when the company address book is enabled — the backend
+     * rejects customer addresses in that mode.
+     */
+    companyAddressId?: string;
     customerAddressId?: number;
     customerAddressUid?: string;
     pickupLocationCode?: string;
 }
 export interface BillingAddressInput {
     address?: AddressInput;
+    /**
+     * Identifies an address from the company address book. Required instead of
+     * `customerAddressId` when the company address book is enabled — the backend
+     * rejects customer addresses in that mode.
+     */
+    companyAddressId?: string;
     customerAddressId?: number;
     customerAddressUid?: string;
     sameAsShipping?: boolean;
