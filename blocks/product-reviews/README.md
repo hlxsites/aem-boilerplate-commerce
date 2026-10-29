@@ -37,10 +37,17 @@ ownership.
 ### Placement
 
 Authors can place the block in any section, including pages without Product
-Details. Shared page auto-blocking inserts a sibling Product Reviews block after
-Product Details only when no Product Reviews block is already authored.
-Authored placement is preserved. Normal AEM block loading loads the block's
-JavaScript and CSS; Product Details does not initialize it.
+Details. When no Product Reviews block is already authored, shared page
+auto-blocking inserts sibling Product Reviews and Product Reviews Pagination
+blocks after Product Details. Both generated blocks use the same unique scope.
+
+If a pagination block is already authored, the generated reviews block uses that
+pager's configured scope instead of adding another pager. Authored reviews retain
+their placement and are not given an automatic pager; author a separate
+Product Reviews Pagination block with a matching scope when navigation is wanted.
+
+Normal AEM block loading loads each block's JavaScript and CSS; Product Details
+does not initialize either block.
 
 ### Store Configuration
 
@@ -79,6 +86,8 @@ The drop-in supplies default labels.
 | `Review.loading`, `Review.empty`, `Review.unavailable`, `Review.error` | List status messages. |
 | `Review.retry` | Retry button label. |
 | `Review.author`, `Review.unrated`, `Review.dateLocale` | Author (`{{nickname}}`), unrated label, and date locale. |
+| `Pagination.label`, `Pagination.loading` | Navigation landmark label and initial pagination loading status. |
+| `Pagination.outOfRange`, `Pagination.firstPage` | Status and recovery button when the requested page is no longer available. |
 
 ### Events
 
@@ -137,7 +146,8 @@ npm --prefix cypress run cypress:saas:run -- \
   --spec src/tests/b2c/verifyProductReviews.spec.js --config retries=0
 ```
 
-The focused suite covers Core/Catalog endpoint and header separation, SKU
-precedence, standalone/authored placement, loading, errors/retry, disabled and
-failed configuration, guest reading, scope isolation, escaping, purchase-control
-availability, and mobile/RTL layout.
+The focused suite covers Core/Catalog endpoint and header separation on retry
+and navigation, SKU precedence, standalone/authored placement, paired
+auto-blocking, loading, errors/retry, disabled and failed configuration, guest
+reading, scope isolation, pagination loading order and recovery, escaping,
+purchase-control availability, and mobile/RTL layout.

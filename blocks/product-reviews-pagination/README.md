@@ -28,6 +28,18 @@ Use a unique scope for each independent review list. Multiple pagers may control
 the same list by using its scope. Without a configured scope, Product Reviews
 generates a private scope and cannot be paired through authored configuration.
 
+## Automatic Placement
+
+When a product page has Product Details but no authored Product Reviews block,
+page auto-blocking inserts reviews followed by a separate pagination block with
+the same unique scope. An existing authored pagination block keeps its placement
+and its configured scope is used for the generated review list; no duplicate
+pager is added.
+
+An authored Product Reviews block is left unchanged. To paginate it, author this
+block separately and configure the same scope on both. Neither block depends on
+Product Details.
+
 ## Data Flow
 
 Both blocks reuse `scripts/initializers/ratings-reviews.js`, which inherits
