@@ -19,6 +19,7 @@ function visitProduct({
   responseGate,
   requestedSku = 'adb102',
   authored = false,
+  scope,
   standalone = false,
   metadataSku,
   isolatedRetry = false,
@@ -73,7 +74,8 @@ function visitProduct({
         html = html.replace('</head>', `<meta name="sku" content="${metadataSku}"></head>`);
       }
       if (authored || standalone) {
-        const block = `<div class="product-reviews"><div><div>sku</div><div>${requestedSku}</div></div></div>`;
+        const scopeRow = scope ? `<div><div>scope</div><div>${scope}</div></div>` : '';
+        const block = `<div class="product-reviews"><div><div>sku</div><div>${requestedSku}</div></div>${scopeRow}</div>`;
         html = standalone
           ? html.replace(/<main>[\s\S]*?<\/main>/, `<main><div>${block}</div></main>`)
           : html.replace('</main>', `<div>${block}</div></main>`);
@@ -151,6 +153,21 @@ describe('Product reviews block', () => {
     visitProduct({ metadataSku: 'ADB102', requestedSku: 'ADB102' });
     cy.wait('@productReviews');
     cy.get(`${region} h2`).should('have.text', 'Reviews');
+  });
+
+  it('uses the configured scope for review events and retry', () => {
+    const requests = visitProduct({
+      standalone: true, requestedSku: 'ADB102', scope: ' main-reviews ',
+    });
+    cy.wait('@productReviews');
+    cy.get(`${region} .ratingsreviews-review__list`).should('be.visible');
+    emitEvent('reviews/error', 'Scoped request failed', 'main-reviews');
+    cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'Unable to load reviews.');
+    cy.contains(`${region} button`, 'Try again').click();
+    cy.wait('@productReviews');
+    cy.get(`${region} .ratingsreviews-review__list`).should('be.visible').then(() => {
+      expect(requests).to.deep.equal({ catalog: 0, reviews: 2 });
+    });
   });
 
   it('requires an authored SKU when standalone page context has none', () => {

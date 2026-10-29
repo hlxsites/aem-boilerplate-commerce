@@ -14,12 +14,14 @@ remains separate; this block does not render a second aggregate rating.
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `sku` | string | Page product SKU | Product whose reviews are displayed. Takes precedence over page metadata and URL context. Surrounding whitespace is trimmed. |
+| `scope` | string | Generated per instance | Event scope shared by the review list, its requests, and an optional separate pagination block. Use a unique value for each independent review list. Surrounding whitespace is trimmed. |
 
 Example authored block:
 
 | Product Reviews | |
 | --- | --- |
 | sku | ADB102 |
+| scope | main-reviews |
 
 Without an authored SKU, the block uses `getProductSku()`: `sku` metadata before
 the SKU in `/products/{urlKey}/{sku}`. In authoring modes (`dapreview` or
@@ -45,7 +47,7 @@ JavaScript and CSS; Product Details does not initialize it.
 | `isProductReviewsEnabled` | Normalized `product_reviews_enabled` store config | Must be `true`; otherwise the block remains hidden and makes no review requests. |
 | `allowGuestsToWriteProductReviews` | Normalized backend store config | Does not restrict read-only reviews. |
 | `pageSize` / `currentPage` | Fixed block defaults | First 20 reviews on page 1. No block or URL overrides. |
-| `scope` | Generated per instance | Private `product-reviews-<UUID>` shared by the Review container and its requests. |
+| `scope` | Authored or generated per instance | Configured scope, or private `product-reviews-<UUID>`, shared by the Review container and its requests. |
 
 The initializer inherits `CORE_FETCH_GRAPHQL`, including its endpoint and headers,
 following the cart/wishlist initialization convention. Both `STORE_CONFIG_QUERY`
@@ -79,7 +81,7 @@ The drop-in supplies default labels.
 ### Events
 
 The host block does not directly emit or listen to drop-in events. The API
-publishes these events; the Review container listens within the same private
+publishes these events; the Review container listens within the same
 scope:
 
 | Event | Payload | Purpose |
@@ -89,8 +91,11 @@ scope:
 | `reviews/result` | `{ request, result }` | Matching normalized result, possibly `null`. |
 | `reviews/error` | String or `null` | Error state. |
 
-Retain the same scope on the container and API calls. Do not synthesize result
-events or share a scope across instances. The refactored package has no
+Retain the same scope on related containers and API calls. A separate pagination
+block must use the configured scope of the review list it controls. Do not
+synthesize result events or share a scope between independent review lists.
+Without a configured scope, this block stays isolated using a generated scope.
+The refactored package has no
 `rating/*` events, `Rating` container, or `getProductRating` API.
 
 ## Behavior Patterns
