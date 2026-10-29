@@ -19,7 +19,7 @@ function hasConsent() {
     return ['accept', 'true', '1', 'yes'].includes(consent.toLowerCase());
   }
   // default: decline
-  return false;
+  return true;
 }
 
 /**
