@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './PriceRange';
-export { PriceRange as default } from './PriceRange';
-//# sourceMappingURL=index.d.ts.map
+export * from './PriceRange.js';
+export { PriceRange as default } from './PriceRange.js';
