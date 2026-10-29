@@ -1,0 +1,7 @@
+.product-reviews {
+  margin-block-start: var(--spacing-xxbig);
+}
+
+.product-reviews[hidden] {
+  display: none;
+}
