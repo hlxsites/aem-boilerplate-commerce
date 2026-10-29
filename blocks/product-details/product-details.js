@@ -37,7 +37,10 @@ import { render as PaymentServices } from '@dropins/storefront-payment-services/
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Libs
-import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
+import {
+  rootLink,
+  fetchPlaceholders,
+} from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -46,7 +49,10 @@ import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
-import { showOrderConfirmationPage, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+import {
+  showOrderConfirmationPage,
+  preloadCheckoutSuccess,
+} from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
@@ -527,160 +533,6 @@ export default async function decorate(block) {
   }, { eager: true });
 
   return Promise.resolve();
-}
-
-/**
- * Handle order placed event
- * @param {Object} orderData - The order data
- * @param {Object} block - The block
- */
-async function handleOrderPlaced(orderData, block) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(block, { orderData });
-}
-
-async function setJsonLdProduct(product) {
-  const {
-    name,
-    inStock,
-    description,
-    sku,
-    urlKey,
-    price,
-    priceRange,
-    images,
-    attributes,
-  } = product;
-  const amount = priceRange?.minimum?.final?.amount || price?.final?.amount;
-  const brand = attributes?.find((attr) => attr.name === 'brand');
-
-  // get variants
-  const { data } = await pdpApi.fetchGraphQl(`
-    query GET_PRODUCT_VARIANTS($sku: String!) {
-      variants(sku: $sku) {
-        variants {
-          product {
-            sku
-            name
-            inStock
-            images(roles: ["image"]) {
-              url
-            }
-            ...on SimpleProductView {
-              price {
-                final { amount { currency value } }
-              }
-            }
-          }
-        }
-      }
-    }
-  `, {
-    method: 'GET',
-    variables: { sku },
-  });
-
-  const variants = data?.variants?.variants || [];
-
-  const ldJson = {
-    '@context': 'http://schema.org',
-    '@type': 'Product',
-    name,
-    description,
-    image: images[0]?.url,
-    offers: [],
-    productID: sku,
-    brand: {
-      '@type': 'Brand',
-      name: brand?.value,
-    },
-    url: new URL(getProductLink(urlKey, sku), window.location),
-    sku,
-    '@id': new URL(getProductLink(urlKey, sku), window.location),
-  };
-
-  if (variants.length > 1) {
-    ldJson.offers.push(...variants
-      // A variant can come back without a resolved product (e.g. an
-      // unavailable option combination); skip those so JSON-LD generation
-      // doesn't throw on null property access.
-      .filter((variant) => variant.product)
-      .map((variant) => ({
-        '@type': 'Offer',
-        name: variant.product.name,
-        image: variant.product.images?.[0]?.url,
-        price: variant.product.price?.final?.amount?.value,
-        priceCurrency: variant.product.price?.final?.amount?.currency,
-        availability: variant.product.inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-        sku: variant.product.sku,
-      })));
-  } else {
-    ldJson.offers.push({
-      '@type': 'Offer',
-      price: amount?.value,
-      priceCurrency: amount?.currency,
-      availability: inStock ? 'http://schema.org/InStock' : 'http://schema.org/OutOfStock',
-    });
-  }
-
-  setJsonLd(ldJson, 'product');
-}
-
-function createMetaTag(property, content, type) {
-  if (!property || !type) {
-    return;
-  }
-  let meta = document.head.querySelector(`meta[${type}="${property}"]`);
-  if (meta) {
-    if (!content) {
-      meta.remove();
-      return;
-    }
-    meta.setAttribute(type, property);
-    meta.setAttribute('content', content);
-    return;
-  }
-  if (!content) {
-    return;
-  }
-  meta = document.createElement('meta');
-  meta.setAttribute(type, property);
-  meta.setAttribute('content', content);
-  document.head.appendChild(meta);
-}
-
-function setMetaTags(product) {
-  if (!product?.sku) {
-    return;
-  }
-
-  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
-
-  createMetaTag('title', product.metaTitle || product.name, 'name');
-  createMetaTag('description', product.metaDescription, 'name');
-  createMetaTag('keywords', product.metaKeyword, 'name');
-
-  createMetaTag('og:type', 'product', 'property');
-  createMetaTag('og:description', product.shortDescription, 'property');
-  createMetaTag('og:title', product.metaTitle || product.name, 'property');
-  createMetaTag('og:url', window.location.href, 'property');
-  const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
-  const metaImage = mainImage?.url || product?.images[0]?.url;
-  createMetaTag('og:image', metaImage, 'property');
-  createMetaTag('og:image:secure_url', metaImage, 'property');
-  createMetaTag('product:price:amount', price.value, 'property');
-  createMetaTag('product:price:currency', price.currency, 'property');
 }
 
 /**
