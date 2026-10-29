@@ -16,7 +16,7 @@
  *******************************************************************/
 import { CartModel } from '../data/models';
 import { useText } from '../../node_modules/@dropins/tools/src/i18n';
-import { PriceProps } from '@dropins/tools/components';
+import { PriceProps } from '../../node_modules/@dropins/tools/src/components/Price';
 /**
  * Params for the useCartItems hook
  *
@@ -95,5 +95,5 @@ export interface UseCartItemsApi {
  *   - handleRemoveItem(item): Promise<CartModel>
  *   - setItemUpdating(uid, state): void
  */
-export declare const useCartItems: ({ dictionary, onQuantityUpdate, onItemRemove, }: useCartItemsProps) => UseCartItemsApi;
+export declare const useCartItems: ({ dictionary, onQuantityUpdate, onItemRemove }: useCartItemsProps) => UseCartItemsApi;
 export {};

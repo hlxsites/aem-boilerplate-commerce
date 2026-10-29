@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FieldsProps } from './index.js';
+import { FieldsProps } from '.';
 type errorInformationProps = {
     error: string;
 };

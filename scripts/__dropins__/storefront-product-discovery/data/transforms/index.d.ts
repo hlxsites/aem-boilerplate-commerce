@@ -8,3 +8,4 @@
  *******************************************************************/
 export * from './product';
 export * from './api';
+//# sourceMappingURL=index.d.ts.map

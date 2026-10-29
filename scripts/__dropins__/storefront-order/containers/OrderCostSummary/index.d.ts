@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderCostSummary.js';
-export { OrderCostSummary as default } from './OrderCostSummary.js';
+export * from './OrderCostSummary';
+export { OrderCostSummary as default } from './OrderCostSummary';

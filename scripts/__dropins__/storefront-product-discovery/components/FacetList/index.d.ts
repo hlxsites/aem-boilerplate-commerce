@@ -14,5 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './FacetList.js';
-export { FacetList as default } from './FacetList.js';
+export * from './FacetList';
+export { FacetList as default } from './FacetList';
+//# sourceMappingURL=index.d.ts.map

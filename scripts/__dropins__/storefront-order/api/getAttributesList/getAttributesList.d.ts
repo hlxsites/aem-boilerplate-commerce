@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AttributesFormModel } from '../../data/models/index.js';
+import { AttributesFormModel } from '../../data/models';
 export declare const getAttributesList: (entityType: string) => Promise<AttributesFormModel[] | []>;

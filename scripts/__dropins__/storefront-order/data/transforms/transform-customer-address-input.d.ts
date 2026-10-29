@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderAddressModel } from '../models/index.js';
+import { OrderAddressModel } from '../models';
 export declare function transformCustomerAddressInput(address: OrderAddressModel): {
     region: {
         region_id: number | null;

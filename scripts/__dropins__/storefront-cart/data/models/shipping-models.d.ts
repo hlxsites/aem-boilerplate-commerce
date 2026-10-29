@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Price } from './cart-model';
+import { Price } from "./cart-model";
 export interface PartialAddress {
     countryCode: string;
     postCode?: string;

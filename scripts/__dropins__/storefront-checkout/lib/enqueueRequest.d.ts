@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ReadonlySignal } from '@preact/signals';
+import { ReadonlySignal } from '@dropins/tools/lib/signals';
 export declare enum QueueName {
     Updates = "updates",
     Default = "default",

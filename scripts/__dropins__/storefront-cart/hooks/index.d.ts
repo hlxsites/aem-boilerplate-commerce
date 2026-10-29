@@ -17,4 +17,3 @@
 export * from './useEstimatedTotals';
 export * from './useEstimatedShipping';
 export * from './useGiftOptions';
-export * from './useRestoreFocusOnEnable';

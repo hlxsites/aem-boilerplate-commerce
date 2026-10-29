@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { ReorderProps } from '../../types/index.js';
+import { ReorderProps } from '../../types';
 export declare const Reorder: FunctionComponent<ReorderProps>;

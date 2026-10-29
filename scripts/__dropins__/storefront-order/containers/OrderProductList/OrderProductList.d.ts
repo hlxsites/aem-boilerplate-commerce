@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderProductListProps } from '../../types/index.js';
-import { Container } from '@dropins/tools/lib';
+import { OrderProductListProps } from '../../types';
+import { Container } from '../../../node_modules/@dropins/tools/src/lib';
 export declare const OrderProductList: Container<OrderProductListProps>;

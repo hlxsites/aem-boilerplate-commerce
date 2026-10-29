@@ -6,7 +6,7 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { OrderProps } from '../index.js';
+import { OrderProps } from '..';
 export interface PlaceNegotiableQuoteOrderProps extends OrderProps {
 }
 export interface PlaceNegotiableQuoteOrderResponse {

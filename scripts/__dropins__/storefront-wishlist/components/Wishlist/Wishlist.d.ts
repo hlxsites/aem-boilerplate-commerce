@@ -18,7 +18,6 @@ import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { PageInfo, Product, Wishlist as WishlistModel, Item } from '../../data/models';
-import { ProductItemActionsContext } from '../ProductItem';
 import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
 export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
     className?: string;
@@ -35,8 +34,6 @@ export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
     routeEmptyWishlistCTA?: () => string;
     onLoginClick?: () => void;
     routeProdDetailPage: (product: Product) => string;
-    wishlistId?: string;
-    scope?: string;
     pageInfo?: PageInfo;
     activePage?: number;
     onPageChange?: (page: number) => void;
@@ -46,7 +43,6 @@ export interface WishlistProps extends HTMLAttributes<HTMLDivElement> {
             defaultImageProps: ImageProps;
             item: Item;
         }>;
-        actions?: SlotProps<ProductItemActionsContext>;
     };
 }
 export declare const Wishlist: FunctionComponent<WishlistProps>;

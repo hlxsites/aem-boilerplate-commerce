@@ -1,1 +1,2 @@
-export { Facet, ProductView } from './graphql/fragments.graphql.js';
+export { Facet, ProductView } from './graphql/fragments.graphql';
+//# sourceMappingURL=fragments.d.ts.map

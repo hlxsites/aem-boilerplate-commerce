@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CustomerDataModelShort } from '../../data/models/index.js';
+import { CustomerDataModelShort } from '../../data/models';
 export declare const getCustomer: () => Promise<CustomerDataModelShort>;

@@ -7,5 +7,5 @@
  * accompanying it.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { OrderCommentsComponentProps } from '../../types/index.js';
+import { OrderCommentsComponentProps } from '../../types';
 export declare const OrderComments: FunctionComponent<OrderCommentsComponentProps>;

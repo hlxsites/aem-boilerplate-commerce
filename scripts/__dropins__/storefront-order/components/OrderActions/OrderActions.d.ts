@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { OrderActionsProps } from '../../types/index.js';
+import { OrderActionsProps } from '../../types';
 export declare const OrderActions: FunctionComponent<OrderActionsProps>;

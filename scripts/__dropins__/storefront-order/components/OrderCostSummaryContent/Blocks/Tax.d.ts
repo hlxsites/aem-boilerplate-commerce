@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../../data/models/index.js';
+import { OrderDataModel } from '../../../data/models';
 type translationsTypes = Record<string, string>;
 export declare const Tax: ({ translations, renderTaxAccordion, totalAccordionTaxValue, order, }: {
     translations: translationsTypes;

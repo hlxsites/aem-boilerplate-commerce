@@ -1,4 +1,5 @@
 import { Product } from './product';
+
 export type Scope = 'search' | 'popover' | string;
 export interface SearchVariables {
     scope?: Scope;
@@ -77,3 +78,4 @@ export interface AttributeMetadata {
     sortable: RefineOption[];
     filterableInSearch: RefineOption[];
 }
+//# sourceMappingURL=api.d.ts.map

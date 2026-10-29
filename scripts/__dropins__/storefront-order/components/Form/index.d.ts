@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Form.js';
-export { Form as default } from './Form.js';
+export * from './Form';
+export { Form as default } from './Form';

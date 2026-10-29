@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models/index.js';
-import { StoreConfigProps, UseOrderCostSummaryProps } from '../../types/index.js';
+import { OrderDataModel } from '../../data/models';
+import { StoreConfigProps, UseOrderCostSummaryProps } from '../../types';
 export declare const useOrderCostSummary: ({ orderData, config, }: UseOrderCostSummaryProps) => {
     loading: boolean;
     storeConfig: StoreConfigProps | null;

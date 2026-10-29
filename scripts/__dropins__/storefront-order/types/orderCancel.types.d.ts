@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ButtonProps, PickerProps } from '@dropins/tools/components';
-import { PickerOption } from '@dropins/tools/components';
+import { ButtonProps, PickerProps } from '@dropins/tools/src/components';
+import { PickerOption } from '../../node_modules/@dropins/tools/src/components';
 export interface OrderCancelProps {
     orderRef: string;
 }

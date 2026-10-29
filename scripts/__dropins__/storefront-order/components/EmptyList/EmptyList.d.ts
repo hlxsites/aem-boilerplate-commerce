@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { EmptyListProps } from '../../types/index.js';
+import { EmptyListProps } from '../../types';
 export declare const EmptyList: FunctionComponent<EmptyListProps>;

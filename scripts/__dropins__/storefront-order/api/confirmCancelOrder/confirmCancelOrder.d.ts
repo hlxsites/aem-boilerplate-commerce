@@ -12,5 +12,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models/index.js';
+import { OrderDataModel } from '../../data/models';
 export declare const confirmCancelOrder: (orderId: string, confirmationKey: string) => Promise<OrderDataModel | null>;

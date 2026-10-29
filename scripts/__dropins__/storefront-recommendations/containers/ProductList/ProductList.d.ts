@@ -5,8 +5,7 @@ import { Item, RecommendationUnitModel } from '../../data/models';
 import { CurrentProduct } from '../../api/getRecommendationsByUnitIds/getRecommendationsByUnitIds';
 
 export interface ProductListProps extends HTMLAttributes<HTMLDivElement> {
-    label?: string;
-    recId?: string;
+    recId: string;
     initialData?: {
         recommendations?: {
             results: RecommendationUnitModel[];

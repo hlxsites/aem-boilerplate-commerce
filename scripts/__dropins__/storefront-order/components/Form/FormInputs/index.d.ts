@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './FormInputs.js';
-export { FormInputs as default } from './FormInputs.js';
+export * from './FormInputs';
+export { FormInputs as default } from './FormInputs';

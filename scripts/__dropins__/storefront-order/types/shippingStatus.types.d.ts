@@ -14,9 +14,9 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { OrderDataModel, OrderItemModel, OrdersReturnItemsPropsModel, OrdersReturnPropsModel, ShipmentItemsModel } from '../data/models';
-import { ImageProps } from '@dropins/tools/components';
+import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
 type routeOrderDetailsTypes = {
     returnNumber?: string;
     token?: string;

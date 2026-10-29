@@ -6,4 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './search.js';
+export * from './search';
+//# sourceMappingURL=index.d.ts.map

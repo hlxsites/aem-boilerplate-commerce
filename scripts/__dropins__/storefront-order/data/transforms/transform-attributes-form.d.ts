@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AttributesListItems, ResponseAttributesFormItemsProps } from '../../types/index.js';
+import { AttributesListItems, ResponseAttributesFormItemsProps } from '../../types';
 import { AttributesFormModel } from '../models';
 export declare const cloneArrayIfExists: (fields: ResponseAttributesFormItemsProps[]) => any;
 export declare const transformAttributesForm: (items?: ResponseAttributesFormItemsProps[] | AttributesListItems[] | []) => AttributesFormModel[];

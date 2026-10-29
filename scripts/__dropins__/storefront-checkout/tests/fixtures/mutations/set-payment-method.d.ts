@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SetPaymentMethodOnCartMutation } from '../../../__generated__/types';
-export declare const setPaymentMethodFixture: SetPaymentMethodOnCartMutation;
+import { SetPaymentMethodMutation } from '../../../__generated__/types';
+export declare const setPaymentMethodFixture: SetPaymentMethodMutation;

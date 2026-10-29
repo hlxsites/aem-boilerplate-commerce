@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderContext, OrderDataModel, ShoppingCartContext } from '../models/index.js';
+import { OrderContext, OrderDataModel, ShoppingCartContext } from '../models';
 export declare const transformShoppingCartContext: (cartId: string, data: OrderDataModel) => ShoppingCartContext;
 export declare const transformOrderContext: (data: OrderDataModel) => OrderContext;

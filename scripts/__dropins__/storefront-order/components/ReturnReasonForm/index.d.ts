@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './ReturnReasonForm.js';
-export { ReturnReasonForm as default } from './ReturnReasonForm.js';
+export * from './ReturnReasonForm';
+export { ReturnReasonForm as default } from './ReturnReasonForm';

@@ -13,4 +13,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './reorderItems.js';
+export * from './reorderItems';

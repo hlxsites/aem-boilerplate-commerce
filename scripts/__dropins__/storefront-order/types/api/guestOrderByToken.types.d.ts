@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderProps } from '../index.js';
+import { OrderProps } from '..';
 export interface GuestOrderByTokenProps extends OrderProps {
 }
 export interface GuestOrderByTokenResponse {

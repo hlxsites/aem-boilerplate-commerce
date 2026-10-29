@@ -6,5 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ProductList.js';
-export { ProductList as default } from './ProductList.js';
+export * from './ProductList';
+export { ProductList as default } from './ProductList';
+//# sourceMappingURL=index.d.ts.map

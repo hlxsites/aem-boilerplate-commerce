@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FieldEnumList } from '../../types/index.js';
+import { FieldEnumList } from '../../types';
 export interface AttributesFormItemsProps {
     code?: string;
     name?: string;

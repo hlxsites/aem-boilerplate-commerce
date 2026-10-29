@@ -25,5 +25,4 @@ export * from './Price';
 export * from './PriceTiers';
 export * from './GiftCardOptions';
 export * from './DownloadableOptions';
-export * from './CustomizableOptions';
 //# sourceMappingURL=index.d.ts.map

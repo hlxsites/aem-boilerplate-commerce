@@ -13,9 +13,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { OrderDataModel, OrdersReturnPropsModel } from '../data/models';
-import { IconNode, IconType } from '@dropins/tools/components';
+import { IconNode, IconType } from '../../node_modules/@dropins/tools/src/components';
 export interface KeysSortOrderProps {
     name: string;
     orderNumber?: number;

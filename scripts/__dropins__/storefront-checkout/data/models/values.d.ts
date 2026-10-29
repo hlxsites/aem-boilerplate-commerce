@@ -19,6 +19,6 @@ export interface ValuesModel {
     email: string;
     isBillToShipping: boolean | undefined;
     selectedPaymentMethod: PaymentMethod | null;
-    selectedPaymentMethodCartCode: string | null;
+    selectedPaymentMethodCode: string | null;
     selectedShippingMethod: ShippingMethod | null;
 }

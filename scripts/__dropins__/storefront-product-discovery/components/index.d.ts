@@ -6,7 +6,8 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './ProductList/index.js';
-export * from './SearchAlertMessage/index.js';
-export * from './Facet/index.js';
-export * from './FacetList/index.js';
+export * from './ProductList';
+export * from './SearchAlertMessage';
+export * from './Facet';
+export * from './FacetList';
+//# sourceMappingURL=index.d.ts.map

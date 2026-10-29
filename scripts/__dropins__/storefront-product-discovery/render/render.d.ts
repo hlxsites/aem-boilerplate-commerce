@@ -1,10 +1,4 @@
-/********************************************************************
- *  Copyright 2025 Adobe
- *  All Rights Reserved.
- *
- * NOTICE:  Adobe permits you to use, modify, and distribute this
- * file in accordance with the terms of the Adobe license agreement
- * accompanying it.
- *******************************************************************/
-import { Render } from '@dropins/tools/lib';
+import { Render } from '@dropins/tools/types/elsie/src/lib';
+
 export declare const render: Render;
+//# sourceMappingURL=render.d.ts.map

@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderCancelProps } from '../../types/index.js';
+import { OrderCancelProps } from '../../types';
 import { FunctionComponent } from 'preact';
 export declare const OrderCancel: FunctionComponent<OrderCancelProps>;

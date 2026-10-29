@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { RequestGuestReturnProps } from '../../types/index.js';
+import { RequestGuestReturnProps } from '../../types';
 export declare const requestGuestReturn: (form: RequestGuestReturnProps) => Promise<{
     uid: string;
     number: string;

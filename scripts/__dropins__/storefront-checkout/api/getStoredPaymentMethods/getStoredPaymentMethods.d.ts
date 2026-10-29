@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2026 Adobe
+ *  Copyright 2024 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,5 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import { PaymentToken } from '../../__generated__/types';
 import { PaymentMethod } from '../../data/models/payment-method';
+export declare const STUB_STORED_PAYMENT_TOKENS: PaymentToken[];
 export declare const getStoredPaymentMethods: () => Promise<PaymentMethod[]>;

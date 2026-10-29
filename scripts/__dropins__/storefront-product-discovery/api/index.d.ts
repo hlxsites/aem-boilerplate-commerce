@@ -8,4 +8,5 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
-export * from './search/index.js';
+export * from './search';
+//# sourceMappingURL=index.d.ts.map

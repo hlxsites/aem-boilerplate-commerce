@@ -34,8 +34,6 @@ export declare const categorizeProducts: (order: OrderDataModel) => {
             };
             price: import("../types").MoneyProps;
         }[];
-        freeGiftLabel?: string | null;
-        isFreeGift?: boolean;
         taxCalculations: {
             includeAndExcludeTax: {
                 originalPrice: import("../types").MoneyProps;

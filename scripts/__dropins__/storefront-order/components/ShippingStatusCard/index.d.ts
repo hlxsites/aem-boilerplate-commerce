@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './ShippingStatusCard.js';
-export * from './ShippingStatusReturnCard.js';
-export { ShippingStatusCard as default } from './ShippingStatusCard.js';
+export * from './ShippingStatusCard';
+export * from './ShippingStatusReturnCard';
+export { ShippingStatusCard as default } from './ShippingStatusCard';

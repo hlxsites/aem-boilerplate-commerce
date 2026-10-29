@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { OrderCostSummaryContentProps } from '../../types/index.js';
+import { OrderCostSummaryContentProps } from '../../types';
 export declare const OrderCostSummaryContent: FunctionComponent<OrderCostSummaryContentProps>;

@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrdersReturnResponseProps } from '../../types/index.js';
+import { OrdersReturnResponseProps } from '../../types';
 import { CustomerOrdersReturnModel } from '../models/customer-orders-return';
 export declare const transformCustomerOrdersReturns: (returns: OrdersReturnResponseProps) => CustomerOrdersReturnModel | null;

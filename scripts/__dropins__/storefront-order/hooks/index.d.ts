@@ -13,17 +13,17 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './containers/useCreateReturn.js';
-export * from './containers/useCustomerDetails.js';
-export * from './containers/useOrderCostSummary.js';
-export * from './containers/useOrderHeader.js';
-export * from './containers/useOrderComments.js';
-export * from './containers/useOrderProductList.js';
-export * from './containers/useOrderSearch.js';
-export * from './containers/useOrderStatus.js';
-export * from './containers/useReturnsList.js';
-export * from './containers/useShippingStatus.js';
-export * from './containers/useOrderActions.js';
-export * from './useInLineAlert.js';
-export * from './useIsMobile.js';
-export * from './api/useGetStoreConfig.js';
+export * from './containers/useCreateReturn';
+export * from './containers/useCustomerDetails';
+export * from './containers/useOrderCostSummary';
+export * from './containers/useOrderHeader';
+export * from './containers/useOrderComments';
+export * from './containers/useOrderProductList';
+export * from './containers/useOrderSearch';
+export * from './containers/useOrderStatus';
+export * from './containers/useReturnsList';
+export * from './containers/useShippingStatus';
+export * from './containers/useOrderActions';
+export * from './useInLineAlert';
+export * from './useIsMobile';
+export * from './api/useGetStoreConfig';

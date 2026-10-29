@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models/index.js';
-import { UseOrderProductListProps } from '../../types/index.js';
+import { OrderDataModel } from '../../data/models';
+import { UseOrderProductListProps } from '../../types';
 export declare const useOrderProductList: ({ orderData, }: UseOrderProductListProps) => {
     loading: boolean;
     order: OrderDataModel | undefined;

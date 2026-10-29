@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Reorder.js';
-export { Reorder as default } from './index.js';
+export * from './Reorder';
+export { Reorder as default } from '.';

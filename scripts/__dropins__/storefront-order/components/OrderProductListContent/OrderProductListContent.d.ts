@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { OrderProductListContentProps } from '../../types/index.js';
+import { OrderProductListContentProps } from '../../types';
 export declare const OrderProductListContent: FunctionComponent<OrderProductListContentProps>;

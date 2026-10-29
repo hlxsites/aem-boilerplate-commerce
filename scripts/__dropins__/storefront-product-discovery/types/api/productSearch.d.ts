@@ -8,3 +8,4 @@ export interface ProductSearchResponse {
         page_info: null | any;
     };
 }
+//# sourceMappingURL=productSearch.d.ts.map

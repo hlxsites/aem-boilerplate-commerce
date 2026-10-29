@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { CartSummaryItemProps } from '../../types/index.js';
+import { CartSummaryItemProps } from '../../types';
 export declare const CartSummaryItem: FunctionComponent<CartSummaryItemProps>;

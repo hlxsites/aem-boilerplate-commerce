@@ -32,5 +32,3 @@ export * from './publishShoppingCartViewEvent';
 export * from './applyGiftCardToCart';
 export * from './removeGiftCardFromCart';
 export * from './setGiftOptionsOnCart';
-export * from './selectFreeGiftForCart';
-export * from './getAvailableFreeGiftsForCart';

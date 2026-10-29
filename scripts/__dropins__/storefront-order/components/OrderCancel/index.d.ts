@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderCancel.js';
-export { OrderCancel as default } from './OrderCancel.js';
+export * from './OrderCancel';
+export { OrderCancel as default } from './OrderCancel';

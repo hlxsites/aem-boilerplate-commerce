@@ -6,5 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './SearchAlertMessage.js';
-export { SearchAlertMessage as default } from './SearchAlertMessage.js';
+export * from './SearchAlertMessage';
+export { SearchAlertMessage as default } from './SearchAlertMessage';
+//# sourceMappingURL=index.d.ts.map

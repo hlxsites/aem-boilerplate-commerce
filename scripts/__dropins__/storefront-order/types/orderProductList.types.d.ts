@@ -13,9 +13,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SlotProps } from '@dropins/tools/lib';
+import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
 import { OrderDataModel, OrderItemModel } from '../data/models';
-import { ImageProps } from '@dropins/tools/components';
+import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
 type options = Record<string, string | number | boolean>;
 export type TaxTypes = {
     taxIncluded: boolean;

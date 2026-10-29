@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrdersReturnPropsModel } from '../../data/models/index.js';
-import { UseReturnsListProps } from '../../types/index.js';
+import { OrdersReturnPropsModel } from '../../data/models';
+import { UseReturnsListProps } from '../../types';
 export declare const useReturnsList: ({ returnPageSize }: UseReturnsListProps) => {
     pageInfo: {
         totalPages: number;

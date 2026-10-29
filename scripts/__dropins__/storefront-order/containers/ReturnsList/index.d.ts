@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from '../ReturnsList.js';
-export { ReturnsList as default } from './ReturnsList.js';
+export * from '.';
+export { ReturnsList as default } from './ReturnsList';

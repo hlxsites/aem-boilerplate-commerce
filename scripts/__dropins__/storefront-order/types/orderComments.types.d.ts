@@ -14,7 +14,7 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { OrderDataModel } from '../data/models/index.js';
+import { OrderDataModel } from '../data/models';
 export interface OrderCommentItem {
     message: string;
     timestamp: string;

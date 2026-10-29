@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { SetShippingAddressOnCartMutation } from '../../../__generated__/types';
-export declare const setShippingAddressFixture: SetShippingAddressOnCartMutation;
+import { SetShippingAddressMutation } from '../../../__generated__/types';
+export declare const setShippingAddressFixture: SetShippingAddressMutation;

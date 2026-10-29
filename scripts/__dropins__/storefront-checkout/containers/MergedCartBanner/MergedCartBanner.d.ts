@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AlertBannerProps } from '@dropins/tools/components';
+import { AlertBannerProps } from '../../../node_modules/@dropins/tools/src/components';
 import { Container } from '@dropins/tools/lib/types';
 export interface MergedCartBannerProps extends AlertBannerProps {
     active?: boolean;

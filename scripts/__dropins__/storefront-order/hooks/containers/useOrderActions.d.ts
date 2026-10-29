@@ -12,7 +12,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { UseOrderActionsProps } from '../../types/index.js';
+import { UseOrderActionsProps } from '../../types';
 export declare const useOrderActions: ({ enableOrderCancellation, }: UseOrderActionsProps) => {
     orderActionStatus: {
         heading: string;

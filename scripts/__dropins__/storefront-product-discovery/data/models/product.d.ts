@@ -1,4 +1,5 @@
 import { SearchInputUnit } from './acdl';
+
 export interface Product {
     id: string;
     name: string;
@@ -59,3 +60,4 @@ export interface SearchInputError {
     error: Error;
     request: SearchInputRequest;
 }
+//# sourceMappingURL=product.d.ts.map

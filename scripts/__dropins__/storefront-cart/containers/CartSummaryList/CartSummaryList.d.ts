@@ -15,9 +15,9 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '@dropins/tools/lib';
+import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
 import { CartModel } from '../../data/models/cart-model';
-import { ImageProps } from '@dropins/tools/components';
+import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
 export interface CartSummaryListProps extends HTMLAttributes<HTMLDivElement> {
     hideHeading?: boolean;
     hideFooter?: boolean;

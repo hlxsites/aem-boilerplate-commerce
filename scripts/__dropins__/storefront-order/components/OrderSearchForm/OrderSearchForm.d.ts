@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { OrderSearchFormProps } from '../../types/index.js';
+import { OrderSearchFormProps } from '../../types';
 export declare const OrderSearchForm: FunctionComponent<OrderSearchFormProps>;

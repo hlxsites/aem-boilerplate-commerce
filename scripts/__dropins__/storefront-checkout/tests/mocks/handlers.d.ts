@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { GraphQLHandler } from '@dropins/tools/msw';
+import { GraphQLHandler } from 'msw';
 export declare const handlers: GraphQLHandler[];

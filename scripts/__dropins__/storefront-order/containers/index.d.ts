@@ -13,15 +13,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CreateReturn.js';
-export * from './CustomerDetails.js';
-export * from './OrderCancelForm.js';
-export * from './OrderCostSummary.js';
-export * from './OrderHeader.js';
-export * from './OrderProductList.js';
-export * from './OrderReturns.js';
-export * from './OrderSearch.js';
-export * from './OrderStatus.js';
-export * from './ReturnsList.js';
-export * from './ShippingStatus.js';
-export * from './OrderComments.js';
+export * from './CreateReturn';
+export * from './CustomerDetails';
+export * from './OrderCancelForm';
+export * from './OrderCostSummary';
+export * from './OrderHeader';
+export * from './OrderProductList';
+export * from './OrderReturns';
+export * from './OrderSearch';
+export * from './OrderStatus';
+export * from './ReturnsList';
+export * from './ShippingStatus';
+export * from './OrderComments';

@@ -85,18 +85,16 @@ const e = `
     currency
     value
   }
-}`, l = `fragment CART_ITEM_FRAGMENT on CartItemInterface {
+}`, u = `fragment CART_ITEM_FRAGMENT on CartItemInterface {
   __typename
   uid
   quantity
-  is_salable
   is_available
   not_available_message
   errors {
     code
     message
   }
-  is_free_gift
   prices {
     price {
       value
@@ -278,7 +276,6 @@ const e = `
       currency
       value
     }
-    is_salable
     is_available
   }
 }
@@ -287,9 +284,8 @@ ${_}
 ${a}
 ${r}
 ${i}
-${n}`, u = `fragment CART_FRAGMENT on Cart {
+${n}`, c = `fragment CART_FRAGMENT on Cart {
   id
-  has_available_free_gifts
   total_quantity
   is_virtual
   applied_gift_cards {
@@ -390,13 +386,13 @@ ${n}`, u = `fragment CART_FRAGMENT on Cart {
     postcode
   }
 }
-${l}
+${u}
 ${t}`;
 export {
 t as APPLIED_GIFT_CARDS_FRAGMENT,
 n as AVAILABLE_GIFT_WRAPPING_FRAGMENT,
-u as CART_FRAGMENT,
-l as CART_ITEM_FRAGMENT,
+c as CART_FRAGMENT,
+u as CART_ITEM_FRAGMENT,
 a as DOWNLOADABLE_CART_ITEMS_FRAGMENT,
 i as GIFT_MESSAGE_FRAGMENT,
 r as GIFT_WRAPPING_FRAGMENT

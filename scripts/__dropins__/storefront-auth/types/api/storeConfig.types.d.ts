@@ -20,12 +20,10 @@ export interface storeConfigProps {
     required_character_classes_number: string;
     create_account_confirmation: boolean;
     customer_access_token_lifetime: number;
-    share_customer_accounts_scope?: number;
+    website_name?: string;
+    shopping_assistance_enabled?: boolean;
     shopping_assistance_checkbox_title?: string;
     shopping_assistance_checkbox_tooltip?: string;
-    shopping_assistance_enabled?: boolean;
-    website_code?: string;
-    website_name?: string;
 }
 export interface getStoreConfigResponse {
     data: {

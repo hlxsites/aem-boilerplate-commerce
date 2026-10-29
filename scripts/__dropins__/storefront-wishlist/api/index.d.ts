@@ -21,7 +21,6 @@ export * from './getStoreConfig';
 export * from './localStorage';
 export * from './getWishlistById';
 export * from './getWishlists';
-export * from './createWishlist';
 export * from './addProductsToWishlist';
 export * from './removeProductsFromWishlist';
 export * from './updateProductsInWishlist';

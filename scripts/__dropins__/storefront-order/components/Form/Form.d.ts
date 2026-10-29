@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { FormProps } from '../../types/index.js';
+import { FormProps } from '../../types';
 export declare const Form: FunctionComponent<FormProps>;

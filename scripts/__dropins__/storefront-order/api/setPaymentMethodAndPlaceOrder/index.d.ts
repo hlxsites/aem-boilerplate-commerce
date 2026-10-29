@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './setPaymentMethodAndPlaceOrder.js';
+export * from './setPaymentMethodAndPlaceOrder';
