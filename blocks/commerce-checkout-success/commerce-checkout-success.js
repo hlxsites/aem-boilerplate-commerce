@@ -30,10 +30,12 @@ import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 
 // Commerce helpers
 import {
+  decorateSections,
   fetchPlaceholders,
   rootLink,
   SUPPORT_PATH,
   authPrivacyPolicyConsentSlot,
+  ORDER_DETAILS_PATH,
 } from '../../scripts/commerce.js';
 
 // Ensure order drop-in initializer side effects are applied
@@ -41,7 +43,10 @@ import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
-import { loadCSS } from '../../scripts/aem.js';
+import { buildBlock, decorateBlock, loadCSS } from '../../scripts/aem.js';
+
+// Block-level
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -274,8 +279,50 @@ export function preloadCheckoutSuccess() {
   return loadCSS(`${window.hlx.codeBasePath}/blocks/commerce-checkout-success/commerce-checkout-success.css`);
 }
 
+/**
+ * Replaces the content of <main> with a new, decorated checkout success block.
+ * @returns {HTMLElement} The block element
+ */
+function mountCheckoutSuccessBlock() {
+  const main = document.querySelector('main');
+  const block = buildBlock('commerce-checkout-success', '');
+  const section = document.createElement('div');
+  section.append(block);
+  main.replaceChildren(section);
+  decorateSections(main);
+  decorateBlock(block);
+  section.style.display = '';
+  section.dataset.sectionStatus = 'loaded';
+  block.dataset.blockStatus = 'loaded';
+  return block;
+}
+
 export async function renderCheckoutSuccess(container, { orderData } = {}) {
-  return renderCheckoutSuccessContent(container, { orderData });
+  if (orderData) {
+    window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
+  }
+
+  await preloadCheckoutSuccess();
+
+  return renderCheckoutSuccessContent(container ?? mountCheckoutSuccessBlock(), { orderData });
+}
+
+/**
+ * Builds the order details URL based on authentication status
+ * @param {Object} orderData - Order data containing number and token
+ * @param {string} orderDetailsPath - Path to the order details page
+ * @returns {string} The constructed order details URL
+ */
+export function buildOrderDetailsUrl(orderData, orderDetailsPath = ORDER_DETAILS_PATH) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  return token
+    ? rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}`)
+    : rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 }
 
 export default async function decorate(block) {

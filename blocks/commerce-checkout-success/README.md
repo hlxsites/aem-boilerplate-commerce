@@ -24,13 +24,13 @@ No localStorage keys are used by this block.
 - `@dropins/storefront-cart` (Gift options container for order items)
 - `@dropins/storefront-auth` (Sign Up modal)
 - `@dropins/tools` (UI Button, provider, initializers)
-- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`
+- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`, `blocks/commerce-checkout/utils.js`
 
 ## Public API
 
 - `default export decorate(block)` — Renders the success view into the provided block element.
-- `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account).
-- `export function preloadCheckoutSuccess()` — Preloads the checkout success CSS. Call this before `renderCheckoutSuccess`.
+- `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account). When `orderData` is provided, the browser URL is updated to the order details page, so reloading the page shows the order. When `container` is `null` or `undefined`, the content of `<main>` is replaced with a new checkout success block, which allows rendering the success page from any location (e.g. after an order is placed via an express payment button on a PDP, in the cart, or in the mini-cart).
+- `export function preloadCheckoutSuccess()` — Preloads the checkout success CSS. Call this early (e.g. at module load) to avoid a flash of unstyled content when `renderCheckoutSuccess` is called.
 
 Example (programmatic):
 
@@ -44,9 +44,25 @@ preloadCheckoutSuccess();
 await renderCheckoutSuccess(container, { orderData });
 ```
 
+Example (from any location, e.g. a PDP express checkout `onSuccess` handler):
+
+```js
+import * as orderApi from '@dropins/storefront-order/api.js';
+import { renderCheckoutSuccess } from './blocks/commerce-checkout-success/commerce-checkout-success.js';
+
+const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
+  .then((orderData) => renderCheckoutSuccess(null, { orderData }))
+  .catch(console.error);
+
+// Pass onPaymentSuccess as the payment container's onSuccess callback.
+```
+
+Call `renderCheckoutSuccess` directly after `placeOrder()` resolves in the payment container's `onSuccess` callback. Do not register it as an `order/placed` event listener: the event is page-wide, so multiple blocks (for example, PDP and mini-cart) could render the success page twice.
+
 ## Behavior
 
 - Scrolls to top on load for proper confirmation visibility.
+- When rendered via `renderCheckoutSuccess` with `orderData`, pushes the order details URL (see `buildOrderDetailsUrl`) to the browser history. Callers must not push it themselves.
 - Loads `commerce-checkout-success.css` styles.
 - Fetches localized placeholders and mounts the Order drop-in initializer with `langDefinitions` and optional `orderData`.
 - Renders order confirmation sections (header, status, shipping status, customer details, cost summary, product list, gift options).
