@@ -11,8 +11,8 @@
           "Magento-Store-Code": "main_website_store",
           "Magento-Store-View-Code": "default",
           "Magento-Customer-Group": "77de68daecd823babbb58edb1c8e14d7106e83bb",
-          "X-Api-Key": "storefront-catalog-apollo",
-          "content-type": "application/json"
+          "content-type": "application/json",
+          "X-Api-Key": "storefront-catalog-apollo"
         }
       },
       "analytics": {
