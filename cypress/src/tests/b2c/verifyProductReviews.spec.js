@@ -19,6 +19,7 @@ function visitProduct({
   responseGate,
   requestedSku = 'adb102',
   authored = false,
+  authoredPdp = false,
   standalone = false,
   metadataSku,
   isolatedRetry = false,
@@ -65,9 +66,13 @@ function visitProduct({
     }
     return undefined;
   });
-  if (authored || standalone || metadataSku) {
-    cy.request(productUrl).then(({ body }) => {
-      let html = body;
+  cy.request(productUrl).then(({ body }) => {
+    let html = body;
+    if (!authoredPdp && !standalone) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      doc.querySelectorAll('.product-details').forEach((block) => block.remove());
+      html = `<!DOCTYPE html>${doc.documentElement.outerHTML}`;
+    }
       if (metadataSku) {
         html = html.replace(/<meta[^>]+name=["']sku["'][^>]*>/gi, '');
         html = html.replace('</head>', `<meta name="sku" content="${metadataSku}"></head>`);
@@ -81,11 +86,8 @@ function visitProduct({
       const path = standalone ? '/reviews-test' : productUrl;
       cy.intercept('GET', path, { body: html, headers: { 'content-type': 'text/html' } });
       cy.visit(path);
-    });
-  } else {
-    cy.visit(productUrl);
-  }
-  cy.wait('@reviewsConfig');
+  });
+  if (!authoredPdp || authored || standalone) cy.wait('@reviewsConfig');
   return requests;
 }
 
@@ -129,8 +131,26 @@ describe('Product reviews block', () => {
     cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
     cy.get(region).should('have.length', 1);
     cy.get('.product-details .product-reviews').should('not.exist');
-    cy.get('.product-details').parent().next().should('have.class', 'product-reviews-wrapper')
+    cy.get('.product-details').closest('.section').find(region).should('not.exist');
+    cy.get('main > .section').last().find(region).should('have.length', 1)
       .then(() => expect(requests).to.deep.equal({ catalog: 0, reviews: 1 }));
+  });
+
+  it('does not inject reviews into an explicitly authored Product Details template', () => {
+    const requests = visitProduct({ authoredPdp: true });
+    cy.get('.product-details').should('have.attr', 'data-block-status', 'loaded');
+    cy.get('.product-details__buttons__add-to-cart button').should('be.visible');
+    cy.get(region).should('not.exist').then(() => {
+      expect(requests).to.deep.equal({ catalog: 0, reviews: 0 });
+    });
+  });
+
+  it('renders explicitly authored reviews alongside an authored Product Details block', () => {
+    visitProduct({ authoredPdp: true, authored: true, requestedSku: 'ADB102' });
+    cy.get('.product-details').should('have.attr', 'data-block-status', 'loaded');
+    cy.get(`${region} .ratingsreviews-review__list`).should('be.visible');
+    cy.get(region).should('have.length', 1);
+    cy.get(region).closest('.section').find('.product-details').should('not.exist');
   });
 
   it('respects authored placement without injecting another block', () => {
