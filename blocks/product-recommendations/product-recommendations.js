@@ -216,7 +216,6 @@ export default async function decorate(block) {
       };
       if (recommendationList) {
         recommendationList.setProps((prev) => ({ ...prev, ...requestContext }));
-        return;
       }
 
       [recommendationList] = await Promise.all([
