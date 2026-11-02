@@ -5,3 +5,12 @@
 .product-reviews[hidden] {
   display: none;
 }
+
+.product-reviews .product-reviews__pagination {
+  min-width: 0;
+  margin-block: var(--spacing-medium);
+}
+
+.product-reviews .product-reviews__pagination:has(.ratingsreviews-pagination[hidden]) {
+  display: none;
+}
