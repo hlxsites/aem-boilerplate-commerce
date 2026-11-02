@@ -37,17 +37,18 @@ ownership.
 ### Placement
 
 Authors can place the block in any section, including pages without Product
-Details. When no Product Reviews block is already authored, shared page
-auto-blocking inserts sibling Product Reviews and Product Reviews Pagination
-blocks after Product Details. Both generated blocks use the same unique scope.
+Details. When the shared page auto-blocking constructs Product Details from page
+SKU context, `buildProductRatingsAndReviews(main)` appends a separate reviews
+section at the end of `main`, unless reviews are already authored.
 
-If a pagination block is already authored, the generated reviews block uses that
-pager's configured scope instead of adding another pager. Authored reviews retain
-their placement and are not given an automatic pager; author a separate
-Product Reviews Pagination block with a matching scope when navigation is wanted.
+An explicitly authored Product Details block does not automatically add reviews.
+For folder-mapped templates, authors must add Product Reviews to the template
+where it belongs. Authored placement is preserved. Developers can disable
+automatic reviews by commenting out the `buildProductRatingsAndReviews(main)`
+call immediately after `buildPDPBlock(main)` in `scripts/scripts.js`.
 
-Normal AEM block loading loads each block's JavaScript and CSS; Product Details
-does not initialize either block.
+Normal AEM block loading loads the block's JavaScript and CSS; Product Details
+does not initialize it.
 
 ### Store Configuration
 
