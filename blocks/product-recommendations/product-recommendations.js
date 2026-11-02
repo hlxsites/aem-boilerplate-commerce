@@ -214,9 +214,6 @@ export default async function decorate(block) {
         userViewHistory: getProductViewHistory(),
         userPurchaseHistory: getPurchaseHistory(),
       };
-      if (recommendationList) {
-        recommendationList.setProps((prev) => ({ ...prev, ...requestContext }));
-      }
 
       [recommendationList] = await Promise.all([
         provider.render(ProductList, {
