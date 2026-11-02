@@ -215,6 +215,10 @@ export default async function decorate(block) {
         userPurchaseHistory: getPurchaseHistory(),
       };
 
+      if(recommendationList){
+        recommendationList.remove();
+      }
+
       [recommendationList] = await Promise.all([
         provider.render(ProductList, {
           routeProduct: createProductLink,
