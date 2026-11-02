@@ -215,7 +215,7 @@ export default async function decorate(block) {
         userPurchaseHistory: getPurchaseHistory(),
       };
 
-      if(recommendationList){
+      if (recommendationList) {
         recommendationList.remove();
       }
 
