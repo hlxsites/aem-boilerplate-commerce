@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './store-models';
 export * from './review-models';
+export * from './review-submission-models';
