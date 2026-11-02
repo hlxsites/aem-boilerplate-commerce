@@ -5,3 +5,20 @@
 .product-reviews[hidden] {
   display: none;
 }
+
+.product-reviews__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  margin-block-end: var(--spacing-medium);
+}
+
+.product-reviews__title {
+  margin: 0;
+}
+
+.product-reviews__write-review .dropin-button {
+  text-transform: uppercase;
+}
