@@ -37,16 +37,16 @@ import {
   authPrivacyPolicyConsentSlot,
   ORDER_DETAILS_PATH,
 } from '../../scripts/commerce.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Ensure order drop-in initializer side effects are applied
 import '../../scripts/initializers/order.js';
 
 // Local modal helper
 import createModal from '../modal/modal.js';
-import { buildBlock, decorateBlock, loadCSS } from '../../scripts/aem.js';
 
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
+// AEM helpers
+import { buildBlock, decorateBlock, loadCSS } from '../../scripts/aem.js';
 
 // ----------------------------------------------------------------------------
 // Local selectors and fragments (order confirmation only)
@@ -301,8 +301,6 @@ export async function renderCheckoutSuccess(container, { orderData } = {}) {
   if (orderData) {
     window.history.pushState({}, '', buildOrderDetailsUrl(orderData));
   }
-
-  await preloadCheckoutSuccess();
 
   return renderCheckoutSuccessContent(container ?? mountCheckoutSuccessBlock(), { orderData });
 }

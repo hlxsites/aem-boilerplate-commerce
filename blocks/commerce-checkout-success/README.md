@@ -24,7 +24,7 @@ No localStorage keys are used by this block.
 - `@dropins/storefront-cart` (Gift options container for order items)
 - `@dropins/storefront-auth` (Sign Up modal)
 - `@dropins/tools` (UI Button, provider, initializers)
-- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`, `blocks/commerce-checkout/utils.js`
+- Local helpers: `scripts/commerce.js`, `scripts/aem.js`, `blocks/modal/modal.js`
 
 ## Public API
 
@@ -48,7 +48,9 @@ Example (from any location, e.g. a PDP express checkout `onSuccess` handler):
 
 ```js
 import * as orderApi from '@dropins/storefront-order/api.js';
-import { renderCheckoutSuccess } from './blocks/commerce-checkout-success/commerce-checkout-success.js';
+import { preloadCheckoutSuccess, renderCheckoutSuccess } from './blocks/commerce-checkout-success/commerce-checkout-success.js';
+
+preloadCheckoutSuccess();
 
 const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
   .then((orderData) => renderCheckoutSuccess(null, { orderData }))
@@ -57,12 +59,10 @@ const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
 // Pass onPaymentSuccess as the payment container's onSuccess callback.
 ```
 
-Call `renderCheckoutSuccess` directly after `placeOrder()` resolves in the payment container's `onSuccess` callback. Do not register it as an `order/placed` event listener: the event is page-wide, so multiple blocks (for example, PDP and mini-cart) could render the success page twice.
-
 ## Behavior
 
 - Scrolls to top on load for proper confirmation visibility.
-- When rendered via `renderCheckoutSuccess` with `orderData`, pushes the order details URL (see `buildOrderDetailsUrl`) to the browser history. Callers must not push it themselves.
+- When rendered via `renderCheckoutSuccess` with `orderData`, pushes the order details URL to the browser history.
 - Loads `commerce-checkout-success.css` styles.
 - Fetches localized placeholders and mounts the Order drop-in initializer with `langDefinitions` and optional `orderData`.
 - Renders order confirmation sections (header, status, shipping status, customer details, cost summary, product list, gift options).

@@ -37,10 +37,7 @@ import { render as PaymentServices } from '@dropins/storefront-payment-services/
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
 // Libs
-import {
-  rootLink,
-  fetchPlaceholders,
-} from '../../scripts/commerce.js';
+import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
 
 // Initializers
 import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
@@ -49,10 +46,7 @@ import '../../scripts/initializers/wishlist.js';
 import '../../scripts/initializers/payment-services.js';
 
 // Checkout success block import and CSS preload
-import {
-  renderCheckoutSuccess,
-  preloadCheckoutSuccess,
-} from '../commerce-checkout-success/commerce-checkout-success.js';
+import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
