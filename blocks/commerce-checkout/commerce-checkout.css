@@ -43,8 +43,8 @@
     border-bottom: var(--shape-border-width-3) solid var(--color-neutral-400);
 }
 
-/* No billing section to divide from when a saved card is selected */
-.checkout__payment-methods--stored-selected {
+/* No billing section divisor needed when payment methods shown inside separate box */
+.checkout__payment-methods:has(.checkout-payment-methods__stored-methods) {
     padding-bottom: 0;
     border-bottom: none;
 }
