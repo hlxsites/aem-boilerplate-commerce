@@ -1,0 +1,18 @@
+import{u as a,a as e,M as t,U as i,k as d}from"./iframe-S6tzT0R4.js";import{F as c,P as o}from"./Panel-DQ_n52qT.js";import"./preload-helper-C1FmrZbK.js";const h=""+new URL("Colors-BbXc3N7h.png",import.meta.url).href,l=""+new URL("Spacing-CcHveawj.png",import.meta.url).href,p=""+new URL("Typography-C9K3wW-_.png",import.meta.url).href,u=""+new URL("ShapeStyles-CprUMIdi.png",import.meta.url).href;function s(r){const n={a:"a",code:"code",h1:"h1",h2:"h2",h3:"h3",p:"p",pre:"pre",...a(),...r.components};return e(d,{children:[e(t,{title:"Design/Overview"}),`
+`,e(i,{children:[e(n.h1,{id:"drop-in-design-tokens",children:"Drop-in Design Tokens"}),e(n.p,{children:`All of our drop-ins are built with our design tokens baked-in so that you can
+quickly change their visual appearance to match your brand.`}),e(n.h2,{id:"what-are-design-tokens",children:"What are design tokens?"}),e(n.p,{children:`Design tokens are CSS variables with default values. Our design tokens provide a
+standard set of CSS properties and default values for colors, typography,
+spacing, shapes, and layouts. We use them in all of our component CSS classes to
+avoid hard-coded values that cannot be easily changed. With this strategy, you
+can restyle our drop-ins to match your brand simply by changing the default
+values.`}),e(c,{itemsPerAxis:2,children:[e(o,{header:!0,footer:!0,children:[e("img",{src:h,alt:"Colors"}),e(n.h3,{id:"colors",children:"Colors"}),e(n.p,{children:"Create meaningful experiences while also expressing hierarchy, state, and brand identity."}),e(n.p,{children:e(n.a,{href:"/docs/design-colors--overview",children:"Read more"})})]}),e(o,{header:!0,footer:!0,children:[e("img",{src:p,alt:"Typography"}),e(n.h3,{id:"typography",children:"Typography"}),e(n.p,{children:"Set your typography scale to present your content as clearly and efficiently as possible."}),e(n.p,{children:e(n.a,{href:"/docs/design-typography--overview",children:"Read more"})})]}),e(o,{header:!0,footer:!0,children:[e("img",{src:l,alt:"Spacing"}),e(n.h3,{id:"spacing",children:"Spacing"}),e(n.p,{children:"Create harmonious arrangements with consistent visual balance and predictable rhythm."}),e(n.p,{children:e(n.a,{href:"/docs/design-spacing--overview",children:"Read more"})})]}),e(o,{header:!0,footer:!0,children:[e("img",{src:u,alt:"Shape styles"}),e(n.h3,{id:"shape-styles",children:"Shape styles"}),e(n.p,{children:"Grab user attention by using shadows or other visual cues, such as strokes, border-radius, and size."}),e(n.p,{children:e(n.a,{href:"/docs/design-shape-styles--overview",children:"Read more"})})]})]}),e(n.h2,{id:"how-to-use-design-tokens",children:"How to use design tokens"}),e(n.p,{children:`To apply design tokens on your project, make use of the UIProvider, which grants
+components access to the design tokens as CSS variables. Simply specify the
+desired design token using the var() CSS function to apply its corresponding
+value.`}),e(n.pre,{children:e(n.code,{className:"language-css",children:`.myComponent {
+  background-color: var(--color-brand-500);
+}
+`})}),e(n.h2,{id:"how-to-add-new-design-tokens",children:"How to add new design tokens"}),e(n.p,{children:`You can always add new design tokens to the existing categories (color, spacing,
+etc.) or create new categories to fit your needs. Just follow the simple
+patterns and conventions we use in our existing design tokens and you can add as
+many new tokens for your drop-in as you want.`})]})]})}function f(r={}){const{wrapper:n}={...a(),...r.components};return n?e(n,{...r,children:e(s,{...r})}):s(r)}export{f as default};
+//# sourceMappingURL=overview-D2x4GN7c.js.map

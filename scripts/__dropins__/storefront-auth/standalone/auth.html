@@ -1,0 +1,523 @@
+<!-------------------------------------------------------------------
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2026 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+-------------------------------------------------------------------->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="description" content="Auth Drop-In HTML example page" />
+    <meta name="description" content="Auth Drop-In HTML example page" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>HTML Example</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <script
+      async
+      src="https://ga.jspm.io/npm:es-module-shims@1.7.2/dist/es-module-shims.js"
+    ></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@dropins/tools/": "https://www.unpkg.com/@dropins/tools@0.42.0/",
+          "@dropins/auth/": "../"
+        }
+      }
+    </script>
+    <!-- Adobe Client Data Layer -->
+    <script
+      src="https://www.unpkg.com/@adobe-commerce/adobe-client-data-layer@2.0.2/dist/adobe-client-data-layer.min.js"
+      async
+      defer
+    ></script>
+    <style>
+      /* Base Design System Tokens */
+      /* .dropin-design { } */
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      /* Initialize the Adobe Client Data Layer */
+      window.adobeDataLayer = window.adobeDataLayer || [];
+
+      /* Set required page context */
+      const pageContext = {
+        pageType: 'Auth Components',
+        pageName: document.title,
+        eventType: 'visibilityHidden',
+        maxXOffset: 0,
+        maxYOffset: 0,
+        minXOffset: 0,
+        minYOffset: 0,
+      };
+
+      /* Set required store context */
+      const storeContext = {
+        environmentId: 'storefront-auth-html-host',
+        environment: 'storefront-auth-test',
+        storeUrl: 'https://magento.com/',
+        websiteId: 123456,
+        websiteCode: 'website_code',
+        storeId: 123456,
+        storeCode: 'store_code',
+        storeViewId: 123456,
+        storeViewCode: 'store_view_code',
+        websiteName: 'website_name',
+        storeName: 'store_name',
+        storeViewName: 'store_view_name',
+        baseCurrencyCode: 'USD',
+        storeViewCurrencyCode: 'USD',
+        catalogExtensionVersion: '1.0.0',
+        storefrontTemplate: 'Edge Delivery Service',
+      };
+
+      /* Push page and store context to the Adobe Client Data Layer */
+      window.adobeDataLayer.push(
+        { pageContext: pageContext },
+        { storefrontInstanceContext: storeContext }
+      );
+    </script>
+    <script type="module">
+      import { htmlExampleConfig, getCookie, getRoute } from './shared.js';
+
+      import { initializers } from '@dropins/tools/initializer.js';
+      import { Button, Input } from '@dropins/tools/components.js';
+      import { events } from '@dropins/tools/event-bus.js';
+
+      import { render as provider } from '@dropins/auth/render.js';
+      import SignIn from '@dropins/auth/containers/SignIn.js';
+      import SignUp from '@dropins/auth/containers/SignUp.js';
+      import ResetPassword from '@dropins/auth/containers/ResetPassword.js';
+      import UpdatePassword from '@dropins/auth/containers/UpdatePassword.js';
+      import SuccessNotification from '@dropins/auth/containers/SuccessNotification.js';
+      import AuthCombine from '@dropins/auth/containers/AuthCombine.js';
+
+      import * as recaptcha from '@dropins/tools/recaptcha.js';
+
+      import * as mesh from '@dropins/tools/fetch-graphql.js';
+      import * as authApi from '@dropins/auth/api.js';
+
+      import { sampleAddressesData } from './configs/auth.config.js';
+
+      events.enableLogger(true);
+
+      const fr_FR = await fetch('./i18n/fr_FR.json').then((res) => res.json());
+      const en_US = await fetch('./i18n/en_US.json').then((res) => res.json());
+
+      mesh.setEndpoint(htmlExampleConfig.getMeshEndpoint());
+      recaptcha.setConfig();
+
+      initializers.register(authApi.initialize, {
+        langDefinitions: { fr_FR, en_US },
+        customerPermissionRoles: true,
+      });
+      initializers.mount();
+
+      // On each page load get token cookie (might be undefined)
+      const token = getCookie('auth_dropin_user_token');
+
+      // Initial auth header setup based on cookie
+      if (token) {
+        authApi.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
+      }
+
+      const signInForm = {
+        renderSignUpLink: true,
+        routeForgotPassword: () => getRoute('#ResetPassword'),
+        routeSignUp: () => getRoute('#SignUp'),
+        apiErrorMessageOverride:
+          'There is an error with the email or password. (Custom Message)',
+        slots: {
+          SuccessNotification: (ctx) => {
+            const elem = document.createElement('div');
+
+            provider.render(SuccessNotification)(elem);
+
+            ctx.appendChild(elem);
+          },
+        },
+      };
+
+      let newsletterInput;
+
+      function createNewsletterCheckbox() {
+        const newsletterCheckbox = document.createElement('div');
+        newsletterCheckbox.className = 'newsletter-checkbox';
+        newsletterCheckbox.style.display = 'flex';
+        newsletterCheckbox.style.alignItems = 'center';
+        newsletterCheckbox.style.marginBottom = 'var(--spacing-small)';
+
+        newsletterInput = document.createElement('input');
+        newsletterInput.type = 'checkbox';
+        newsletterInput.id = 'newsletter-subscription';
+        newsletterInput.name = 'is_subscribed';
+        newsletterInput.value = 'true';
+        newsletterInput.checked = true;
+        newsletterInput.setAttribute(
+          'aria-describedby',
+          'newsletter-description'
+        );
+
+        const newsletterLabel = document.createElement('label');
+        newsletterLabel.htmlFor = 'newsletter-subscription';
+        newsletterLabel.textContent =
+          'Keep me informed about the latest products, trends and promotions';
+        newsletterLabel.style.cursor = 'pointer';
+        newsletterLabel.style.fontSize = 'var(--type-body-2-font-size)';
+        newsletterLabel.style.lineHeight = 'var(--type-body-2-line-height)';
+        newsletterLabel.style.color = 'var(--color-neutral-700)';
+
+        newsletterCheckbox.appendChild(newsletterInput);
+        newsletterCheckbox.appendChild(newsletterLabel);
+
+        return newsletterCheckbox;
+      }
+
+      const signUpForm = {
+        routeSignIn: () => getRoute('#SignIn'),
+        routeRedirectOnSignIn: () => getRoute('#AuthCombine'),
+        // Subscribe to newsletter after sign up
+        onSuccessCallback: (data) => {
+          // If newsletter checkbox is not checked, do not subscribe to newsletter
+          if (!newsletterInput.checked) {
+            return;
+          }
+
+          // Subscribe to newsletter
+          const query = `
+            mutation subscribeEmailToNewsletter($email: String!) {
+              subscribeEmailToNewsletter(email: $email) {
+                status
+              }
+            }`;
+
+          const { userEmail: email } = data;
+          mesh
+            .fetchGraphQl(query, { method: 'POST', variables: { email } })
+            .then((response) => {
+              console.log('Newsletter subscription successful:', response);
+            })
+            .catch((error) => {
+              console.error('Failed to subscribe to newsletter:', error);
+            });
+        },
+        slots: {
+          PrivacyPolicyConsent: async (ctx) => {
+            const wrapper = document.createElement('span');
+
+            const newsletterCheckbox = createNewsletterCheckbox();
+            wrapper.appendChild(newsletterCheckbox);
+
+            const link = document.createElement('a');
+
+            Object.assign(wrapper.style, {
+              color: 'var(--color-neutral-700)',
+              font: 'var(--type-button-2-font)',
+              letterSpacing: 'var(--type-button-2-letter-spacing)',
+              textAlign: 'left',
+              display: 'block',
+              fontSize: '12px',
+              marginBottom: 'var(--spacing-medium)',
+            });
+
+            link.href = '/privacy-policy';
+            link.target = '_blank';
+            link.textContent = 'Privacy Policy';
+
+            wrapper.append(
+              'By creating an account, you acknowledge that you have read and agree to our ',
+              link,
+              ', which outlines how we collect, use, and protect your personal data.'
+            );
+
+            ctx.appendChild(wrapper);
+          },
+          SignUpFormInput_lastName: async (ctx) => {
+            // Extract context properties required to enable custom input
+            const {
+              inputName,
+              handleOnChange,
+              handleOnBlur,
+              handleOnFocus,
+              config,
+            } = ctx;
+
+            // Create required DOM elements, applying some basic styling
+            const wrapper = document.createElement('div');
+            const errorContainer = document.createElement('div');
+            errorContainer.classList.add(
+              ...[
+                'dropin-field__hint',
+                'dropin-field__hint--medium',
+                'dropin-field__hint--error',
+              ]
+            );
+            errorContainer.style.display = 'none';
+
+            document.querySelector(
+              '.dropin-field.auth-sign-up-form__form__field.auth-sign-up-form__form__field--middlename'
+            ).style.flexBasis = '100%';
+
+            // Rendering SDK Input component in DOM wrapper, passing event listeners decomposed from slot context
+            const inputComponent = await provider.render(Input, {
+              name: inputName,
+              onChange: handleOnChange,
+              onBlur: handleOnBlur,
+              onFocus: handleOnFocus,
+              floatingLabel: `${config.label} *`,
+              placeholder: "Custom placeholder 'Last Name'",
+            })(wrapper);
+
+            const inputElement = wrapper.querySelector('input');
+
+            wrapper.appendChild(errorContainer);
+            ctx.appendChild(wrapper);
+
+            // Apply some additional styling to Slot for consistency
+            const slotElement = document.querySelector(
+              '[data-slot="SignUpFormInput_lastname"]'
+            );
+            slotElement.style.width = '100%';
+            slotElement.style.backgroundColor = 'lightblue';
+            slotElement.style.marginBottom = 'var(--spacing-medium)';
+
+            // Declaring function supposed to update Input component on each dropin state change
+            const handleStateChange = (next) => {
+              const { errorMessage, errors, handleOnChange, handleOnBlur } =
+                next;
+
+              const getNextProps = ({ value, ...prev }, error) => ({
+                ...prev,
+                error,
+                onChange: (e) => {
+                  if (e.target.value === 'test') {
+                    alert("You can't use 'test' as a last name");
+                  }
+                  handleOnChange(e, errors);
+                },
+                onBlur: (e) => handleOnBlur(e, errors),
+              });
+
+              if (errorMessage) {
+                errorContainer.innerText = errorMessage;
+                errorContainer.style.display = 'block';
+                inputComponent.setProps((prev) => getNextProps(prev, true));
+              } else {
+                errorContainer.innerText = '';
+                errorContainer.style.display = 'none';
+                inputComponent.setProps((prev) => getNextProps(prev, false));
+              }
+
+              // Make sure that focus stay in input on re-render
+              if (document.activeElement === inputElement) {
+                setTimeout(() => {
+                  inputElement.focus();
+                }, 0);
+              }
+            };
+
+            ctx.onChange((nextState) => handleStateChange(nextState));
+          },
+          SuccessNotification: (ctx) => {
+            const userName = ctx?.isSuccessful?.userName || '';
+
+            const elem = document.createElement('div');
+
+            provider.render(SuccessNotification, {
+              labels: {
+                headingText: `Welcome ${userName}!`,
+              },
+            })(elem);
+
+            ctx.appendChild(elem);
+          },
+        },
+      };
+
+      const resetPasswordForm = {
+        routeSignIn: () => getRoute('#AuthCombine'),
+        onErrorCallback: (error) => {
+          console.log('error :>> ', error);
+        },
+      };
+
+      const updatePasswordForm = {
+        slots: {
+          SuccessNotification: (ctx) => {
+            const userName = ctx?.isSuccessful?.userName || '';
+
+            const elem = document.createElement('div');
+
+            provider.render(SuccessNotification, {
+              labels: {
+                headingText: `Welcome ${userName}!`,
+                messageText: 'Your account has been successfully created.',
+              },
+            })(elem);
+
+            ctx.appendChild(elem);
+          },
+        },
+      };
+
+      provider.render(AuthCombine, {
+        signInFormConfig: signInForm,
+        signUpFormConfig: signUpForm,
+        resetPasswordFormConfig: resetPasswordForm,
+      })(document.getElementById('AuthCombine'));
+
+      provider.render(SignIn, {
+        ...signInForm,
+        enableEmailConfirmation: true,
+      })(document.getElementById('SignIn'));
+
+      provider.render(SignUp, {
+        ...signUpForm,
+      })(document.getElementById('SignUp'));
+
+      provider.render(SignUp, {
+        ...signUpForm,
+        addressesData: sampleAddressesData,
+      })(document.getElementById('SignUpWithAddresses'));
+
+      provider.render(ResetPassword, {
+        ...resetPasswordForm,
+      })(document.getElementById('ResetPassword'));
+
+      provider.render(UpdatePassword, { ...updatePasswordForm })(
+        document.getElementById('UpdatePassword')
+      );
+
+      provider.render(SuccessNotification, {
+        formSize: 'default',
+        className: '',
+        labels: {
+          headingText: `Welcome ${getCookie(
+            'auth_dropin_firstname'
+          )} ${getCookie('auth_dropin_lastname')}, you already logged in.`,
+          messageText: 'Test message for demo mode.',
+        },
+      })(document.getElementById('SuccessNotification'));
+
+      events.on('authenticated', (isAuthenticated) => {
+        const statusIsLoggedInEl = document.getElementById('statusIsLoggedIn');
+        const statusUserTokenEl = document.getElementById('statusUserToken');
+        const statusUserFirstnameEl = document.getElementById(
+          'statusUserFirstname'
+        );
+        const statusUserLastnameEl =
+          document.getElementById('statusUserLastname');
+
+        statusIsLoggedInEl.innerText = isAuthenticated ? 'true' : 'false';
+        statusUserFirstnameEl.innerText =
+          getCookie('auth_dropin_firstname') || 'User first name not found';
+        statusUserLastnameEl.innerText =
+          getCookie('auth_dropin_lastname') || 'User last name not found';
+        statusUserTokenEl.innerText =
+          getCookie('auth_dropin_user_token') || 'User token not found';
+
+        // Update auth headers on "authenticated" event
+        if (isAuthenticated) {
+          const updatedToken = getCookie('auth_dropin_user_token');
+
+          authApi.setFetchGraphQlHeader(
+            'Authorization',
+            `Bearer ${updatedToken}`
+          );
+        } else {
+          authApi.removeFetchGraphQlHeader('Authorization');
+        }
+      });
+
+      // Emit initial "authenticated" status
+      events.emit('authenticated', !!token);
+
+      document
+        .querySelectorAll('.container-heading')
+        .forEach((el) => (el.style.display = 'block'));
+    </script>
+
+    <div id="app">
+      <div class="cards">
+        <fieldset class="actions">
+          <legend>Standalone Pages</legend>
+
+          <a href="./test/combine.html" id="standaloneAuthCombineLink"
+            >AuthCombine Container</a
+          >
+          <a href="./test/login.html" id="standaloneSignInLink"
+            >SignIn Container</a
+          >
+          <a href="./test/registration.html" id="standaloneSignUpLink"
+            >SignUp Container</a
+          >
+          <a href="./test/reset-password.html" id="standaloneResetPasswordLink"
+            >ResetPassword Container</a
+          >
+          <a
+            href="./test/success-notification.html"
+            id="standaloneSuccessNotificationLink"
+            >SuccessNotification Container</a
+          >
+          <a
+            href="./test/update-password.html"
+            id="standaloneUpdatePasswordLink"
+            >UpdatePassword Container</a
+          >
+        </fieldset>
+      </div>
+      <h1 id="title">💻</h1>
+      <div
+        class="containers"
+        style="max-width: 1200px; width: 100%; box-sizing: border-box"
+      >
+        <h2>Current Session Status</h2>
+        <div id="SessionStatus" class="container">
+          <div>
+            <b>Is logged in:&nbsp;</b> <span id="statusIsLoggedIn"></span>
+          </div>
+          <div>
+            <b>User name:&nbsp;</b> <span id="statusUserFirstname"></span>
+          </div>
+          <div>
+            <b>User last name:&nbsp;</b> <span id="statusUserLastname"></span>
+          </div>
+          <div><b>User token:&nbsp;</b> <span id="statusUserToken"></span></div>
+        </div>
+        <h2 class="heading">Frontend Containers</h2>
+        <div class="container-heading">AuthCombine Container</div>
+        <div id="AuthCombine" class="container"></div>
+        <div class="container-heading">SignIn Container</div>
+        <div id="SignIn" class="container"></div>
+        <div class="container-heading">SignUp Container</div>
+        <div id="SignUp" class="container sign-up"></div>
+        <div class="container-heading">
+          SignUp Container - Automatic Addresses Creation
+        </div>
+        <div id="SignUpWithAddresses" class="container"></div>
+        <div class="container-heading">ResetPassword Container</div>
+        <div id="ResetPassword" class="container"></div>
+        <div class="container-heading">UpdatePassword Container</div>
+        <div id="UpdatePassword" class="container"></div>
+        <div class="container-heading">SuccessNotification Container</div>
+        <div id="SuccessNotification" class="container"></div>
+      </div>
+    </div>
+
+    <link rel="stylesheet" href="styles.css" />
+  </body>
+</html>

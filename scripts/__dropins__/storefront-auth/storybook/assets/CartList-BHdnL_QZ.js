@@ -1,0 +1,2 @@
+import{a as r,N as l}from"./iframe-S6tzT0R4.js";import{c}from"./classes-DJBjVfEy.js";const m=({className:a,children:i,...s})=>r("div",{...s,className:c(["dropin-cart-list",a]),children:r("div",{className:"dropin-cart-list__wrapper","aria-live":"assertive","aria-relevant":"all",children:l.map(i,(e,t)=>r("div",{className:"dropin-cart-list__item",children:e},t))})});export{m as C};
+//# sourceMappingURL=CartList-BHdnL_QZ.js.map

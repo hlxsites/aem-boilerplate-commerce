@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title></title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      line-height: 1.5;
+      padding: 1rem;
+      font-family: monospace;
+    }
+
+    button {
+      background: none;
+      padding: 0;
+      border: none;
+      cursor: pointer;
+      display: inline;
+    }
+
+    [data-copy] {
+      border-bottom: 1px dashed #999;
+      padding: 1px;
+    }
+
+    a,
+    a:visited {
+      color: aqua;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div>
+      <strong>StoryBook:</strong>
+      <a href="storybook/index.html">Launch Storybook</a>
+    </div>
+    <div>
+      <strong>Launch Auth Page:</strong>
+      <a data-cy="data-auth-url" href="standalone/auth.html">Launch Auth Page</a>
+    </div>
+    <div>
+      <strong>Launch Registration Page:</strong>
+      <a data-cy="data-auth-registration-url" href="standalone/test/registration.html">Launch Registration Page</a>
+    </div>
+    <div>
+      <strong>Launch SignIn SignUp Page:</strong>
+      <a data-cy="data-auth-combine-url" href="standalone/test/combine.html">Launch SignIn SignUp Page</a>
+    </div>
+    <div>
+      <strong>Launch SignIn Page:</strong>
+      <a data-cy="data-auth-signin-url" href="standalone/test/login.html">Launch SignIn Page</a>
+    </div>
+    <div>
+      <strong>Launch Reset Password Page:</strong>
+      <a data-cy="data-auth-reset-password-url" href="standalone/test/reset-password.html">Launch Reset Password
+        Page</a>
+    </div>
+    <div>
+      <strong>Launch Success Notification Page:</strong>
+      <a data-cy="data-auth-success-notification-url" href="standalone/test/success-notification.html">Launch Success
+        Notification Page</a>
+    </div>
+    <div>
+      <strong>Launch Update Password Page:</strong>
+      <a data-cy="data-auth-update-password-url" href="standalone/test/update-password.html">Launch Update Password
+        Page</a>
+    </div>
+  </div>
+</body>
+
+</html>

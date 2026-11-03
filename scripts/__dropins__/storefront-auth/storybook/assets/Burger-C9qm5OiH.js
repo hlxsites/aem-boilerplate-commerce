@@ -1,0 +1,2 @@
+import{_ as t}from"./iframe-S6tzT0R4.js";import"./preload-helper-C1FmrZbK.js";const n=o=>t("svg",{width:24,height:24,viewBox:"0 0 24 24",fill:"none",xmlns:"http://www.w3.org/2000/svg",...o},t("path",{vectorEffect:"non-scaling-stroke",d:"M3 12H21",stroke:"currentColor"}),t("path",{vectorEffect:"non-scaling-stroke",d:"M3 6H21",stroke:"currentColor"}),t("path",{vectorEffect:"non-scaling-stroke",d:"M3 18H21",stroke:"currentColor"}));export{n as default};
+//# sourceMappingURL=Burger-C9qm5OiH.js.map

@@ -1,0 +1,33 @@
+{
+  "Auth": {
+    "PasswordValidationMessage": {
+      "chartTwoSymbols": "Utilisez des caractères et des chiffres ou des symboles",
+      "chartThreeSymbols": "Utilisez des caractères, des chiffres et des symboles",
+      "chartFourSymbols": "Utilisez des caractères majuscules, des caractères minuscules, des chiffres et des symboles"
+    },
+    "ResetPasswordForm": {
+      "title": "Réinitialisez votre mot de passe",
+      "buttonPrimary": "Réinitialiser le mot de passe",
+      "buttonSecondary": "Retour à la connexion"
+    },
+    "SignInForm": {
+      "title": "Se connecter",
+      "buttonPrimary": "Se connecter",
+      "buttonSecondary": "S'inscrire",
+      "buttonTertiary": "Mot de passe oublié ?"
+    },
+    "SignUpForm": {
+      "title": "S'inscrire",
+      "buttonPrimary": "Créer un compte",
+      "buttonSecondary": "Déjà membre ? Se connecter",
+      "keepMeLoggedText": "Me garder connecté après la création du compte"
+    },
+    "UpdatePasswordForm": {
+      "title": "Mettre à jour le mot de passe",
+      "buttonPrimary": "Mettre à jour le mot de passe"
+    },
+    "FormText": {
+      "requiredFieldError": "Ce champ est obligatoire."
+    }
+  }
+}
