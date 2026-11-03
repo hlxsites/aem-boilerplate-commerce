@@ -31,6 +31,7 @@ No localStorage keys are used by this block.
 - `default export decorate(block)` — Renders the success view into the provided block element.
 - `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account). When `orderData` is provided, the browser URL is updated to the order details page, so reloading the page shows the order. When `container` is `null` or `undefined`, the content of `<main>` is replaced with a new checkout success block, which allows rendering the success page from any location (e.g. after an order is placed via an express payment button on a PDP, in the cart, or in the mini-cart).
 - `export function preloadCheckoutSuccess()` — Preloads the checkout success CSS. Call this early (e.g. at module load) to avoid a flash of unstyled content when `renderCheckoutSuccess` is called.
+- `export function buildOrderDetailsUrl(orderData, orderDetailsPath = ORDER_DETAILS_PATH)` — Builds the order details URL based on authentication status.
 
 Example (programmatic):
 
