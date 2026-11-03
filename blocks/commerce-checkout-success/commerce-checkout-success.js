@@ -36,7 +36,6 @@ import {
   ORDER_DETAILS_PATH,
   SUPPORT_PATH,
   authPrivacyPolicyConsentSlot,
-  ORDER_DETAILS_PATH,
 } from '../../scripts/commerce.js';
 import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
