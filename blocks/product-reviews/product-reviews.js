@@ -28,6 +28,7 @@ function getPageProduct(sku) {
 
 async function openWriteReview(sku) {
   const content = document.createElement('div');
+  content.className = 'product-reviews__modal-content';
   const modal = await createModal([content]);
   await reviewsRenderer.render(WriteReview, {
     sku,
