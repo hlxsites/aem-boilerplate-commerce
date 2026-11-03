@@ -2,6 +2,7 @@ name: Check Test Shard Coverage
 on: push
 jobs:
   check-shard-coverage:
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
