@@ -132,6 +132,23 @@ export default async function decorate(block) {
     return button;
   };
 
+  const getCompareButton = (product) => {
+    const productName = product.name || product.sku;
+    const wrap = document.createElement('div');
+    wrap.className = 'product-discovery-product-actions__compare';
+    UI.render(Button, {
+      icon: Icon({ source: 'Bulk' }),
+      'aria-label': `${labels.Global?.Compare ?? 'Compare'} ${productName}`,
+      variant: 'tertiary',
+      onClick: () => events.emit('compare/products', {
+        sku: product.sku,
+        img: product.images?.[0]?.url ?? '',
+        name: productName,
+      }),
+    })(wrap);
+    return wrap;
+  };
+
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
@@ -188,6 +205,8 @@ export default async function decorate(block) {
           // Add to Cart Button
           const addToCartBtn = getAddToCartButton(ctx.product);
           addToCartBtn.className = 'product-discovery-product-actions__add-to-cart';
+          // Compare Button
+          const compareBtn = getCompareButton(ctx.product);
           // Wishlist Button
           const $wishlistToggle = document.createElement('div');
           $wishlistToggle.classList.add('product-discovery-product-actions__wishlist-toggle');
@@ -196,6 +215,7 @@ export default async function decorate(block) {
             variant: 'tertiary',
           })($wishlistToggle);
           actionsWrapper.appendChild(addToCartBtn);
+          actionsWrapper.appendChild(compareBtn);
           actionsWrapper.appendChild($wishlistToggle);
 
           // Conditionally load and render Requisition List Button
