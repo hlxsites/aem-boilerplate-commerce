@@ -221,6 +221,7 @@ export default async function decorate(block) {
         provider.render(ProductList, {
           routeProduct: createProductLink,
           recId: recid,
+          showRatings: true,
           ...requestContext,
           slots: {
             Footer: (ctx) => {
