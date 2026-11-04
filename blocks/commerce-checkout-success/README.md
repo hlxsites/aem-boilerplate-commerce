@@ -29,7 +29,7 @@ No localStorage keys are used by this block.
 ## Public API
 
 - `default export decorate(block)` — Renders the success view into the provided block element.
-- `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account).
+- `export async function renderCheckoutSuccess(container, { orderData } = {})` — Renders the success view into `container`, or replaces the content of `<main>` if `container` is `null` or `undefined`. Pass `orderData` to provide pre-fetched order data; otherwise the Order drop-in will fetch it when possible (not possible when placing an order as a guest using an email address that’s already associated with an existing account).
 - `export function preloadCheckoutSuccess()` — Preloads the checkout success CSS. Call this before `renderCheckoutSuccess`.
 - `export function buildOrderDetailsUrl(orderData, orderDetailsPath = ORDER_DETAILS_PATH)` — Builds the order details URL based on authentication status.
 
@@ -45,9 +45,16 @@ preloadCheckoutSuccess();
 await renderCheckoutSuccess(container, { orderData });
 ```
 
+To render from a page without this block (e.g. after an express checkout from minicart), pass `null` as the container. This replaces the content of `<main>`:
+
+```js
+await renderCheckoutSuccess(null, { orderData });
+```
+
 ## Behavior
 
 - Scrolls to top on load for proper confirmation visibility.
+- When rendered via `renderCheckoutSuccess` with `orderData`, pushes the order details URL to the browser history.
 - Loads `commerce-checkout-success.css` styles.
 - Fetches localized placeholders and mounts the Order drop-in initializer with `langDefinitions` and optional `orderData`.
 - Renders order confirmation sections (header, status, shipping status, customer details, cost summary, product list, gift options).

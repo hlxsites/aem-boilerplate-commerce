@@ -36,9 +36,6 @@ import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPa
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 
-// Block-level
-import { getUserTokenCookie } from '../../scripts/initializers/index.js';
-
 // Libs
 import { rootLink, fetchPlaceholders } from '../../scripts/commerce.js';
 
@@ -172,6 +169,9 @@ export default async function decorate(block) {
   // Alert
   let inlineAlert = null;
   const routeToWishlist = rootLink('/wishlist');
+  const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
+    .then((orderData) => renderCheckoutSuccess(null, { orderData }))
+    .catch(console.error);
 
   const [
     _galleryMobile,
@@ -280,7 +280,7 @@ export default async function decorate(block) {
           }];
         },
       },
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -297,7 +297,7 @@ export default async function decorate(block) {
 
     PaymentServices.render(GooglePay, {
       location: PaymentLocation.PRODUCT_DETAIL,
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -314,7 +314,7 @@ export default async function decorate(block) {
 
     PaymentServices.render(PayPalButtons, {
       location: PaymentLocation.PRODUCT_DETAIL,
-      onSuccess: ({ cartId }) => orderApi.placeOrder(cartId),
+      onSuccess: onPaymentSuccess,
       onError: async (localizedError) => {
         inlineAlert = await UI.render(InLineAlert, {
           heading: localizedError.name,
@@ -526,31 +526,7 @@ export default async function decorate(block) {
     }
   }, { eager: true });
 
-  // Handle order placed event
-  events.on('order/placed', (orderData) => handleOrderPlaced(orderData, block));
-
   return Promise.resolve();
-}
-
-/**
- * Handle order placed event
- * @param {Object} orderData - The order data
- * @param {Object} block - The block
- */
-async function handleOrderPlaced(orderData, block) {
-  const token = getUserTokenCookie();
-  const orderRef = token ? orderData.number : orderData.token;
-  const orderNumber = orderData.number;
-  const encodedOrderRef = encodeURIComponent(orderRef);
-  const encodedOrderNumber = encodeURIComponent(orderNumber);
-
-  const url = token
-    ? rootLink(`/order-details?orderRef=${encodedOrderRef}`)
-    : rootLink(`/order-details?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
-
-  window.history.pushState({}, '', url);
-
-  await renderCheckoutSuccess(block, { orderData });
 }
 
 /**
