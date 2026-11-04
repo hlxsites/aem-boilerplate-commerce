@@ -2,6 +2,10 @@ name: Cypress E2E B2B ACO Tests
 on: push
 jobs:
   cypress-b2b-aco-groups:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     uses: ./.github/workflows/_b2b-e2e-base.yaml
     with:
       config-file: cypress.b2b.aco.config.js
@@ -17,8 +21,12 @@ jobs:
       CYPRESS_COMMERCE_ADMIN_USERNAME_ACO: ${{ secrets.CYPRESS_COMMERCE_ADMIN_USERNAME_ACO }}
       CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO: ${{ secrets.CYPRESS_COMMERCE_ADMIN_PASSWORD_ACO }}
 
+  # Aggregation gate: a single, stable status check for branch protection.
+  # Requiring the per-shard "cypress-b2b-aco-groups (...)" checks is brittle because
+  # their names embed the spec list, so every shard change needs a manual
+  # branch-protection edit. Require this job instead.
   cypress-b2b-aco-run:
-    if: always()
+    if: always() && github.repository == 'hlxsites/aem-boilerplate-commerce'
     needs: cypress-b2b-aco-groups
     runs-on: ubuntu-latest
     steps:

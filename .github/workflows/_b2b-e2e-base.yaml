@@ -45,6 +45,9 @@ on:
 
 jobs:
   b2b-e2e-groups:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commerce's
+    # demo backend.
     if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     strategy:
