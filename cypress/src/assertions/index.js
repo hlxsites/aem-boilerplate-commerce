@@ -387,14 +387,13 @@ export const assertImageListDisplay = (selector, limit = null) => {
     imageQuery = imageQuery.filter(`:lt(${limit})`);
   }
 
-  imageQuery.each(($img) => {
-    // Scroll into view so lazy-loaded images actually load (browser loads when near viewport)
-    cy.wrap($img)
-      .scrollIntoView()
-      .should("be.visible")
-      .and(($el) => {
-        expect($el[0].naturalWidth).to.be.greaterThan(0);
-      });
+  imageQuery.each((_, index) => {
+    // Scrolling or an async redraw can replace the image node; re-query before asserting.
+    cy.get(selector).find('img').eq(index).scrollIntoView();
+    cy.get(selector).find('img').eq(index).should(($el) => {
+      expect($el).to.be.visible;
+      expect($el[0].naturalWidth).to.be.greaterThan(0);
+    });
   });
 };
 
