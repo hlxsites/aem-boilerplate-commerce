@@ -18,18 +18,12 @@ import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartModel } from '../../data/models';
 import { ImageProps } from '@dropins/tools/components';
-export interface MiniCartActionsContext {
+export interface MiniCartCheckoutActionContext {
     data: CartModel | null;
-    checkout: {
-        show: boolean;
-        disabled: boolean;
-        url: string | undefined;
-        initiate: () => void;
-    };
-    viewCart: {
-        show: boolean;
-        url: string | undefined;
-    };
+    isDisabled: boolean;
+    checkoutUrl: string | undefined;
+    /** Publishes the initiate-checkout event, then navigates to `checkoutUrl`. Links should prevent their default navigation first. */
+    handleCheckout: () => void;
 }
 export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     routeProduct?: (item: CartModel['items'][0]) => string;
@@ -40,7 +34,7 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
         ProductList?: SlotProps;
         ProductListFooter?: SlotProps;
         PreCheckoutSection?: SlotProps;
-        Actions?: SlotProps<MiniCartActionsContext>;
+        CheckoutAction?: SlotProps<MiniCartCheckoutActionContext>;
         Thumbnail?: SlotProps<{
             item: CartModel['items'][number];
             defaultImageProps: ImageProps;
