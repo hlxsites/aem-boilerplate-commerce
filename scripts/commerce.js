@@ -9,6 +9,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import {
+  buildBlock,
   getMetadata,
   readBlockConfig,
 } from './aem.js';
@@ -60,16 +61,8 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
  */
 
 // Environment checks
-export const IS_UE = window.location.hostname.includes('ue.da.live');
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
-
-/**
- * Product template paths - pages that are templates and should use
- * default/fake SKUs. Should be relative to root path, ie "/" , "/fr/" , etc.
- */
-export const PRODUCT_TEMPLATE_PATHS = [
-  'products/default',
-];
+export const IS_EW = new URL(window.location.href).searchParams.get('quick-edit') === 'on';
 
 // PATHS
 export const SUPPORT_PATH = '/support';
@@ -118,6 +111,8 @@ export const authPrivacyPolicyConsentSlot = {
     link.href = PRIVACY_POLICY_PATH;
     link.target = '_blank';
     link.textContent = 'Privacy Policy';
+    link.style.textDecoration = 'underline';
+    link.style.textUnderlineOffset = '6px';
 
     wrapper.append(
       'By creating an account, you acknowledge that you have read and agree to our ',
@@ -649,30 +644,11 @@ function getSkuFromUrl() {
 function getDefaultSkuFromBlock() {
   const productDetailsBlock = document.querySelector('.product-details.block');
   if (!productDetailsBlock) {
-    console.warn('No product-details block found');
     return null;
   }
 
   const config = readBlockConfig(productDetailsBlock);
-  if (!config.defaultsku) {
-    console.warn('No defaultSku found in product-details block');
-    return null;
-  }
-  return config.defaultsku;
-}
-
-/**
- * Checks if the current page is a product template page.
- * @returns {boolean} True if the current page matches a product template path
- */
-export function isProductTemplate() {
-  const root = getRootPath();
-  const { pathname } = window.location;
-
-  return PRODUCT_TEMPLATE_PATHS.some((templatePath) => {
-    const fullPath = root ? `${root}${templatePath}` : templatePath;
-    return pathname === fullPath || pathname === fullPath.replace(/\/$/, '');
-  });
+  return config.defaultsku || null;
 }
 
 /**
@@ -714,14 +690,14 @@ export function getProductLink(urlKey, sku) {
 }
 
 /**
- * Gets the product SKU from metadata or URL fallback.
- * @returns {string|null} The SKU from metadata or URL, or null if not found
+ * Gets the current page's product sku, preferring the default SKU from the
+ * product-details block in authoring environments.
+ * @returns {string|null} The SKU from metadata, url, or block config
  */
 export function getProductSku() {
-  if (isProductTemplate() && (IS_UE || IS_DA)) {
-    return getDefaultSkuFromBlock();
+  if (IS_DA || IS_EW) {
+    return getMetadata('sku') || getDefaultSkuFromBlock();
   }
-
   return getMetadata('sku') || getSkuFromUrl();
 }
 
@@ -918,4 +894,20 @@ export function decorateSections(main) {
     section.dataset.sectionStatus = 'initialized';
     section.style.display = 'none';
   });
+}
+
+/**
+ * Injects a product-details block into the first child of main.
+ * @param {Element} main The main element
+ */
+export function buildPDPBlock(main) {
+  const block = buildBlock('product-details', { elems: [] });
+  const targetSection = main.querySelector(':scope > div:first-child');
+  if (targetSection) {
+    targetSection.prepend(block);
+  } else {
+    const section = document.createElement('div');
+    section.append(block);
+    main.prepend(section);
+  }
 }

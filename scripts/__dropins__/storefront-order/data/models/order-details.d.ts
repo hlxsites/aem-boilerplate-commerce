@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AvailableActionsProps, MoneyProps, OrderCommentItem, QueryType } from '../../types';
+import { AvailableActionsProps, MoneyProps, OrderCommentItem, QueryType } from '../../types/index.js';
 import { OrdersReturnPropsModel } from './customer-orders-return';
 export type OrderAddressModel = {
     city: string;

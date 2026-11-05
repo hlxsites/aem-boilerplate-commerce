@@ -162,7 +162,7 @@ export default async function decorate(block) {
         heading: placeholders?.Global?.ProductLoadError,
         type: 'error',
         variant: 'primary',
-        icon: h(Icon, { source: 'AlertWithCircle' }),
+        icon: h(Icon, { source: 'WarningWithCircle' }),
         'aria-live': 'assertive',
         role: 'alert',
         onDismiss: () => {
