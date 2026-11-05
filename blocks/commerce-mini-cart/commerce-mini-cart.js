@@ -195,10 +195,38 @@ export default async function decorate(block) {
     routeProduct: createProductLink,
     undo: undo === 'true',
     slots: {
-      PreCheckoutSection: (ctx) => {
+      // Checkout, Apple Pay, PayPal, View Cart
+      Actions: (ctx) => {
+        const $actions = document.createElement('div');
+        $actions.className = 'commerce-mini-cart__actions';
+
+        const $checkout = document.createElement('div');
         const $applePay = document.createElement('div');
         const $payPal = document.createElement('div');
-        $payPal.className = 'commerce-mini-cart__paypal';
+        const $viewCart = document.createElement('div');
+        $actions.append($checkout, $applePay, $payPal, $viewCart);
+
+        // Same props as the MiniCart's default Checkout and View Cart buttons
+        const checkoutProps = ({ checkout, dictionary }) => ({
+          variant: 'primary',
+          children: dictionary?.Cart?.MiniCart?.checkoutLink,
+          href: checkout.disabled ? undefined : checkout.url,
+          disabled: checkout.disabled,
+          'aria-disabled': checkout.disabled,
+          onClick: (event) => {
+            event.preventDefault();
+            checkout.initiate();
+          },
+        });
+
+        const viewCartProps = ({ viewCart, dictionary }) => ({
+          variant: 'tertiary',
+          children: dictionary?.Cart?.MiniCart?.cartLink,
+          href: viewCart.url,
+        });
+
+        const checkoutButton = UI.render(Button, checkoutProps(ctx))($checkout);
+        const viewCartButton = UI.render(Button, viewCartProps(ctx))($viewCart);
 
         const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
           .then(showOrderConfirmation)
@@ -222,22 +250,43 @@ export default async function decorate(block) {
             .catch(console.error);
         };
 
-        PaymentServices.render(ApplePay, {
+        const applePay = PaymentServices.render(ApplePay, {
           location: 'MINICART',
           getCartId: () => events.lastPayload('cart/data')?.id,
           isVirtualCart: events.lastPayload('cart/data')?.isVirtual,
+          disabled: ctx.checkout.disabled,
           onSuccess: onPaymentSuccess,
           onError: () => showPaymentError('An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
         })($applePay);
 
-        PaymentServices.render(PayPalButtons, {
+        const payPal = PaymentServices.render(PayPalButtons, {
           location: 'MINICART',
+          disabled: ctx.checkout.disabled,
           onSuccess: onPaymentSuccess,
           onError: () => showPaymentError('An unexpected error occurred during checkout with PayPal. Please try another payment method or contact support.'),
         })($payPal);
 
-        ctx.appendSibling($applePay);
-        ctx.appendSibling($payPal);
+        ctx.replaceWith($actions);
+
+        let paymentButtonsDisabled = ctx.checkout.disabled;
+
+        ctx.onRender((next) => {
+          $checkout.hidden = !next.checkout.show;
+          $applePay.hidden = !next.checkout.show;
+          $payPal.hidden = !next.checkout.show;
+          $viewCart.hidden = !next.viewCart.show;
+
+          checkoutButton.then((button) => button.setProps(() => checkoutProps(next)));
+          viewCartButton.then((button) => button.setProps(() => viewCartProps(next)));
+
+          // Only update the payment buttons when Checkout's disabled state changes
+          if (next.checkout.disabled !== paymentButtonsDisabled) {
+            paymentButtonsDisabled = next.checkout.disabled;
+            [applePay, payPal].forEach((container) => container.then((api) => api.setProps(
+              (prev) => ({ ...prev, disabled: paymentButtonsDisabled }),
+            )));
+          }
+        });
       },
       Thumbnail: (ctx) => {
         const { item, defaultImageProps } = ctx;
