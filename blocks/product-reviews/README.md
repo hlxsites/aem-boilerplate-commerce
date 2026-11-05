@@ -2,10 +2,12 @@
 
 ## Overview
 
-Displays the first page of approved reviews using the ratings/reviews drop-in.
+Displays approved reviews using the ratings/reviews drop-in.
 The standalone block owns its placement, page SKU, and initial request. It does
 not import Product Details or subscribe to PDP events. The PDP header rating
 remains separate; this block does not render a second aggregate rating.
+The block renders both the Review and Pagination containers. Authors place one
+Product Reviews block; pagination is included automatically when needed.
 
 ## Integration
 
@@ -43,6 +45,10 @@ where it belongs. Authored placement is preserved. Developers can disable
 automatic reviews by commenting out the `buildProductRatingsAndReviews(main)`
 call immediately after `buildPDPBlock(main)` in `scripts/scripts.js`.
 
+Pagination remains inside Product Reviews and follows its placement. Remove any
+previously authored Product Reviews Pagination blocks and shared `scope` rows;
+neither is needed.
+
 Normal AEM block loading loads the block's JavaScript and CSS; Product Details
 does not initialize it.
 
@@ -52,8 +58,8 @@ does not initialize it.
 | --- | --- | --- |
 | `isProductReviewsEnabled` | Normalized `product_reviews_enabled` store config | Must be `true`; otherwise the block remains hidden and makes no review requests. |
 | `allowGuestsToWriteProductReviews` | Normalized backend store config | Does not restrict read-only reviews. |
-| `pageSize` / `currentPage` | Fixed block defaults | First 20 reviews on page 1. No block or URL overrides. |
-| `scope` | Generated per instance | Private `product-reviews-<UUID>` shared by the Review container and its requests. |
+| `pageSize` / `currentPage` | Fixed initial block defaults | First 20 reviews on page 1. Pagination requests subsequent pages with the same page size. No block or URL overrides. |
+| `scope` | Generated per instance | Private `product-reviews-<UUID>` shared by the Review and Pagination containers and their requests. Not author-configurable. |
 
 The initializer inherits `CORE_FETCH_GRAPHQL`, including its endpoint and headers,
 following the cart/wishlist initialization convention. Both `STORE_CONFIG_QUERY`
@@ -83,12 +89,14 @@ The drop-in supplies default labels.
 | `Review.loading`, `Review.empty`, `Review.unavailable`, `Review.error` | List status messages. |
 | `Review.retry` | Retry button label. |
 | `Review.author`, `Review.unrated`, `Review.dateLocale` | Author (`{{nickname}}`), unrated label, and date locale. |
+| `Pagination.label`, `Pagination.loading` | Navigation landmark label and initial pagination loading status. |
+| `Pagination.outOfRange`, `Pagination.firstPage` | Status and recovery button when the requested page is no longer available. |
 
 ### Events
 
 The host block does not directly emit or listen to drop-in events. The API
-publishes these events; the Review container listens within the same private
-scope:
+publishes these events; the Review and Pagination containers listen within the
+same private scope:
 
 | Event | Payload | Purpose |
 | --- | --- | --- |
@@ -97,8 +105,9 @@ scope:
 | `reviews/result` | `{ request, result }` | Matching normalized result, possibly `null`. |
 | `reviews/error` | String or `null` | Error state. |
 
-Retain the same scope on the container and API calls. Do not synthesize result
-events or share a scope across instances. The refactored package has no
+Retain the same scope on both containers and API calls. Do not synthesize result
+events or share a scope between independent review lists. Each block instance
+stays isolated using a generated scope. The refactored package has no
 `rating/*` events, `Rating` container, or `getProductRating` API.
 
 ## Behavior Patterns
@@ -106,7 +115,7 @@ events or share a scope across instances. The refactored package has no
 - The Review container provides its own three-row skeleton, localized loading
   status, and `aria-busy`. Its decorative skeleton uses `aria-hidden`; no
   host-provided Loading slot or additional skeleton is needed.
-- Mount the container, then start `getProductReviews` without awaiting the
+- Mount both containers, then start `getProductReviews` without awaiting the
   response in block decoration. Review latency must not delay section loading or
   purchase controls.
 - Review failures are logged and display the drop-in error and retry control.
@@ -116,7 +125,10 @@ events or share a scope across instances. The refactored package has no
   standard AEM block loader's error logging.
 - Store configuration failures are logged by the initializer and keep reviews
   disabled. Guest-writing permission does not gate reading.
-- Aggregate totals/graphs, badges, pagination controls, sorting, submission, and
+- The Pagination container owns subsequent page requests. Do not fetch again in
+  an `onPageChange` callback or add host event listeners. Empty and single-page
+  results hide the controls and pagination spacing without hiding the review list.
+- Aggregate totals/graphs, badges, sorting, submission, and
   helpfulness voting remain deferred or outside this block's current scope.
 
 ## Development
@@ -137,7 +149,8 @@ npm --prefix cypress run cypress:saas:run -- \
   --spec src/tests/b2c/verifyProductReviews.spec.js --config retries=0
 ```
 
-The focused suite covers Core/Catalog endpoint and header separation, SKU
-precedence, standalone/authored placement, loading, errors/retry, disabled and
-failed configuration, guest reading, scope isolation, escaping, purchase-control
-availability, and mobile/RTL layout.
+The focused suite covers Core/Catalog endpoint and header separation on retry
+and navigation, SKU precedence, standalone/authored placement, review
+auto-blocking, loading, errors/retry, disabled and failed configuration, guest
+reading, private scope isolation, pagination loading and recovery, escaping,
+purchase-control availability, and mobile/RTL layout.
