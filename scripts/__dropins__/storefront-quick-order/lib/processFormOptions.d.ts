@@ -26,4 +26,3 @@ export interface ProcessedFormOptions {
  * Separates base64-encoded configurable options (optionUIDs) from custom entered options
  */
 export declare const processFormOptions: (formData: FormData) => ProcessedFormOptions;
-//# sourceMappingURL=processFormOptions.d.ts.map

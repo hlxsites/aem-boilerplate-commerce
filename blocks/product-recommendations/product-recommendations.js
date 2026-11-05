@@ -128,7 +128,9 @@ export default async function decorate(block) {
   });
 
   // Configuration
-  const { currentsku, currentprice, recid } = readBlockConfig(block);
+  const {
+    currentsku, currentprice, recid, referencekey: label,
+  } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -212,14 +214,15 @@ export default async function decorate(block) {
         userViewHistory: getProductViewHistory(),
         userPurchaseHistory: getPurchaseHistory(),
       };
+
       if (recommendationList) {
-        recommendationList.setProps((prev) => ({ ...prev, ...requestContext }));
-        return;
+        recommendationList.remove();
       }
 
       [recommendationList] = await Promise.all([
         provider.render(ProductList, {
           routeProduct: createProductLink,
+          label,
           recId: recid,
           ...requestContext,
           slots: {

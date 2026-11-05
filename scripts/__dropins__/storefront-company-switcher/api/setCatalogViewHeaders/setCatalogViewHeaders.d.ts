@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import type { FetchGraphQL } from '@adobe-commerce/fetch-graphql';
+import type { FetchGraphQL } from '../fetch-graphql';
 import type { CatalogViewContext } from '../../types/company';
 /**
  * Manages catalog-view headers for GraphQL requests.

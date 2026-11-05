@@ -15,9 +15,13 @@
  * from Adobe.
  *******************************************************************/
 export { default as Amex } from './amex.svg';
+export { default as Diners } from './diners.svg';
+export { default as Discover } from './discover.svg';
+export { default as Elo } from './elo.svg';
+export { default as GenericCard } from './generic.svg';
+export { default as Hiper } from './hiper.svg';
+export { default as Jcb } from './jcb.svg';
+export { default as Maestro } from './maestro.svg';
 export { default as Mastercard } from './mastercard.svg';
 export { default as Visa } from './visa.svg';
-export { default as Maestro } from './maestro.svg';
-export { default as Discover } from './discover.svg';
-export { default as Diners } from './diners.svg';
 //# sourceMappingURL=index.d.ts.map

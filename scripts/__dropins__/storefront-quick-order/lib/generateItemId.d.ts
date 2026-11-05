@@ -19,4 +19,3 @@
  * Format: {sku}-{timestamp}-{random}
  */
 export declare const generateItemId: (sku: string) => string;
-//# sourceMappingURL=generateItemId.d.ts.map

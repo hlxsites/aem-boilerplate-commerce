@@ -30,4 +30,3 @@ export interface QuickOrderNotificationBannerProps {
     successText: string;
     partialSuccessText?: string;
 }
-//# sourceMappingURL=quickOrderNotificationBanner.types.d.ts.map

@@ -9,4 +9,4 @@
 export interface AcceptQuoteTemplateParams {
     templateId: string;
 }
-export declare const acceptQuoteTemplate: (params: AcceptQuoteTemplateParams) => Promise<any>;
+export declare const acceptQuoteTemplate: (params: AcceptQuoteTemplateParams) => Promise<import("../../data/models").NegotiableQuoteTemplateModel>;

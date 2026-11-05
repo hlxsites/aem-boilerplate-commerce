@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel, OrdersReturnPropsModel } from '../../data/models';
-import { UseOrderReturnsProps } from '../../types';
+import { OrderDataModel, OrdersReturnPropsModel } from '../../data/models/index.js';
+import { UseOrderReturnsProps } from '../../types/index.js';
 export declare const useOrderReturns: ({ orderData }: UseOrderReturnsProps) => {
     order: OrderDataModel | undefined;
     orderReturns: [] | OrdersReturnPropsModel[];

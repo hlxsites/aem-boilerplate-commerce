@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import { Country } from '../data/models/country';
 import { CompanyFormData } from '../data/models/company';
 interface UseCountryAndRegionFieldsOptions {
     defaultCountry?: string;
@@ -21,13 +22,18 @@ interface UseCountryAndRegionFieldsOptions {
 }
 export declare const useCountryAndRegionFields: (options?: UseCountryAndRegionFieldsOptions) => {
     countryOptions: Country[];
-    regionOptions: any[];
+    regionOptions: {
+        text: string;
+        value: string;
+        id: number;
+        code: string;
+    }[];
     isRequiredRegion: boolean;
     isRequiredPostCode: boolean;
     disableField: boolean;
     loadingCountries: boolean;
     hasRegions: boolean;
     handleInputChange: (field: keyof CompanyFormData, value: string | string[]) => void;
-    inputChange: CompanyFormData;
+    inputChange: Partial<CompanyFormData>;
 };
 export {};

@@ -6,8 +6,8 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
+import { ImageProps } from '@dropins/tools/components';
+import { SlotProps } from '@dropins/tools/lib';
 import { CartItemModel as NegotiableQuoteItemModel, StoreConfigModel } from '../data/models';
 import { SwitchableAttributes } from '../containers/QuoteSummaryList/QuoteSummaryList';
 export interface ItemFormatterOptions {
@@ -44,7 +44,9 @@ export declare const getProductAttributes: (item: NegotiableQuoteItemModel, opti
 /**
  * Get configurations for an item (bundle, configurable, customizable options)
  */
-export declare const getConfigurations: (item: NegotiableQuoteItemModel, options: ItemFormatterOptions) => any;
+export declare const getConfigurations: (item: NegotiableQuoteItemModel, options: ItemFormatterOptions) => {
+    [x: string]: any;
+} | undefined;
 /**
  * Get total excluding tax component for an item
  */

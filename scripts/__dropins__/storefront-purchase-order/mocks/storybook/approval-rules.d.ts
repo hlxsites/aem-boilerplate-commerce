@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const approvalRulesHandlers: import("msw").GraphQLHandler[];
-export declare const approvalRulesErrorHandlers: import("msw").GraphQLHandler[];
+export declare const approvalRulesHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const approvalRulesErrorHandlers: import("@dropins/tools/msw").GraphQLHandler[];

@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import type { FetchGraphQL } from '@adobe-commerce/fetch-graphql';
+import type { FetchGraphQL } from '../fetch-graphql';
 /**
  * Manages customer group headers for GraphQL requests.
  * Singleton class that handles setting and removing group headers across multiple GraphQL modules.

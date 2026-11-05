@@ -170,10 +170,10 @@ export declare const mockPurchaseOrdersError: {
         };
     }[];
 };
-export declare const purchaseOrderHandlers: import("msw").GraphQLHandler[];
-export declare const purchaseOrderLoadingHandlers: import("msw").GraphQLHandler[];
-export declare const purchaseOrderEmptyHandlers: import("msw").GraphQLHandler[];
-export declare const purchaseOrderErrorHandlers: import("msw").GraphQLHandler[];
-export declare const purchaseOrderPaginationHandlers: import("msw").GraphQLHandler[];
-export declare const companyPurchaseOrderPaginationHandlers: import("msw").GraphQLHandler[];
-export declare const storybookHandlers: import("msw").GraphQLHandler[];
+export declare const purchaseOrderHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const purchaseOrderLoadingHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const purchaseOrderEmptyHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const purchaseOrderErrorHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const purchaseOrderPaginationHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const companyPurchaseOrderPaginationHandlers: import("@dropins/tools/msw").GraphQLHandler[];
+export declare const storybookHandlers: import("@dropins/tools/msw").GraphQLHandler[];

@@ -21,4 +21,4 @@ type QuoteShippingAddress = QuoteShippingAddresses[0];
 type QuoteBillingAddress = NonNullable<GetNegotiableQuoteQuery['negotiableQuote']>['billing_address'];
 declare const transformQuoteBillingAddress: (data: QuoteBillingAddress) => AddressModel | undefined;
 declare const transformQuoteShippingAddress: (data: QuoteShippingAddresses) => ShippingAddressModel[];
-export { QuoteBillingAddress, QuoteShippingAddress, transformQuoteBillingAddress, transformQuoteShippingAddress, };
+export { type QuoteBillingAddress, type QuoteShippingAddress, transformQuoteBillingAddress, transformQuoteShippingAddress, };

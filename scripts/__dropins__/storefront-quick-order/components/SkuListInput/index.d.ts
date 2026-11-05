@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './SkuListInput';
-export { SkuListInput as default } from './SkuListInput';
-//# sourceMappingURL=index.d.ts.map
+export * from './SkuListInput.js';
+export { SkuListInput as default } from './SkuListInput.js';

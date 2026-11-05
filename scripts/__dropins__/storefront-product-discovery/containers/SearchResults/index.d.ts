@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './SearchResults';
-export { SearchResults as default } from './SearchResults';
-//# sourceMappingURL=index.d.ts.map
+export * from './SearchResults.js';
+export { SearchResults as default } from './SearchResults.js';

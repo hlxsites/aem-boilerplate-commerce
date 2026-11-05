@@ -46,4 +46,3 @@ export declare const handleEnterKey: <T>(activeIndex: number, items: T[], onItem
  * Handles Escape key press - restores initial value and closes results
  */
 export declare const handleEscapeKey: (initialValue: string, inputRef: HTMLElement | null, onValueRestore: (value: string) => void, onClose: () => void) => void;
-//# sourceMappingURL=searchKeyboardNavigation.d.ts.map

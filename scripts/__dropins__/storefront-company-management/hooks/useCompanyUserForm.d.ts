@@ -22,7 +22,10 @@ export declare function useCompanyUserForm(opts: {
     onError?: (error: string) => void;
     onSuccess?: (message: string) => void;
 }): {
-    values: any;
+    values: Partial<CompanyUserModel> & {
+        roleId: string;
+        status: UserStatus;
+    };
     errors: Record<string, string>;
     touched: Record<string, boolean>;
     loading: boolean;

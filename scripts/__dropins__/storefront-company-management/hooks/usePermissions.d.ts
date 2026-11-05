@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+import { CompanyPermissionFlags } from '../types/companyPermission.types';
 /**
  * Hook for managing user permissions
  *
@@ -37,7 +38,7 @@
  * ```
  */
 export declare const usePermissions: () => {
-    permissions: any;
+    permissions: CompanyPermissionFlags | null;
     loading: boolean;
     error: Error | null;
     refreshPermissions: () => Promise<void>;
