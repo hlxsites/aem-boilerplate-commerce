@@ -16,6 +16,7 @@
  *******************************************************************/
 export * from './initialize';
 export * from './fetch-graphql';
-export * from './publishRecsItemAddToCartClick/index.js';
-export * from './getRecommendationsByUnitIds/index.js';
-export * from './getRecommendationsByUnits/index.js';
+export * from './publishRecsItemAddToCartClick';
+export * from './getRecommendationsByUnitIds';
+export * from './getRecommendationsByUnits';
+//# sourceMappingURL=index.d.ts.map

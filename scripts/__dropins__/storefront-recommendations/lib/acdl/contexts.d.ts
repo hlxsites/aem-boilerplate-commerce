@@ -19,3 +19,4 @@
  * See: https://github.com/adobe/commerce-events/blob/main/packages/storefront-events-sdk/src/contexts.ts
  */
 export declare const RECOMMENDATIONS_CONTEXT = "recommendationsContext";
+//# sourceMappingURL=contexts.d.ts.map
