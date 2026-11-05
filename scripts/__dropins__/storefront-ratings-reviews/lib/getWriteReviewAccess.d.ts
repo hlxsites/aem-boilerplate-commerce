@@ -14,5 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { CreatedProductReviewModel } from '../models/index.js';
-export declare function transformCreatedProductReview(data: unknown): CreatedProductReviewModel;
+export declare const getWriteReviewAccess: (isAuthenticated: boolean) => {
+    enabled: boolean;
+    canWrite: boolean;
+};

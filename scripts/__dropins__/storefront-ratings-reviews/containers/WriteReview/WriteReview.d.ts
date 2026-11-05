@@ -16,10 +16,10 @@
  *******************************************************************/
 import { HTMLAttributes } from "preact/compat";
 import { Container, SlotProps } from "@dropins/tools/lib";
-import { CreatedProductReviewModel } from "../../data/models/index.js";
+import { CreatedProductReviewModel, RatingMetadataModel } from "../../data/models/index.js";
 export interface WriteReviewSlotContext {
     sku: string;
-    state: "loading" | "ready" | "error" | "success" | "signIn";
+    state: "ready" | "error" | "success" | "signIn";
 }
 export interface WriteReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onError"> {
     sku: string;
@@ -41,4 +41,7 @@ export interface WriteReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, "
         }>;
     };
 }
-export declare const WriteReview: Container<WriteReviewProps>;
+export interface WriteReviewInitialData {
+    categories: RatingMetadataModel[] | null;
+}
+export declare const WriteReview: Container<WriteReviewProps, WriteReviewInitialData>;

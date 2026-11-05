@@ -34,3 +34,36 @@ export type ProductReviewsModel = {
         totalPages: number;
     };
 };
+export type RatingMetadataValueModel = {
+    valueId: string;
+    value: number;
+};
+export type RatingMetadataModel = {
+    id: string;
+    name: string;
+    values: RatingMetadataValueModel[];
+};
+export type RatingSelectionModel = {
+    id: string;
+    valueId: string | undefined;
+};
+export type CreateProductReviewInput = {
+    sku: string;
+    nickname: string;
+    summary: string;
+    text: string;
+    ratings: Array<{
+        id: string;
+        valueId: string;
+    }>;
+};
+export type CreatedProductReviewModel = {
+    nickname: string;
+    summary: string;
+    text: string;
+    rating: number | null;
+    ratingsBreakdown: Array<{
+        name: string;
+        value: number;
+    }>;
+};

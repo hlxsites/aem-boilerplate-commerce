@@ -30,13 +30,14 @@ async function openWriteReview(sku) {
   const content = document.createElement('div');
   content.className = 'product-reviews__modal-content';
   const modal = await createModal([content]);
+  // Open first: the form's rating data loads before the container mounts.
+  modal.showModal();
   await reviewsRenderer.render(WriteReview, {
     sku,
     ...getPageProduct(sku),
     isAuthenticated: checkIsAuthenticated(),
     routeSignIn: () => rootLink(CUSTOMER_LOGIN_PATH),
   })(content);
-  modal.showModal();
 }
 
 export default async function decorate(block) {

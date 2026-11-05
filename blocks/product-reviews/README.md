@@ -145,7 +145,7 @@ events or share a scope across instances. The refactored package has no
 ## Development
 
 Until [ACCS-2171](https://jira.corp.adobe.com/browse/ACCS-2171) is complete, the
-dependency uses `vendor/storefront-ratings-reviews-1.0.1-95b9074.tgz`, built from
+dependency uses `vendor/storefront-ratings-reviews-1.0.1-0cc3df6.tgz`, built from
 `95b9074ae266dd9bc9e762918ab8c8754869e472` on the Write a Review branch
 (`feature/write-a-review`) of
 [adobe-commerce/storefront-ratings-reviews](https://github.com/adobe-commerce/storefront-ratings-reviews).

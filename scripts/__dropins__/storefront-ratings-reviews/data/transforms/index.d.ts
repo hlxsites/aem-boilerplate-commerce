@@ -16,5 +16,3 @@
  *******************************************************************/
 export * from './transform-store-config';
 export * from './transform-product-reviews';
-export * from './transform-ratings-metadata';
-export * from './transform-created-product-review';
