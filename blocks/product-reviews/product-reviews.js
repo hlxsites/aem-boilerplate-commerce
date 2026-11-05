@@ -56,7 +56,8 @@ export default async function decorate(block) {
     <div class="product-reviews__list"></div>
   `);
   const labels = await fetchPlaceholders('placeholders/ratings-reviews.json');
-  fragment.querySelector('.product-reviews__title').textContent = labels.Global?.ReviewsTitle ?? 'Reviews';
+  const header = fragment.querySelector('.product-reviews__header');
+  header.remove();
   const reviews = fragment.querySelector('.product-reviews__list');
   block.appendChild(fragment);
   block.hidden = false;
@@ -65,9 +66,18 @@ export default async function decorate(block) {
     children: labels.Global?.WriteReview ?? 'Write review',
     variant: 'secondary',
     onClick: () => openWriteReview(sku),
-  })(block.querySelector('.product-reviews__write-review'));
+  })(header.querySelector('.product-reviews__write-review'));
 
-  await reviewsRenderer.render(Review, { scope })(reviews);
+  await reviewsRenderer.render(Review, {
+    scope,
+    slots: {
+      Header: (ctx) => {
+        header.querySelector('.product-reviews__title').textContent = labels.Global?.ReviewsTitle
+          ?? ctx.title;
+        ctx.replaceWith(header);
+      },
+    },
+  })(reviews);
 
   if (!block.isConnected) return;
   getProductReviews(sku, { pageSize: 20, currentPage: 1, scope }).catch((error) => {

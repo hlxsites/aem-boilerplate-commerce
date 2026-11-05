@@ -304,9 +304,37 @@ describe('Product reviews block', () => {
   it('renders the title and Write review button above the review list', () => {
     visitProduct();
     cy.wait('@productReviews');
+    cy.get(`${region} h2`).should('have.length', 1).and('have.text', 'Reviews');
     cy.get(`${region} .product-reviews__title`).should('have.text', 'Reviews');
     cy.get(`${region} .product-reviews__write-review button`).should('contain.text', 'Write review');
-    cy.get(`${region} .product-reviews__header`).next().should('have.class', 'product-reviews__list');
+    cy.get(`${region} .ratingsreviews-review`).within(() => {
+      cy.get('.product-reviews__header').should('be.visible');
+      cy.get('.ratingsreviews-review__list').should('be.visible');
+    });
+  });
+
+  it('submits the authored review SKU on a standalone Reviews page without PDP data', () => {
+    visitProduct({ standalone: true, requestedSku: 'OTHER-SKU' });
+    cy.wait('@productReviews');
+    cy.get('.product-details').should('not.exist');
+    cy.get(`${region} h2`).should('have.length', 1);
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open] .ratingsreviews-write-review').within(() => {
+      cy.get('.ratingsreviews-write-review__product').should('not.exist');
+      cy.get('input[type="radio"]').eq(3).check({ force: true });
+      cy.get('[name="title"]').type('Great set');
+      cy.get('[name="description"]').type('Fits well and washes easily.');
+      cy.get('[name="nickname"]').type('Mandy');
+      cy.contains('button', 'Submit').click();
+      cy.contains('pending moderation').should('be.visible');
+    });
+    cy.wait('@createReview').its('request.body.variables.input.sku').should('equal', 'OTHER-SKU');
+    cy.get('dialog[open] .close-button').click();
+    cy.get('dialog').should('not.exist');
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open]').should('have.length', 1).within(() => {
+      cy.get('[name="title"]').should('have.value', '');
+    });
   });
 
   it('opens the review form and submits a review', () => {
