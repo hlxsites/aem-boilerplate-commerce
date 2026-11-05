@@ -9,6 +9,16 @@ const review = {
   ratings_breakdown: [{ name: 'Quality', value: '4' }],
 };
 
+const ratingValues = [1, 2, 3, 4, 5].map((value) => ({ value_id: `MQ==-${value}`, value: String(value) }));
+const ratingsMetadata = [{ id: 'MQ==', name: 'Quality', values: ratingValues }];
+const createdReview = {
+  summary: 'Great set',
+  text: 'Fits well and washes easily.',
+  nickname: 'Mandy',
+  average_rating: 80,
+  ratings_breakdown: [{ name: 'Quality', value: '4' }],
+};
+
 function visitProduct({
   enabled = true,
   guestWriting = true,
@@ -40,6 +50,11 @@ function visitProduct({
           },
         },
       });
+    } else if (query.includes('RATINGS_METADATA_QUERY')) {
+      req.reply({ data: { productReviewRatingsMetadata: { items: ratingsMetadata } } });
+    } else if (query.includes('CREATE_PRODUCT_REVIEW')) {
+      req.alias = 'createReview';
+      req.reply({ data: { createProductReview: { review: createdReview } } });
     } else if (query.includes('PRODUCT_RATING_QUERY') || query.includes('PRODUCT_REVIEWS_SKU_QUERY')) {
       requests.catalog += 1;
       throw new Error('The review integration must not request Catalog Service operations.');
@@ -123,7 +138,7 @@ describe('Product reviews block', () => {
   it('renders the first review page without duplicating the PDP header rating', () => {
     const requests = visitProduct();
     cy.wait('@productReviews');
-    cy.get(`${region} h2`).should('have.text', 'Reviews');
+    cy.get(`${region} .ratingsreviews-review h2`).should('have.text', 'Reviews');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
     cy.get('.product-details__rating').should('not.be.empty');
     cy.get(`${region} .ratingsreviews-rating`).should('not.exist');
@@ -170,7 +185,7 @@ describe('Product reviews block', () => {
   it('prefers page SKU metadata to the product URL', () => {
     visitProduct({ metadataSku: 'ADB102', requestedSku: 'ADB102' });
     cy.wait('@productReviews');
-    cy.get(`${region} h2`).should('have.text', 'Reviews');
+    cy.get(`${region} .ratingsreviews-review h2`).should('have.text', 'Reviews');
   });
 
   it('requires an authored SKU when standalone page context has none', () => {
@@ -219,7 +234,7 @@ describe('Product reviews block', () => {
 
   it('renders an empty page without inventing an aggregate or total', () => {
     visitProduct({ items: [] });
-    cy.get(`${region} h2`).should('have.text', 'Reviews');
+    cy.get(`${region} .ratingsreviews-review h2`).should('have.text', 'Reviews');
     cy.get(`${region} .ratingsreviews-review__status`).should('contain.text', 'No reviews on this page.');
     cy.get(`${region} .ratingsreviews-review__list`).should('not.exist');
   });
@@ -284,6 +299,75 @@ describe('Product reviews block', () => {
     emitEvent('reviews/error', 'Unrelated review failure', 'another-product');
     cy.get(`${region} .ratingsreviews-review__list > li`).should('have.length', 2);
     cy.get(`${region} .ratingsreviews-review__status`).should('be.empty');
+  });
+
+  it('renders the title and Write review button above the review list', () => {
+    visitProduct();
+    cy.wait('@productReviews');
+    cy.get(`${region} h2`).should('have.length', 1).and('have.text', 'Reviews');
+    cy.get(`${region} .product-reviews__title`).should('have.text', 'Reviews');
+    cy.get(`${region} .product-reviews__write-review button`).should('contain.text', 'Write review');
+    cy.get(`${region} .ratingsreviews-review`).within(() => {
+      cy.get('.product-reviews__header').should('be.visible');
+      cy.get('.ratingsreviews-review__list').should('be.visible');
+    });
+  });
+
+  it('submits the authored review SKU on a standalone Reviews page without PDP data', () => {
+    visitProduct({ standalone: true, requestedSku: 'OTHER-SKU' });
+    cy.wait('@productReviews');
+    cy.get('.product-details').should('not.exist');
+    cy.get(`${region} h2`).should('have.length', 1);
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open] .ratingsreviews-write-review').within(() => {
+      cy.get('.ratingsreviews-write-review__product').should('not.exist');
+      cy.get('input[type="radio"]').eq(3).check({ force: true });
+      cy.get('[name="title"]').type('Great set');
+      cy.get('[name="description"]').type('Fits well and washes easily.');
+      cy.get('[name="nickname"]').type('Mandy');
+      cy.contains('button', 'Submit').click();
+      cy.contains('pending moderation').should('be.visible');
+    });
+    cy.wait('@createReview').its('request.body.variables.input.sku').should('equal', 'OTHER-SKU');
+    cy.get('dialog[open] .close-button').click();
+    cy.get('dialog').should('not.exist');
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open]').should('have.length', 1).within(() => {
+      cy.get('[name="title"]').should('have.value', '');
+    });
+  });
+
+  it('opens the review form and submits a review', () => {
+    visitProduct();
+    cy.wait('@productReviews');
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open] .ratingsreviews-write-review').within(() => {
+      cy.get('input[type="radio"]').should('have.length', 5);
+      cy.get('input[type="radio"]').eq(3).check({ force: true });
+      cy.get('[name="title"]').type('Great set');
+      cy.get('[name="description"]').type('Fits well and washes easily.');
+      cy.get('[name="nickname"]').type('Mandy');
+      cy.contains('button', 'Submit').click();
+      cy.contains('Thanks for your review!').should('be.visible');
+      cy.contains('pending moderation').should('be.visible');
+    });
+    cy.wait('@createReview').its('request.body.variables.input').should('deep.equal', {
+      sku: 'adb102',
+      nickname: 'Mandy',
+      summary: 'Great set',
+      text: 'Fits well and washes easily.',
+      ratings: [{ id: 'MQ==', value_id: 'MQ==-4' }],
+    });
+  });
+
+  it('asks signed-out shoppers to sign in when guests cannot write reviews', () => {
+    visitProduct({ guestWriting: false });
+    cy.wait('@productReviews');
+    cy.get(`${region} .product-reviews__write-review button`).click();
+    cy.get('dialog[open]').within(() => {
+      cy.contains('Sign in to write a review').should('be.visible');
+      cy.get('[name="title"]').should('not.exist');
+    });
   });
 
   it('fits the mobile viewport and RTL layout', () => {
