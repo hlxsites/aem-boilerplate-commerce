@@ -64,9 +64,7 @@ and `REVIEWS_QUERY` use Commerce Core. This drop-in must not use
 
 The block renders a header row with a **Reviews** title and a **Write review**
 button above the review list. Both belong to the block, not the drop-in, so
-projects can restyle or rearrange them freely. The row replaces the Review
-container's `Header` slot, keeping a single heading on both PDPs and standalone
-Reviews pages. The button opens the drop-in's
+projects can restyle or rearrange them freely. The button opens the drop-in's
 `WriteReview` container inside the shared `blocks/modal`.
 
 - `sku` is the block's review SKU. When the page's `pdp/data` payload is for the
@@ -85,8 +83,7 @@ Reviews pages. The button opens the drop-in's
 
 ### Heading and Ratings
 
-The heading defaults to the localized `Review.title` (**Reviews**) and can be
-overridden with `Global.ReviewsTitle`. The Review container accepts an optional
+The block's own heading is **Reviews**. The refactored Review container accepts an optional
 `totalCount`, but the current Core reviews response provides no approved total.
 This block intentionally leaves that prop unset. Do not infer a total from page
 length or `pageSize * totalPages`, or subscribe to `pdp/data` to obtain one.
@@ -103,7 +100,7 @@ The drop-in supplies default labels.
 
 | Key | Purpose |
 | --- | --- |
-| `Global.ReviewsTitle` | Optional block title override (defaults to `Review.title`). |
+| `Global.ReviewsTitle` | Block title above the review list (default `Reviews`). |
 | `Global.WriteReview` | Write review button label (default `Write review`). |
 | `Review.title` | Drop-in list heading without an approved total. |
 | `Review.loading`, `Review.empty`, `Review.unavailable`, `Review.error` | List status messages. |
