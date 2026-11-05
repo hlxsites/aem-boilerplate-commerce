@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './transform-recommendations';
+//# sourceMappingURL=index.d.ts.map

@@ -14,4 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './getRecommendationsByUnitIds.js';
+export * from './getRecommendationsByUnitIds';
+//# sourceMappingURL=index.d.ts.map

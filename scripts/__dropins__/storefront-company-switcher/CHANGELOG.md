@@ -1,5 +1,12 @@
 # @dropins/storefront-company-switcher
 
+## 1.3.1
+
+### Patch Changes
+
+- b840820: Migrate the repository and Cypress tests to pnpm and upgrade Elsie to
+  v3 alpha, updating shared configs, test helpers, and Storybook tooling.
+
 ## 1.3.1-beta.0
 
 ### Patch Changes

@@ -38,3 +38,4 @@ export interface PublishParams {
  * @param params - The parameters for the event
  */
 export declare const publishRecsItemAddToCartClick: (params: PublishParams) => void;
+//# sourceMappingURL=publishRecsItemAddToCartClick.d.ts.map

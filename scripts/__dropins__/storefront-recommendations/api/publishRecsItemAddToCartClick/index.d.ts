@@ -6,4 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './publishRecsItemAddToCartClick.js';
+export * from './publishRecsItemAddToCartClick';
+//# sourceMappingURL=index.d.ts.map
