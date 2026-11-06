@@ -22,7 +22,6 @@ export interface MiniCartCheckoutActionContext {
     data: CartModel | null;
     isDisabled: boolean;
     checkoutUrl: string | undefined;
-    /** Publishes the initiate-checkout event, then navigates to `checkoutUrl`. Links should prevent their default navigation first. */
     handleCheckout: () => void;
 }
 export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
