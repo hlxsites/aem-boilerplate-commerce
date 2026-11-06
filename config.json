@@ -21,7 +21,7 @@
         "environment": "Testing",
         "base-currency-code": "USD",
         "locale":"default",
-        "store-url": "https://e2e-qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/",
+        "store-url": "https://e2e-rel12qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/",
         "environment-id": "TfpwVBcuyz6LwDnKMNBVxP"
       }
     }
