@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export declare const GET_STORE_CONFIG = "\n  query GET_STORE_CONFIG {\n    storeConfig {\n      quickorder_active\n    }\n  }\n";
-//# sourceMappingURL=getStoreConfig.graphql.d.ts.map

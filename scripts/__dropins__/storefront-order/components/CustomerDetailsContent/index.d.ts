@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './CustomerDetailsContent';
-export { CustomerDetailsContent as default } from './CustomerDetailsContent';
+export * from './CustomerDetailsContent.js';
+export { CustomerDetailsContent as default } from './CustomerDetailsContent.js';

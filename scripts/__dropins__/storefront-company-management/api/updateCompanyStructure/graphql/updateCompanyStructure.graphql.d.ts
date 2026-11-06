@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const UPDATE_COMPANY_STRUCTURE = "\n  mutation updateCompanyStructure($treeId: ID!, $parentTreeId: ID!) {\n    updateCompanyStructure(input: { tree_id: $treeId, parent_tree_id: $parentTreeId }) {\n      __typename\n    }\n  }\n";
+export declare const UPDATE_COMPANY_STRUCTURE = "\n  mutation updateCompanyStructure($treeId: ID!, $parentTreeId: ID!) {\n    updateCompanyStructure(\n      input: { tree_id: $treeId, parent_tree_id: $parentTreeId }\n    ) {\n      __typename\n    }\n  }\n";

@@ -46,6 +46,10 @@ npm run cypress:b2b:saas:open
 - B2B features must be enabled in Magento configuration
 - For B2B tests, ensure Company features are activated
 
+## Continuous integration
+
+By default, the Cypress E2E and Percy visual-test jobs, their result-aggregation gates, and the test shard-coverage check run only in `hlxsites/aem-boilerplate-commerce`. These jobs are skipped in clones, forks, and repositories generated from the template. Local test commands remain available in derived repositories.
+
 ## SaaS vs PaaS Configs
 
 All commands use a base config, defined in `cypress.base.config.js` and extend in the corresponding config,  `cypress.paas.config.js`, `cypress.saas.config.js`, `cypress.b2b.saas.config`, `cypress.b2b.paas.config` This allows us to use variables for things which differ in the environments, such as gift card codes, product option uids, etc.

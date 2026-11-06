@@ -7,7 +7,7 @@
  * accompanying it.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { VNode } from 'preact';
 export interface OrderSummaryLineProps extends Omit<HTMLAttributes<HTMLDivElement>, 'label'> {
     label: VNode | string;

@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderVariantsActions';
-export { QuickOrderVariantsActions as default } from './QuickOrderVariantsActions';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderVariantsActions.js';
+export { QuickOrderVariantsActions as default } from './QuickOrderVariantsActions.js';

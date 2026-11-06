@@ -19,4 +19,3 @@ export declare const getStoreConfig: () => Promise<{
         quickOrderActive: boolean;
     };
 }>;
-//# sourceMappingURL=getStoreConfig.d.ts.map

@@ -14,11 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './quickOrderMultipleSku.types';
-export * from './quickOrderCsvUpload.types';
-export * from './quickOrderItems.types';
-export * from './search.types';
-export * from './quickOrderNotificationBanner.types';
-export * from './quickOrderDisabledOverlay.types';
-export * from './quickOrderVariantsGrid.types';
-//# sourceMappingURL=index.d.ts.map
+export * from './quickOrderMultipleSku.types.js';
+export * from './quickOrderCsvUpload.types.js';
+export * from './quickOrderItems.types.js';
+export * from './search.types.js';
+export * from './quickOrderNotificationBanner.types.js';
+export * from './quickOrderDisabledOverlay.types.js';
+export * from './quickOrderVariantsGrid.types.js';

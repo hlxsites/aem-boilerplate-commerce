@@ -1,5 +1,5 @@
 import { Item, Product } from '../../data/models/item';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement> {
     /**

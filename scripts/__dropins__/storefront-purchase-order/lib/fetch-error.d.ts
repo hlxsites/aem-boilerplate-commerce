@@ -17,5 +17,8 @@
 /** Actions */
 export declare const handleFetchError: (errors: Array<{
     message: string;
-    path: string[];
+    path?: string[];
+    extensions?: {
+        category: string;
+    };
 }>) => void;

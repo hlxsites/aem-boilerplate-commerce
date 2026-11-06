@@ -19,4 +19,3 @@ export interface QuickOrderDisabledOverlayProps {
     message: string;
     children: any;
 }
-//# sourceMappingURL=quickOrderDisabledOverlay.types.d.ts.map

@@ -2,7 +2,7 @@
  * ADOBE CONFIDENTIAL
  * __________________
  *
- *  Copyright 2024 Adobe
+ *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -14,8 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PartialAddress, ShippingMethod } from '../../models/shipping-models';
-export declare const mockEstimatedShippingData: {
-    address: PartialAddress;
-    shippingMethod: ShippingMethod;
-};
+export declare const getStoredPaymentMethodsQuery = "\n  query getStoredPaymentMethods {\n    customerPaymentTokens {\n      items {\n        details\n        payment_method_code\n        public_hash\n        type\n      }\n    }\n  }\n";
