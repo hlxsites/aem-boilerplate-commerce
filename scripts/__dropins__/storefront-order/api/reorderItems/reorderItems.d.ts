@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ReorderItemsProps } from '../../types/api/reorderItems.types';
+import { ReorderItemsProps } from '../../types/api/reorderItems.types.js';
 export declare const reorderItems: (orderNumber: string) => Promise<ReorderItemsProps>;

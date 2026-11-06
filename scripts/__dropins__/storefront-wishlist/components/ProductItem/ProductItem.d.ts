@@ -16,8 +16,8 @@
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
 import { FunctionComponent, JSX } from 'preact';
-import { SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
-import { ImageNodeRenderProps } from '../../../node_modules/@dropins/tools/src/components';
+import { SlotProps } from '@dropins/tools/lib';
+import { ImageNodeRenderProps } from '@dropins/tools/components';
 import { Item, Product } from '../../data/models';
 export interface ProductItemActionsContext {
     item: Item;

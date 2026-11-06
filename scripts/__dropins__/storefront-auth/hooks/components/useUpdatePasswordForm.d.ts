@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AdditionalActionsAlertProps, UseUpdatePasswordFormProps } from '../../types';
+import { AdditionalActionsAlertProps, UseUpdatePasswordFormProps } from '../../types/index.d.ts';
 export declare const useUpdatePasswordForm: ({ isEmailConfirmationRequired, signInOnSuccess, passwordConfigs, routeRedirectOnSignIn, routeWrongUrlRedirect, onErrorCallback, onSuccessCallback, handleSetInLineAlertProps, routeRedirectOnPasswordUpdate, routeSignInPage, }: UseUpdatePasswordFormProps) => {
     additionalActionsAlert: AdditionalActionsAlertProps;
     passwordError: boolean;

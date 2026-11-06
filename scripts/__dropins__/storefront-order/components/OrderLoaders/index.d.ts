@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderLoaders';
-export { CardLoader as default } from './OrderLoaders';
+export * from './OrderLoaders.js';
+export { CardLoader as default } from './OrderLoaders.js';

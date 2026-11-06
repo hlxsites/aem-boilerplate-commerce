@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { getCustomerShortResponse } from '../../types';
+import { getCustomerShortResponse } from '../../types/index.js';
 import { CustomerDataModelShort } from '../models';
 export declare const transformCustomer: (response: getCustomerShortResponse) => CustomerDataModelShort;
