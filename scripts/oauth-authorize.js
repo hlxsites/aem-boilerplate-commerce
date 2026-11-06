@@ -1,4 +1,12 @@
-import { CORE_FETCH_GRAPHQL } from './commerce.js';
+import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
+import { render as authRenderer } from '@dropins/storefront-auth/render.js';
+import {
+  CORE_FETCH_GRAPHQL,
+  CUSTOMER_FORGOTPASSWORD_PATH,
+  checkIsAuthenticated,
+  fetchPlaceholders,
+  rootLink,
+} from './commerce.js';
 import { getUserTokenCookie } from './initializers/index.js';
 
 /**
@@ -71,4 +79,61 @@ export async function issueOauthAuthorizationCode(request) {
   }
 
   return redirectUrl;
+}
+
+/**
+ * Issues the authorization code and sends the browser back to the OAuth client. On failure,
+ * shows an inline error and keeps the shopper on the page.
+ */
+async function completeOauthAuthorization(request, $notification) {
+  const labels = (await fetchPlaceholders('placeholders/auth.json'))?.Auth?.OAuth ?? {};
+  $notification.textContent = labels.redirecting ?? 'Redirecting you back…';
+
+  try {
+    window.location.assign(await issueOauthAuthorizationCode(request));
+  } catch (error) {
+    console.error('OAuth authorization failed.', error);
+    $notification.textContent = '';
+    const { InLineAlert, provider: UI } = await import('@dropins/tools/components.js');
+    await UI.render(InLineAlert, {
+      heading: labels.errorHeading ?? 'We could not complete the sign-in for this app.',
+      description: error.message,
+      type: 'error',
+      variant: 'primary',
+      role: 'alert',
+    })($notification);
+  }
+}
+
+/**
+ * Handles a sign-in page opened by an OAuth 2.0 client (authorization code + PKCE): signs the
+ * shopper in when needed, then redirects back to the client with an authorization code.
+ * @param {HTMLElement} block - The commerce-login block.
+ * @returns {Promise<boolean>} True when the page was an OAuth request and was handled here.
+ */
+export async function handleOauth(block) {
+  const request = getOauthAuthorizationRequest();
+  if (!request) {
+    return false;
+  }
+
+  const $notification = document.createElement('div');
+  $notification.className = 'commerce-login__oauth-notification';
+
+  if (checkIsAuthenticated()) {
+    block.append($notification);
+    await completeOauthAuthorization(request, $notification);
+    return true;
+  }
+
+  // Without routeRedirectOnSignIn the drop-in calls onSuccessCallback and then renders the
+  // SuccessNotification slot, which shows the redirect status instead of the welcome message.
+  await authRenderer.render(SignIn, {
+    routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
+    onSuccessCallback: () => completeOauthAuthorization(request, $notification),
+    slots: {
+      SuccessNotification: (ctx) => ctx.replaceWith($notification),
+    },
+  })(block);
+  return true;
 }

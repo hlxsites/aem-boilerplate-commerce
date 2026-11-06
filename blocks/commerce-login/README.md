@@ -26,6 +26,22 @@ The block switches to OAuth 2.0 authorization mode when the page URL carries an 
 
 Without these parameters, the block behaves as before.
 
+The OAuth 2.0 flow lives in `scripts/oauth-authorize.js` (`handleOauth`). To add it to an existing storefront:
+
+1. Copy `scripts/oauth-authorize.js` into your project.
+2. In `blocks/commerce-login/commerce-login.js`, import the handler and call it first in `decorate`:
+
+```js
+import { handleOauth } from '../../scripts/oauth-authorize.js';
+
+export default async function decorate(block) {
+  if (await handleOauth(block)) {
+    return;
+  }
+  // existing block code
+}
+```
+
 ### Placeholders
 
 Optional keys in `placeholders/auth.json`:
