@@ -29,17 +29,6 @@
     grid-template-columns: max-content 1fr;
 }
 
-/* Same layout as the MiniCart's default actions (.cart-mini-cart__footer__ctas) */
-.commerce-mini-cart__actions {
-    display: grid;
-    grid-auto-flow: row;
-    gap: var(--spacing-xsmall);
-}
-
-.commerce-mini-cart__actions > :empty {
-    display: none;
-}
-
 .commerce-mini-cart apple-pay-button {
     --apple-pay-button-border-radius: var(--shape-border-radius-3);
 }
