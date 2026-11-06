@@ -12,7 +12,7 @@ jobs:
     # If you want this job to run on your fork, remove the below "if" line.
     # You will need to "fix" the tests as they are specific to Adobe Commmerce's
     # demo backend.
-    if: github.repository == 'hlxsites/aem-boilerplate-commerce' && github.event.pull_request.merged == true
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce' && github.event.pull_request.head.repo.full_name == 'hlxsites/aem-boilerplate-commerce' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

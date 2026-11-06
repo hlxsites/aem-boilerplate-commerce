@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './EmptyList';
-export { EmptyList as default } from './EmptyList';
+export * from './EmptyList.js';
+export { EmptyList as default } from './EmptyList.js';
