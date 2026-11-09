@@ -1,4 +1,4 @@
-import { ResetPassword } from '@dropins/storefront-auth/containers/ResetPassword.js';
+import { ResetPassword } from '@dropins/storefront-auth/containers.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { events } from '@dropins/tools/event-bus.js';
 import {

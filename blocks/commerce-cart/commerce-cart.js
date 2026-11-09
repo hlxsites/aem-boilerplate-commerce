@@ -10,15 +10,20 @@ import {
 } from '@dropins/tools/components.js';
 
 // Dropin Containers
-import CartSummaryList from '@dropins/storefront-cart/containers/CartSummaryList.js';
-import OrderSummary from '@dropins/storefront-cart/containers/OrderSummary.js';
-import EstimateShipping from '@dropins/storefront-cart/containers/EstimateShipping.js';
-import Coupons from '@dropins/storefront-cart/containers/Coupons.js';
-import GiftCards from '@dropins/storefront-cart/containers/GiftCards.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import {
+  CartSummaryList,
+  OrderSummary,
+  EstimateShipping,
+  Coupons,
+  GiftCards,
+  GiftOptions,
+} from '@dropins/storefront-cart/containers.js';
+
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
-import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
-import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+import {
+  WishlistToggle,
+  WishlistAlert,
+} from '@dropins/storefront-wishlist/containers.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // API

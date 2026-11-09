@@ -1,5 +1,14 @@
 # @dropins/storefront-account
 
+## 4.3.0-alpha-20261109151748
+
+### Minor Changes
+
+- 06d9773: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+
 ## 4.2.1
 
 ### Patch Changes

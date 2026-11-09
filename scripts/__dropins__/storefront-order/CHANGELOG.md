@@ -1,5 +1,22 @@
 # @dropins/storefront-order
 
+## 4.2.0-alpha-20261109151804
+
+### Minor Changes
+
+- 47377e9: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+
+### Patch Changes
+
+- 839bb26: Keep the shopper's active cart when an order is placed from a
+  different cart. `placeOrder` and `setPaymentMethodAndPlaceOrder` now emit
+  `cart/reset` only when the placed cart is the active cart (or the active cart
+  is unknown), so buying a product with an express payment button on a product
+  page no longer clears the cart.
+
 ## 4.1.1
 
 ### Patch Changes

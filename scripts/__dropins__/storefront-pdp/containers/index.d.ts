@@ -25,3 +25,4 @@ export * from './ProductDownloadableOptions.js';
 export * from './ProductCustomizableOptions.js';
 export * from './ProductGallery.js';
 export * from './ProductHeader.js';
+export * from './ProductRating.js';
