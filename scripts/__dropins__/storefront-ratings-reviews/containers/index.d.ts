@@ -16,3 +16,4 @@
  *******************************************************************/
 export * from './Review.js';
 export * from './Pagination.js';
+export * from './ReviewSummary.js';

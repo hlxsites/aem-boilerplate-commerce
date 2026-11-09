@@ -25,12 +25,23 @@ export type ProductReviewsRequest = {
     sku: string;
     pageSize: number;
     currentPage: number;
+    withStats?: boolean;
 };
 export type ProductReviewsModel = {
     items: ProductReviewModel[];
+    stats?: ProductReviewsStatsModel | null;
     pageInfo: {
         currentPage: number;
         pageSize: number;
         totalPages: number;
     };
+};
+export type ProductReviewsStatsModel = {
+    reviewCount: number;
+    ratingVotesCount: number;
+    ratingSummary: number;
+    ratingsDistribution: {
+        value: number;
+        count: number;
+    }[];
 };

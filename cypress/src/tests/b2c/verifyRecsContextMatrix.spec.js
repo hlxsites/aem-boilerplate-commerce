@@ -5,6 +5,7 @@ import {
   assertUrlExcludesCurrentProductPrice,
   assertUrlIncludesCurrentProduct,
   assertUrlIncludesCurrentSku,
+  getPrexPage,
   interceptRecsGraphQL,
   visitPrexPage,
   waitForRecsCarousel,
@@ -43,26 +44,20 @@ describe('PREX context matrix — PLP static SKU anchor', () => {
 
 // --- PDP: recid only (no currentsku/currentprice in block config) ---
 // The SKU anchor comes from ACDL productContext (set by the PDP dropin).
-// ACO forwards productContext.currentProductPrice as currentProduct price.
-// PaaS/SaaS omit currentProduct entirely from the GraphQL URL.
+// Shopper-derived ACDL pricing is withheld without consent, including on ACO.
 describe('PREX context matrix — PDP recid only', () => {
   beforeEach(() => {
     interceptRecsGraphQL();
   });
 
-  it('PDP with recid only: currentProduct in GraphQL URL reflects environment', () => {
-    // ACO sends currentProduct with price; PaaS/SaaS omit it
-    const isACO = !!Cypress.env('catalogApiKey');
+  it('PDP with recid only: unconsented request keeps the product anchor without shopper-derived pricing', () => {
     visitPrexPage('pdpAcdlOnly');
     // Wait for carousel before asserting productContext — dropin sets it asynchronously
     waitForRecsCarousel();
     assertProductContextPresent();
     waitForRecsGraphQL().then(({ request }) => {
-      if (isACO) {
-        assertUrlIncludesCurrentProduct(request.url, { requirePrice: true });
-      } else {
-        assertUrlExcludesCurrentProduct(request.url);
-      }
+      assertUrlExcludesCurrentProduct(request.url);
+      assertUrlIncludesCurrentSku(request.url, 'ADB125');
     });
   });
 });
@@ -149,7 +144,8 @@ describe('PREX context matrix — cart add-to-cart must not hijack currentSku', 
   });
 
   it('PDP with recid only: adding a recommended item to cart keeps currentSku pinned to the PDP SKU', { tags: '@skipPaas' }, () => {
-    visitPrexPage('pdpAcdlOnly');
+    cy.intercept('https://commerce.adobedc.net/collector/**', { statusCode: 200, body: '' });
+    cy.visit(getPrexPage('pdpAcdlOnly'), { qs: { consent: 'accept' } });
     waitForRecsCarousel();
     assertProductContextPresent();
 
@@ -158,8 +154,8 @@ describe('PREX context matrix — cart add-to-cart must not hijack currentSku', 
       pdpSku = win.adobeDataLayer.getState('productContext')?.sku;
     });
 
-    waitForRecsGraphQL().then(({ request }) => {
-      assertUrlIncludesCurrentSku(request.url, pdpSku);
+    cy.get('@recsGraphql.all').should((requests) => {
+      assertUrlIncludesCurrentSku(requests[requests.length - 1].request.url, pdpSku);
     });
 
     // Add a recommended product to cart — this triggers the cart dropin's own
@@ -171,7 +167,11 @@ describe('PREX context matrix — cart add-to-cart must not hijack currentSku', 
       .should('be.visible')
       .click();
 
-    waitForRecsGraphQL().then(({ request }) => {
+    cy.get('.nav-cart-button').should('have.attr', 'data-count', '1');
+    cy.get('@recsGraphql.all').should((requests) => {
+      const { request } = requests[requests.length - 1];
+      const variables = JSON.parse(new URL(request.url).searchParams.get('variables'));
+      expect(variables.cartSkus, 'request reflects the completed cart addition').to.have.length(1);
       assertUrlIncludesCurrentSku(request.url, pdpSku);
     });
   });

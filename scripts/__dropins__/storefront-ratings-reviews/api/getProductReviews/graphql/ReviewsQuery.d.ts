@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const REVIEWS_QUERY = "\nquery REVIEWS_QUERY($sku: String!, $pageSize: Int, $currentPage: Int) {\n  reviews(sku: $sku, pageSize: $pageSize, currentPage: $currentPage) {\n    items {\n      nickname\n      summary\n      text\n      average_rating\n      created_at\n      ratings_breakdown { name value }\n    }\n    page_info { current_page page_size total_pages }\n  }\n}\n";
+export declare const REVIEWS_QUERY = "\nquery REVIEWS_QUERY($sku: String!, $pageSize: Int, $currentPage: Int, $withStats: Boolean! = false) {\n  reviews(sku: $sku, pageSize: $pageSize, currentPage: $currentPage) {\n    items {\n      nickname\n      summary\n      text\n      average_rating\n      created_at\n      ratings_breakdown { name value }\n    }\n    page_info { current_page page_size total_pages }\n    stats @include(if: $withStats) {\n      review_count\n      rating_votes_count\n      rating_summary\n      ratings_distribution { value count }\n    }\n  }\n}\n";

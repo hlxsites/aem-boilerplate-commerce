@@ -6,6 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export * from './SortBy';
-export { SortBy as default } from './SortBy';
-//# sourceMappingURL=index.d.ts.map
+export * from './SortBy.js';
+export { SortBy as default } from './SortBy.js';

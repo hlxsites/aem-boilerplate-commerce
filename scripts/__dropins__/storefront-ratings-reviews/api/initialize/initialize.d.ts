@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { Initializer, Model } from '@dropins/tools/lib';
-import type { UIProviderProps } from '@dropins/tools/components/UIProvider';
+import type { UIProviderProps } from '@dropins/tools/components';
 import { StoreConfigModel } from '../getStoreConfig';
 import { ProductReviewModel, ProductReviewsModel } from '../../data/models/index.js';
 type ConfigProps = Partial<StoreConfigModel> & {

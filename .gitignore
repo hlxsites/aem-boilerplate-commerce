@@ -15,3 +15,5 @@ scripts/__dropins__/**/*.map
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
+
+.scout/

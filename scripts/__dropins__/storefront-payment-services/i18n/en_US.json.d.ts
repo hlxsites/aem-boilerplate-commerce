@@ -15,6 +15,9 @@ declare const _default: {
           "message": "An unexpected error occurred. Please try again or contact support."
         }
       },
+      "saveCard": {
+        "label": "Save this card for future purchases"
+      },
       "formFields": {
         "cvv": {
           "invalidError": "Enter valid cvv.",
@@ -50,6 +53,20 @@ declare const _default: {
           "name": "PayPal error",
           "message": "An unexpected error occurred. Please try again or contact support."
         }
+      }
+    },
+    "VaultedCreditCard": {
+      "cardTypeLabel": {
+        "credit": "Credit card",
+        "debit": "Debit card",
+        "fsa": "FSA Debit card",
+        "prepaid": "Prepaid card",
+        "store": "Store card"
+      }
+    },
+    "CardIcon": {
+      "generic": {
+        "title": "Card"
       }
     },
     "messages": {
