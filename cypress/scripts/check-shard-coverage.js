@@ -20,7 +20,12 @@ const WORKFLOW_FILES = [
 // Backend-agnostic specs that intentionally run in a single workflow only.
 const SPECS_EXEMPT_FROM_WORKFLOW = {
   'run-e2e-tests-saas.yaml': ['src/tests/b2c/events/consent.spec.js'],
-  'run-e2e-tests-aco.yaml': ['src/tests/b2c/events/consent.spec.js'],
+  'run-e2e-tests-aco.yaml': [
+    'src/tests/b2c/events/consent.spec.js',
+    // The card vault is only enabled on the SaaS sandbox tenant.
+    'src/tests/b2c/verifyAuthUserCheckoutVaultedCard.spec.js',
+  ],
+  'run-e2e-tests.yaml': ['src/tests/b2c/verifyAuthUserCheckoutVaultedCard.spec.js'],
 };
 
 const allSpecs = glob.sync('src/tests/b2c/**/*.spec.js', { cwd: CYPRESS_DIR });
