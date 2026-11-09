@@ -144,15 +144,11 @@ events or share a scope across instances. The refactored package has no
 
 ## Development
 
-Until [ACCS-2171](https://jira.corp.adobe.com/browse/ACCS-2171) is complete, the
-dependency uses `vendor/storefront-ratings-reviews-1.0.1-0cc3df6.tgz`, built from
-`95b9074ae266dd9bc9e762918ab8c8754869e472` on the Write a Review branch
-(`feature/write-a-review`) of
-[adobe-commerce/storefront-ratings-reviews](https://github.com/adobe-commerce/storefront-ratings-reviews).
-Include the archive and generated ratings/reviews assets when delivering the
-branch. `.hlxignore` excludes the archive from Edge Delivery; browsers load the
-generated files. No sibling repository is required to install. Replace the
-snapshot with an equivalent published package when available.
+The dependency uses the published
+`@dropins/storefront-ratings-reviews@1.1.0-alpha-20261109222008` package.
+Run `npm install` and `npm run install:dropins` to refresh the generated
+ratings/reviews assets. Include the generated files when delivering the branch;
+no vendored ratings/reviews archive or sibling repository is required.
 
 With the local AEM server running:
 

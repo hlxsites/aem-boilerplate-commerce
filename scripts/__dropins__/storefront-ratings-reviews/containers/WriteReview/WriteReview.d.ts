@@ -14,14 +14,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { HTMLAttributes } from "preact/compat";
-import { Container, SlotProps } from "@dropins/tools/lib";
-import { CreatedProductReviewModel, RatingMetadataModel } from "../../data/models/index.js";
-export interface WriteReviewSlotContext {
-    sku: string;
-    state: "ready" | "error" | "success" | "signIn";
-}
-export interface WriteReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "onError"> {
+import { HTMLAttributes } from 'preact/compat';
+import { Container } from '@dropins/tools/lib';
+import { CreatedProductReviewModel, RatingMetadataModel } from '../../data/models/index.js';
+import { WriteReviewSlotContext, WriteReviewSlots } from '../../components/WriteReview/index.js';
+export type { WriteReviewSlotContext };
+export interface WriteReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'onError'> {
     sku: string;
     productName?: string;
     productImage?: {
@@ -33,13 +31,7 @@ export interface WriteReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, "
     scope?: string;
     onSuccess?: (review: CreatedProductReviewModel) => void;
     onError?: (error: Error) => void;
-    slots?: {
-        ProductSummary?: SlotProps<WriteReviewSlotContext>;
-        SignInPrompt?: SlotProps<WriteReviewSlotContext>;
-        SuccessMessage?: SlotProps<WriteReviewSlotContext & {
-            review: CreatedProductReviewModel;
-        }>;
-    };
+    slots?: WriteReviewSlots;
 }
 export interface WriteReviewInitialData {
     categories: RatingMetadataModel[] | null;

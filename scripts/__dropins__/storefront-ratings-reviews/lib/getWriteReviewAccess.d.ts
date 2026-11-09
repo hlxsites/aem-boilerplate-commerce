@@ -15,6 +15,5 @@
  * from Adobe.
  *******************************************************************/
 export declare const getWriteReviewAccess: (isAuthenticated: boolean) => {
-    enabled: boolean;
     canWrite: boolean;
 };

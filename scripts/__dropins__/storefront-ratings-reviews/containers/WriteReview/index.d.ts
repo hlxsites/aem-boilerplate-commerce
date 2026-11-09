@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from "./WriteReview.js";
-export { WriteReview as default } from "./WriteReview.js";
+export * from './WriteReview.js';
+export { WriteReview as default } from './WriteReview.js';

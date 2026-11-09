@@ -1,5 +1,52 @@
 # dropin-template
 
+## 1.1.0-alpha-20261109222008
+
+### Minor Changes
+
+- 00ad504: Add the Ratings and Reviews drop-in scaffold and store configuration API. Fetch product review settings once during initialization and expose shared review enablement and guest submission flags, with retry support when initialization fails.
+- d27ae9e: Add a review Pagination container with SDK controls, loading states, reactive
+  customization Slots, and explicit out-of-range recovery. Pagination subscribes to
+  the `reviews/*` events published by `getProductReviews()` and requests other
+  pages through it, with event scopes for independent review lists. Add paged
+  sandbox fixtures and customer six-page pagination examples in the sandbox and
+  Storybook.
+- 86ab127: Add a read-only Review container and an event-driven paged product-review API.
+  `getProductReviews()` publishes scoped `reviews/*` events, so Review reacts to
+  them instead of fetching. Includes escaped shopper text, individual ratings,
+  localized states, retry, and responsive layout. Expose customization Slots for
+  Review and include deterministic Storybook and HTML-host examples. Voting and
+  badges are not included.
+- d730b1d: Add a WriteReview container and the `createProductReview()` and
+  `getRatingsMetadata()` APIs. The form renders one star row per rating category
+  from `productReviewRatingsMetadata`, loaded through `getInitialData`, and requires a rating, title, description
+  and name, which map to `summary`, `text` and `nickname`. It honors review
+  enablement and the guest setting (signed-out shoppers see a sign-in prompt),
+  shows a pending-moderation message after submit and errors inline, emits
+  `reviews/review-submitted`, and exposes `ProductSummary`, `SignInPrompt` and
+  `SuccessMessage` slots. The form renders the product-review reCAPTCHA badge
+  and each submit requests a fresh token. Add a StarRatingInput component, Storybook
+  stories, docs, a sandbox example and Cypress coverage. Troop Leader, image
+  upload and an email field are not included. The host storefront opens the form
+  in its modal.
+
+### Patch Changes
+
+- ab54909: Prepare public alpha and stable npm deployments through shared Commerce
+  workflows, with reproducible pnpm installation, validated distribution metadata,
+  and release-tooling tests. Automatic publishing remains dry-run gated until
+  maintainers approve activation.
+
+  Upgrade to Elsie 3 and its supported configuration and tooling APIs to align
+  pnpm installation with shared workflows v7. Synchronize sandbox tools and
+  Storybook's MSW worker with the SDK.
+
+- 9601507: Prepare native product-review reCAPTCHA integration with the shared Adobe
+  reCAPTCHA dependency, an Auth-style internal token-header helper, focused tests,
+  and integration instructions for the separately developed review form. Leave
+  configuration and script lifecycle management with the boilerplate and shared
+  library.
+
 ## 1.0.1
 
 ### Patch Changes
@@ -15,19 +62,16 @@
   This release marks the first stable version of the dropin template, incorporating all foundational work since the initial scaffold.
 
   ### Features
-
   - **Environment variable support**: `elsie.js` and Storybook's `preview.js` now dynamically pick up environment variables at runtime
   - **Codebase cleanup**: Removed unnecessary sandbox code to keep the template lean and focused
   - **GraphQL schema validation**: Added a CI workflow that validates GraphQL operations on every pull request, including improved parsing of HTML fragments in PR descriptions and more specific PR description endpoint link format detection
 
   ### Improvements
-
   - Updated Node.js engine requirement to `^20.0.0 || ^22.0.0`
   - Fixed and cleaned up `tsconfig.json` (removed `sourceMap` option)
   - Upgraded all core SDK dependencies (`@adobe-commerce/elsie`, `@adobe-commerce/event-bus`, `@adobe-commerce/fetch-graphql`, `@adobe-commerce/storefront-design`, `@dropins/build-tools`) to their latest stable releases
   - Updated README with comprehensive dropin documentation and prerequisites
 
   ### CI/CD
-
   - Added PR build workflows on Ubuntu and Windows (`pr-build.yaml`, `pr-build-windows.yaml`)
   - Integrated Changesets for automated changelog generation and version management
