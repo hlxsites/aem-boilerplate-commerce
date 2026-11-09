@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { Initializer, Model } from '@dropins/tools/lib';
-import { Lang } from '@dropins/tools/i18n';
+import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
 import { OrderHistoryModel } from '../../data/models';
 import { CustomerDataModelShort } from '../../data/models/customer';
 type ConfigProps = {
@@ -30,5 +30,5 @@ type ConfigProps = {
     };
 };
 export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import("@dropins/tools/lib/config").Config<ConfigProps>;
+export declare const config: import("@dropins/tools/lib").Config<ConfigProps>;
 export {};

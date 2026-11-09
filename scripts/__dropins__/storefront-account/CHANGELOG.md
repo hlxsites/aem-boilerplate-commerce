@@ -1,22 +1,21 @@
 # @dropins/storefront-account
 
-## 4.3.0-alpha-20261019083246
+## 4.2.1
 
-### Minor Changes
+### Patch Changes
 
-- 06d9773: Bump `@dropins/build-tools` to `1.2.2-alpha-20261016103217` and
-  `@adobe-commerce/elsie` to `3.0.0-alpha-20261016103217`.
+- 3e02bc3: Fix the saved-address selection radio buttons not being announced
+  with the section they belong to (e.g. "Shipping address" vs "Billing
+  address"). Added `role="radiogroup"` and `aria-labelledby` to the container,
+  reusing the existing hidden label.
+- b046a64: Migrate development and Cypress tooling to pnpm 11.28.1 and upgrade
+  Elsie to v3 with updated shared configs and test APIs. Upgrade shared
+  storefront workflows to v7 for pnpm-only CI and formatting checks. Configure a
+  native pre-commit hook to format and re-stage staged files without additional
+  hook dependencies. Use Elsie's shared Storybook APIs and Cypress ESLint preset
+  from the latest v3 alpha.
 
-  Update `examples/html-host` to import from the new consolidated
-  `containers.js` entry instead of deep per-container paths:
-
-  ```diff
-  - import AddressValidation from '@dropins/storefront-account/containers/AddressValidation.js';
-  + import { AddressValidation } from '@dropins/storefront-account/containers.js';
-  ```
-
-  Non-breaking — `containers.js` is built as a fully separate pass alongside the
-  existing per-container files, so deep imports keep working unchanged.
+## 4.2.1-beta.0
 
 ### Patch Changes
 

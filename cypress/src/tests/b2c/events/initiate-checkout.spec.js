@@ -1,11 +1,14 @@
 import { products } from "../../../fixtures";
+import { enableAnalyticsConsent, visitWithAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/initiate-checkout.md
  *
  * Required Contexts: page, storefront, shoppingCart
  */
 it("is sent on mini cart Checkout button click", () => {
-  cy.visit(products.configurable.urlPathWithOptions);
+  visitWithAnalyticsConsent(products.configurable.urlPathWithOptions);
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
@@ -52,14 +55,14 @@ it("is sent on mini cart Checkout button click", () => {
 
 it("is sent on cart page Checkout button click", () => {
   // add item to cart
-  cy.visit(products.configurable.urlPathWithOptions);
+  visitWithAnalyticsConsent(products.configurable.urlPathWithOptions);
   // add to cart
   cy.get(".product-details__buttons__add-to-cart button")
     .should("be.visible")
     .click();
   // after mini cart count updates, go to /cart page
   cy.get('button[data-count="1"]').should("be.visible");
-  cy.visit("/cart");
+  visitWithAnalyticsConsent("/cart");
 
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()

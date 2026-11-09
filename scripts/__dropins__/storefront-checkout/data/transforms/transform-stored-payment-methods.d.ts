@@ -14,8 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import type { StoredPaymentMethodDisplay } from '../../models/stored-payment-method';
-/** Sample payment methods for Storybook (mirrors cart `sampleDataCart` + `events.emit`). */
-export declare const sampleDataCustomerPaymentMethods: StoredPaymentMethodDisplay[];
-/** Subset matching `filterPaymentMethodCodes: ['paypal']` stories. */
-export declare const sampleDataCustomerPaymentMethodsPaypalOnly: StoredPaymentMethodDisplay[];
+import { PaymentToken } from '../../__generated__/types';
+import { PaymentMethod } from '../models/payment-method';
+export declare const transformStoredPaymentMethods: (data: PaymentToken[]) => PaymentMethod[];

@@ -14,7 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export * from './CardIcon';
 export * from './CheckoutPaymentMethods';
 export * from './CreditCardForm';
 export * from './CreditCardForm/CreditCardError';
+export * from './VaultedCreditCardDetails';
 //# sourceMappingURL=index.d.ts.map

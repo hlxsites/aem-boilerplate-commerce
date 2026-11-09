@@ -1,10 +1,14 @@
+import { enableAnalyticsConsent, visitWithAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
+
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/search-product-click.md
  *
  * Required contexts: page, storefront, searchResult
  */
 it("is sent on search bar product click", { tags: "@skipSaas" }, () => {
-  cy.visit("/");
+  visitWithAnalyticsConsent("/");
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")

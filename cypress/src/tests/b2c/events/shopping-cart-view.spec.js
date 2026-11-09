@@ -1,5 +1,8 @@
 import { products } from "../../../fixtures";
 import { expectsEventWithContext } from "../../../assertions";
+import { enableAnalyticsConsent, visitWithAnalyticsConsent } from "./consentTestSupport";
+
+enableAnalyticsConsent();
 /**
  * https://github.com/adobe/commerce-events/blob/main/examples/events/shopping-cart-view.md
  *
@@ -7,7 +10,7 @@ import { expectsEventWithContext } from "../../../assertions";
  */
 
 it("is sent on view cart button click", () => {
-  cy.visit(products.configurable.urlPathWithOptions);
+  visitWithAnalyticsConsent(products.configurable.urlPathWithOptions);
   // add to cart
   cy.get(".product-details__buttons__add-to-cart button")
     .should("be.visible")
@@ -22,7 +25,7 @@ it("is sent on view cart button click", () => {
   cy.waitForResource("commerce-events-collector.js").then(() => {
     cy.window()
       .its("adobeDataLayer")
-      .then((adobeDataLayer) => {
+      .should((adobeDataLayer) => {
         expectsEventWithContext(
           "shopping-cart-view",
           ["pageContext", "storefrontInstanceContext", "shoppingCartContext"],
