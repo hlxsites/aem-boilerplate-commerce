@@ -21,10 +21,6 @@
     background-color: var(--color-alert-200);
 }
 
-.commerce-mini-cart .cart-mini-cart__preCheckoutSection {
-    margin-top: var(--spacing-small);
-}
-
 .commerce-mini-cart__apple-pay-error .dropin-alert-banner {
     margin-bottom: var(--spacing-small);
 }

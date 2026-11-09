@@ -23,14 +23,17 @@ export type FetchQueryError = Array<{
         category: string;
     };
 }>;
-export type BeforeHook = (requestInit: RequestInit) => RequestInit;
+export type BeforeHook = (requestInit: RequestInit) => RequestInit | Promise<RequestInit>;
 export type AfterHook<T = any> = (requestInit: RequestInit, response: {
     errors?: FetchQueryError;
     data: T;
 }) => {
     errors?: FetchQueryError;
     data: T;
-};
+} | Promise<{
+    errors?: FetchQueryError;
+    data: T;
+}>;
 declare class FetchGraphQLMesh {
     protected _endpoint?: string;
     _fetchGraphQlHeaders: Header;
@@ -144,8 +147,8 @@ declare class FetchGraphQLMesh {
         getFetchGraphQlHeader: (key: string) => string | null | undefined;
         removeFetchGraphQlHeader: (key: string) => void;
         setFetchGraphQlHeaders: (header: Header | ((prev: Header) => Header)) => void;
-        fetchGraphQl: <T = any>(query: string, options?: FetchOptions | undefined) => Promise<{
-            errors?: FetchQueryError | undefined;
+        fetchGraphQl: <T = any>(query: string, options?: FetchOptions) => Promise<{
+            errors?: FetchQueryError;
             data: T;
         }>;
         getConfig: () => {
@@ -153,7 +156,7 @@ declare class FetchGraphQLMesh {
             fetchGraphQlHeaders: Header;
         };
         addBeforeHook: (hook: BeforeHook) => void;
-        addAfterHook: (hook: AfterHook<any>) => void;
+        addAfterHook: (hook: AfterHook) => void;
     };
 }
 /**
@@ -242,11 +245,10 @@ export declare class FetchGraphQL extends FetchGraphQLMesh {
  * @property {Function} addAfterHook - Adds a hook executed after the GraphQL call.
  */
 export declare const setEndpoint: (endpoint: string) => void, setFetchGraphQlHeaders: (header: Header | ((prev: Header) => Header)) => void, setFetchGraphQlHeader: (key: string, value: string | null) => void, getFetchGraphQlHeader: (key: string) => string | null | undefined, removeFetchGraphQlHeader: (key: string) => void, fetchGraphQl: <T = any>(query: string, options?: FetchOptions) => Promise<{
-    errors?: FetchQueryError | undefined;
+    errors?: FetchQueryError;
     data: T;
 }>, getConfig: () => {
     endpoint: string | undefined;
     fetchGraphQlHeaders: Header;
 }, addBeforeHook: (hook: BeforeHook) => void, addAfterHook: (hook: AfterHook) => void;
 export {};
-//# sourceMappingURL=index.d.ts.map

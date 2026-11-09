@@ -31,4 +31,3 @@ export declare function getEffectiveLocale(locale?: string): string;
  * const prices = [10.99, 25.50, 99.99].map(amount => formatter.format(amount));
  */
 export declare function getPriceFormatter(options?: PriceFormatterOptions): Intl.NumberFormat;
-//# sourceMappingURL=get-price-formatter.d.ts.map

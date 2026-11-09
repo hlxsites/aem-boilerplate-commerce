@@ -1,1 +1,1 @@
-export * from '../../types/elsie/src/lib/aem/configs'
+export * from '../../types/elsie/src/lib/aem/configs';

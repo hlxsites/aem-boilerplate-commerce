@@ -1,1 +1,1 @@
-export * from 'preact/jsx-runtime'
+export * from 'preact/jsx-runtime';

@@ -1,6 +1,21 @@
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
 import { CartModel, Item } from '../data/models';
 import { GiftOptionsDataSourcesProps, GiftOptionsViewProps, GiftWrappingConfigProps, GiftFormDataType, ProductGiftOptionsConfig } from '../types';
-
 export interface UseGiftOptionsProps {
     item: Item | ProductGiftOptionsConfig;
     view: GiftOptionsViewProps;
@@ -27,11 +42,11 @@ export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, 
     fieldsDisabled: boolean;
     isGiftOptionsApplied: boolean;
     giftWrappingConfig: [] | GiftWrappingConfigProps[];
-    setFieldsDisabled: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
+    setFieldsDisabled: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<boolean>>;
     handleFormMouseLeave: () => Promise<void>;
     onInputChange: (event: Event) => void;
     updateGiftOptions: (name: string, value: string | boolean | number | undefined, extraGiftOptions?: Record<string, string | boolean | number>) => void;
-    setShowModal: import('preact/hooks').Dispatch<import('preact/hooks').StateUpdater<boolean>>;
+    setShowModal: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<boolean>>;
     handleBlur: (event: Event) => Promise<void>;
     isGiftMessageVisible: boolean;
     areGiftOptionsVisible: {
@@ -42,4 +57,3 @@ export declare const useGiftOptions: ({ item, view, dataSource, initialLoading, 
     };
     isGiftOptionsHidden: boolean;
 };
-//# sourceMappingURL=useGiftOptions.d.ts.map

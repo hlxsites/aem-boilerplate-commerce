@@ -1,10 +1,18 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import { IconNode } from '..';
-
-export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon'> {
+export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon' | 'title'> {
     defaultOpen?: boolean;
     actionIconPosition?: 'left' | 'right';
+    title: string | VNode<HTMLAttributes<HTMLSpanElement>>;
     ariaLabelTitle: string;
     iconOpen?: IconNode;
     iconClose?: IconNode;
@@ -15,7 +23,7 @@ export interface AccordionSectionProps extends Omit<HTMLAttributes<HTMLDivElemen
     onStateChange?: (open: boolean) => void;
 }
 export declare const AccordionSection: FunctionComponent<AccordionSectionProps>;
-export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon'> {
+export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'icon' | 'title'> {
     actionIconPosition?: 'left' | 'right';
     iconOpen?: IconNode;
     iconClose?: IconNode;
@@ -25,4 +33,3 @@ export interface AccordionProps extends Omit<HTMLAttributes<HTMLDivElement>, 'ic
     children: VNode<AccordionSectionProps>[] | VNode<AccordionSectionProps>;
 }
 export declare const Accordion: FunctionComponent<AccordionProps>;
-//# sourceMappingURL=Accordion.d.ts.map

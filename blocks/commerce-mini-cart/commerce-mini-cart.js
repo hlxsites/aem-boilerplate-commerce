@@ -197,12 +197,12 @@ export default async function decorate(block) {
     routeProduct: createProductLink,
     undo: undo === 'true',
     slots: {
-      PreCheckoutSection: (ctx) => {
+      // Checkout, Apple Pay, PayPal, View Cart
+      CheckoutAction: (ctx) => {
         const $applePay = document.createElement('div');
         const $googlePay = document.createElement('div');
         $googlePay.className = 'commerce-mini-cart__google-pay';
         const $payPal = document.createElement('div');
-        $payPal.className = 'commerce-mini-cart__paypal';
 
         const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
           .then(showOrderConfirmation)
@@ -226,10 +226,11 @@ export default async function decorate(block) {
             .catch(console.error);
         };
 
-        PaymentServices.render(ApplePay, {
+        const applePay = PaymentServices.render(ApplePay, {
           location: 'MINICART',
           getCartId: () => events.lastPayload('cart/data')?.id,
           isVirtualCart: events.lastPayload('cart/data')?.isVirtual,
+          disabled: ctx.isDisabled,
           onSuccess: onPaymentSuccess,
           onError: () => showPaymentError('An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
         })($applePay);
@@ -246,6 +247,7 @@ export default async function decorate(block) {
 
         PaymentServices.render(PayPalButtons, {
           location: 'MINICART',
+          disabled: ctx.isDisabled,
           onSuccess: onPaymentSuccess,
           onError: () => showPaymentError('An unexpected error occurred during checkout with PayPal. Please try another payment method or contact support.'),
         })($payPal);

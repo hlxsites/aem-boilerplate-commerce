@@ -1,6 +1,13 @@
+/********************************************************************
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  Adobe permits you to use, modify, and distribute this
+ * file in accordance with the terms of the Adobe license agreement
+ * accompanying it.
+ *******************************************************************/
 import { FunctionComponent } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-
 export interface PriceProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'size'> {
     amount?: number;
     currency?: string | null;
@@ -14,4 +21,3 @@ export interface PriceProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'size'
     size?: 'small' | 'medium' | 'large';
 }
 export declare const Price: FunctionComponent<PriceProps>;
-//# sourceMappingURL=Price.d.ts.map
