@@ -1,6 +1,20 @@
-import { ProductModel, CustomizableOptionsAttributeValue } from '../data/models';
-import { ValuesModel } from '../data/models/values-model';
-
+/**
+ * ADOBE CONFIDENTIAL
+ * __________________
+ * Copyright 2024 Adobe
+ * All Rights Reserved.
+ * __________________
+ * NOTICE: All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ */
+import { ProductModel, CustomizableOptionsAttributeValue } from '../data/models/index.js';
+import { ValuesModel } from '../data/models/values-model.js';
 export interface UseProductDataOptions {
     scope?: string;
     initialData?: ProductModel | null;
@@ -36,4 +50,3 @@ export declare function getAttributesById<T = any>(data: ProductModel | null, at
  */
 export declare function getCustomizableOptionsAttribute(data: ProductModel | null): CustomizableOptionsAttributeValue | undefined;
 export declare function preserveCustomizableOptionUIDs(data: ProductModel | null, prevUIDs: string[] | undefined, nextUIDs: string[] | undefined): string[] | undefined;
-//# sourceMappingURL=useProductData.d.ts.map

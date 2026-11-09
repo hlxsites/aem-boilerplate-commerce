@@ -13,7 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export { PRODUCT_FRAGMENT } from './graphql/ProductFragment.graphql';
-export { PRODUCT_OPTION_FRAGMENT } from './graphql/ProductOptionFragment.graphql';
-export { PRICE_RANGE_FRAGMENT } from './graphql/PriceRangeFragment.graphql';
-//# sourceMappingURL=fragments.d.ts.map
+export { PRODUCT_FRAGMENT } from './graphql/ProductFragment.graphql.js';
+export { PRODUCT_OPTION_FRAGMENT } from './graphql/ProductOptionFragment.graphql.js';
+export { PRICE_RANGE_FRAGMENT } from './graphql/PriceRangeFragment.graphql.js';

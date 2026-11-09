@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { ReturnsListContentProps } from '../../types';
+import { ReturnsListContentProps } from '../../types/index.js';
 export declare const ReturnsListContent: FunctionComponent<ReturnsListContentProps>;

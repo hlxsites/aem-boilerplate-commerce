@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { PlaceOrderResponse } from '../../types';
+import { PlaceOrderResponse } from '../../types/index.js';
 import { OrderDataModel } from '../models';
 export declare const transformPlaceOrder: (response: PlaceOrderResponse) => OrderDataModel | null;
