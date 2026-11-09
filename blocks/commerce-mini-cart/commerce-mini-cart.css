@@ -37,7 +37,8 @@
     padding-top: var(--spacing-xsmall);
 }
 
-.commerce-mini-cart__paypal:not(:empty) {
+.commerce-mini-cart__paypal:not(:empty),
+.commerce-mini-cart .commerce-mini-cart__google-pay:not(:empty) {
     margin-top: var(--spacing-xsmall);
 }
 

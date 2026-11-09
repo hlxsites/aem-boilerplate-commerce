@@ -22,8 +22,9 @@ import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistA
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 
 // Payment Services Dropin
-import { PaymentLocation } from '@dropins/storefront-payment-services/api.js';
+import { PaymentLocation, PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
@@ -84,6 +85,7 @@ export default async function decorate(block) {
       <div class="cart__right-column">
         <div class="cart__order-summary"></div>
         <div class="cart__payment-services-apple-pay"></div>
+        <div class="cart__payment-services-google-pay"></div>
         <div class="cart__payment-services-paypal"></div>
         <div class="cart__gift-options"></div>
       </div>
@@ -97,6 +99,7 @@ export default async function decorate(block) {
   const $list = fragment.querySelector('.cart__list');
   const $summary = fragment.querySelector('.cart__order-summary');
   const $applePay = fragment.querySelector('.cart__payment-services-apple-pay');
+  const $googlePay = fragment.querySelector('.cart__payment-services-google-pay');
   const $payPal = fragment.querySelector('.cart__payment-services-paypal');
   const $emptyCart = fragment.querySelector('.cart__empty-cart');
   const $giftOptions = fragment.querySelector('.cart__gift-options');
@@ -187,7 +190,7 @@ export default async function decorate(block) {
     }
   }
 
-  // Payment Services (Apple Pay, PayPal)
+  // Payment Services (Apple Pay, Google Pay, PayPal)
   const onPaymentSuccess = ({ cartId }) => orderApi.placeOrder(cartId)
     .then(showOrderConfirmation)
     .catch(console.error);
@@ -211,6 +214,16 @@ export default async function decorate(block) {
       })
       .catch(console.error);
   };
+
+  events.on('payment-services/initialized/cart', ({ availablePaymentMethods }) => {
+    if (availablePaymentMethods.includes(PaymentMethodCode.GOOGLE_PAY)) {
+      PaymentServices.render(GooglePay, {
+        location: PaymentLocation.CART,
+        onSuccess: onPaymentSuccess,
+        onError: onPaymentError,
+      })($googlePay).catch(console.error);
+    }
+  }, { eager: true });
 
   // Render Containers
   const createProductLink = (product) => getProductLink(product.url.urlKey, product.topLevelSku);

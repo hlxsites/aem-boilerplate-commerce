@@ -27,11 +27,13 @@
 }
 
 .cart__payment-services-apple-pay,
+.commerce-cart .cart__payment-services-google-pay,
 .cart__payment-services-paypal {
   margin-top: var(--spacing-medium);
 }
 
 .cart__payment-services-apple-pay:empty,
+.commerce-cart .cart__payment-services-google-pay:empty,
 .cart__payment-services-paypal:empty {
   display: none;
 }

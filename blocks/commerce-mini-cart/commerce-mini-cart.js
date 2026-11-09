@@ -13,7 +13,9 @@ import {
 import { h } from '@dropins/tools/preact.js';
 
 // Payment Services Dropin
+import { PaymentMethodCode } from '@dropins/storefront-payment-services/api.js';
 import ApplePay from '@dropins/storefront-payment-services/containers/ApplePay.js';
+import GooglePay from '@dropins/storefront-payment-services/containers/GooglePay.js';
 import PayPalButtons from '@dropins/storefront-payment-services/containers/PayPalButtons.js';
 import { render as PaymentServices } from '@dropins/storefront-payment-services/render.js';
 
@@ -197,6 +199,8 @@ export default async function decorate(block) {
     slots: {
       PreCheckoutSection: (ctx) => {
         const $applePay = document.createElement('div');
+        const $googlePay = document.createElement('div');
+        $googlePay.className = 'commerce-mini-cart__google-pay';
         const $payPal = document.createElement('div');
         $payPal.className = 'commerce-mini-cart__paypal';
 
@@ -230,6 +234,16 @@ export default async function decorate(block) {
           onError: () => showPaymentError('An unexpected error occurred during checkout with Apple Pay. Please try another payment method or contact support.'),
         })($applePay);
 
+        events.on('payment-services/initialized/minicart', ({ availablePaymentMethods }) => {
+          if (availablePaymentMethods.includes(PaymentMethodCode.GOOGLE_PAY)) {
+            PaymentServices.render(GooglePay, {
+              location: 'MINICART',
+              onSuccess: onPaymentSuccess,
+              onError: (localizedError) => showPaymentError(localizedError.message),
+            })($googlePay).catch(console.error);
+          }
+        }, { eager: true });
+
         PaymentServices.render(PayPalButtons, {
           location: 'MINICART',
           onSuccess: onPaymentSuccess,
@@ -237,6 +251,7 @@ export default async function decorate(block) {
         })($payPal);
 
         ctx.appendSibling($applePay);
+        ctx.appendSibling($googlePay);
         ctx.appendSibling($payPal);
       },
       Thumbnail: (ctx) => {
