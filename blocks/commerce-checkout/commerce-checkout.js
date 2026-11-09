@@ -21,7 +21,6 @@ import * as paymentsApi from '@dropins/storefront-payment-services/api.js';
 
 // Block Utilities
 import {
-  buildOrderDetailsUrl,
   displayOverlaySpinner,
   removeOverlaySpinner,
 } from './utils.js';
@@ -52,6 +51,7 @@ import {
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
   renderTermsAndConditions,
+  resyncBillingAddress,
 } from './containers.js';
 
 // Constants
@@ -73,8 +73,12 @@ import '../../scripts/initializers/checkout.js';
 import '../../scripts/initializers/order.js';
 import '../../scripts/initializers/payment-services.js';
 
-// Checkout success block import and CSS preload
-import { renderCheckoutSuccess, preloadCheckoutSuccess } from '../commerce-checkout-success/commerce-checkout-success.js';
+// Checkout success page
+import {
+  buildOrderDetailsUrl,
+  renderCheckoutSuccess,
+  preloadCheckoutSuccess,
+} from '../commerce-checkout-success/commerce-checkout-success.js';
 
 preloadCheckoutSuccess();
 
@@ -165,8 +169,11 @@ export default async function decorate(block) {
   const handlePlaceOrder = async ({ cartId, code }) => {
     await displayOverlaySpinner(loaderRef, $loader, $loaderStatus);
     try {
-      // Payment Services credit card
-      if (code === paymentsApi.PaymentMethodCode.CREDIT_CARD) {
+      // Payment Services credit card or saved (vaulted) card
+      if (
+        code === paymentsApi.PaymentMethodCode.CREDIT_CARD
+        || code === paymentsApi.PaymentMethodCode.VAULT
+      ) {
         const success = await trySubmitPaymentServicesCreditCard();
         if (!success) {
           return;
@@ -307,9 +314,21 @@ export default async function decorate(block) {
     window.location.reload();
   }
 
+  let wasStoredPaymentMethodSelected = false;
+
   function handleCheckoutValues(payload) {
-    const { isBillToShipping } = payload;
-    $billingForm.style.display = isBillToShipping ? 'none' : 'block';
+    const { isBillToShipping, selectedPaymentMethod } = payload;
+    const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
+
+    $billToShipping.style.display = isStoredPaymentMethodSelected ? 'none' : 'block';
+    $billingForm.style.display = (isBillToShipping || isStoredPaymentMethodSelected) ? 'none' : 'block';
+    $paymentMethods.classList.toggle('checkout__payment-methods--stored-selected', isStoredPaymentMethodSelected);
+
+    if (wasStoredPaymentMethodSelected && !isStoredPaymentMethodSelected) {
+      resyncBillingAddress(isBillToShipping);
+    }
+
+    wasStoredPaymentMethodSelected = isStoredPaymentMethodSelected;
   }
 
   async function handleOrderPlaced(orderData) {

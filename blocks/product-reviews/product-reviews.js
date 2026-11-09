@@ -4,6 +4,7 @@ import { config, getProductReviews } from '@dropins/storefront-ratings-reviews/a
 import { render as reviewsRenderer } from '@dropins/storefront-ratings-reviews/render.js';
 import { Review } from '@dropins/storefront-ratings-reviews/containers/Review.js';
 import { WriteReview } from '@dropins/storefront-ratings-reviews/containers/WriteReview.js';
+import { Pagination } from '@dropins/storefront-ratings-reviews/containers/Pagination.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
   CUSTOMER_LOGIN_PATH,
@@ -55,10 +56,12 @@ export default async function decorate(block) {
       <div class="product-reviews__write-review"></div>
     </div>
     <div class="product-reviews__list"></div>
+    <div class="product-reviews__pagination"></div>
   `);
   const labels = await fetchPlaceholders('placeholders/ratings-reviews.json');
   fragment.querySelector('.product-reviews__title').textContent = labels.Global?.ReviewsTitle ?? 'Reviews';
   const reviews = fragment.querySelector('.product-reviews__list');
+  const pagination = fragment.querySelector('.product-reviews__pagination');
   block.appendChild(fragment);
   block.hidden = false;
 
@@ -68,7 +71,10 @@ export default async function decorate(block) {
     onClick: () => openWriteReview(sku),
   })(block.querySelector('.product-reviews__write-review'));
 
-  await reviewsRenderer.render(Review, { scope })(reviews);
+  await Promise.all([
+    reviewsRenderer.render(Review, { scope })(reviews),
+    reviewsRenderer.render(Pagination, { scope })(pagination),
+  ]);
 
   if (!block.isConnected) return;
   getProductReviews(sku, { pageSize: 20, currentPage: 1, scope }).catch((error) => {

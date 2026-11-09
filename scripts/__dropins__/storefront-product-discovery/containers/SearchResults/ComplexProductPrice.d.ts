@@ -1,6 +1,4 @@
-import { Product } from '../../data/models/product';
-
+import { Product } from '../../data/models/product.js';
 export declare const ComplexProductPrice: ({ product }: {
     product: Product;
 }) => import("preact").JSX.Element;
-//# sourceMappingURL=ComplexProductPrice.d.ts.map

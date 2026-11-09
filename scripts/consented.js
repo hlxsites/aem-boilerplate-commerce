@@ -1,6 +1,6 @@
+// add functionality that requires user consent here (analytics, martech, etc.)
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { getUserTokenCookie } from './initializers/index.js';
-import { getConsent } from './commerce.js';
 
 async function initAnalytics() {
   try {
@@ -8,7 +8,7 @@ async function initAnalytics() {
     // only if "analytics" has been added to the config.
     const analyticsConfig = getConfigValue('analytics');
 
-    if (analyticsConfig && getConsent('commerce-collection')) {
+    if (analyticsConfig) {
       window.adobeDataLayer.push(
         {
           storefrontInstanceContext: {
@@ -51,9 +51,9 @@ async function initAnalytics() {
         },
       );
 
-      // Load events SDK and collector
-      import('./commerce-events-sdk.js');
-      import('./commerce-events-collector.js');
+      // Load events SDK before its collector subscribes to retained ACDL events.
+      await import('./commerce-events-sdk.js');
+      await import('./commerce-events-collector.js');
     }
   } catch (error) {
     console.warn('Error initializing analytics', error);
@@ -65,5 +65,3 @@ if (document.prerendering) {
 } else {
   initAnalytics();
 }
-
-// add delayed functionality here

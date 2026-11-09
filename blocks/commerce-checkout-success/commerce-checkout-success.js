@@ -32,9 +32,11 @@ import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
 import {
   fetchPlaceholders,
   rootLink,
+  ORDER_DETAILS_PATH,
   SUPPORT_PATH,
   authPrivacyPolicyConsentSlot,
 } from '../../scripts/commerce.js';
+import { getUserTokenCookie } from '../../scripts/initializers/index.js';
 
 // Ensure order drop-in initializer side effects are applied
 import '../../scripts/initializers/order.js';
@@ -276,6 +278,24 @@ export function preloadCheckoutSuccess() {
 
 export async function renderCheckoutSuccess(container, { orderData } = {}) {
   return renderCheckoutSuccessContent(container, { orderData });
+}
+
+/**
+ * Builds the order details URL based on authentication status
+ * @param {Object} orderData - Order data containing number and token
+ * @param {string} orderDetailsPath - Path to the order details page
+ * @returns {string} The constructed order details URL
+ */
+export function buildOrderDetailsUrl(orderData, orderDetailsPath = ORDER_DETAILS_PATH) {
+  const token = getUserTokenCookie();
+  const orderRef = token ? orderData.number : orderData.token;
+  const orderNumber = orderData.number;
+  const encodedOrderRef = encodeURIComponent(orderRef);
+  const encodedOrderNumber = encodeURIComponent(orderNumber);
+
+  return token
+    ? rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}`)
+    : rootLink(`${orderDetailsPath}?orderRef=${encodedOrderRef}&orderNumber=${encodedOrderNumber}`);
 }
 
 export default async function decorate(block) {
