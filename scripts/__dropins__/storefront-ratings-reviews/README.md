@@ -44,6 +44,7 @@ pnpm run dev
   http://localhost:6006/?path=/docs/ratingsreviews-getting-started--overview
 - HTML sandbox: http://127.0.0.1:3000/
 - Review stories: http://localhost:6006/?path=/story/ratingsreviews-containers-review--populated
+- WriteReview stories: http://localhost:6006/?path=/story/ratingsreviews-containers-writereview--default
 
 To run either separately, use `pnpm run storybook` or `pnpm run serve`.
 
@@ -109,6 +110,12 @@ when the checkbox is unchecked, preserving its snapshot for re-enabling.
 Choose
 **Fixtures** for deterministic cases and sample reviews without contacting the
 live backend.
+
+The **Write a review** card opens the WriteReview form on demand, as a storefront
+would inside its modal. **Signed in** switches the shopper state. Fixtures start
+with guest reviews off, so signed-out shoppers see the sign-in prompt; add
+`&guests=1` to the URL to allow guests. In fixture mode a submit succeeds after a
+short delay. In live mode it creates a real review that awaits moderation.
 
 The Case selector controls the review list:
 
@@ -222,6 +229,17 @@ illustrative theme colors should be replaced with approved consumer values.
 Photos/helpfulness from the mockup remain out of scope. PDP/EDS wiring remains
 ACCS-1475. Pagination adds no events or caches of its own; it requests pages
 through `getProductReviews()`.
+
+### WriteReview Container
+
+The host must check `config.getConfig()?.isProductReviewsEnabled === true`
+after initialization before rendering the review section, its heading, and the
+button that opens `WriteReview` in a modal. `WriteReview` does not enforce this
+feature flag itself. The HTML sandbox demonstrates this host-side guard.
+
+The container still honors `allowGuestsToWriteProductReviews`: signed-out
+shoppers see a sign-in prompt instead of the form when guest reviews are disabled,
+and rating metadata is not requested for that state.
 
 ### Browser validation
 

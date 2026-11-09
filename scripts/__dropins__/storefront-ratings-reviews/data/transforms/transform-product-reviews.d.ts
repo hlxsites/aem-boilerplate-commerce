@@ -14,5 +14,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ProductReviewsModel } from '../models/review-models.js';
+import { CreatedProductReviewModel, ProductReviewsModel, RatingMetadataModel, RatingSelectionModel } from '../models/review-models.js';
 export declare function transformProductReviews(value: unknown): ProductReviewsModel;
+export declare function transformRatingsMetadata(data: unknown): RatingMetadataModel[];
+export declare function transformRatingSelections(categories: RatingMetadataModel[], ratings: Record<string, number>): RatingSelectionModel[];
+export declare function transformCreatedProductReview(data: unknown): CreatedProductReviewModel;

@@ -1,6 +1,6 @@
 # dropin-template
 
-## 1.1.0-alpha-20261109171322
+## 1.1.0-alpha-20261109234011
 
 ### Minor Changes
 
@@ -28,6 +28,19 @@
   heading and slot count from API statistics instead of a `totalCount` input prop.
   Include updated HTML-host controls, fixtures, Storybook examples, and
   integration documentation.
+
+- cddb2bd: Add a WriteReview container and the `createProductReview()` and
+  `getRatingsMetadata()` APIs. The form renders one star row per rating category
+  from `productReviewRatingsMetadata`, loaded through `getInitialData`, and requires a rating, title, description
+  and name, which map to `summary`, `text` and `nickname`. It honors review
+  enablement and the guest setting (signed-out shoppers see a sign-in prompt),
+  shows a pending-moderation message after submit and errors inline, emits
+  `reviews/review-submitted`, and exposes `ProductSummary`, `SignInPrompt` and
+  `SuccessMessage` slots. The form renders the product-review reCAPTCHA badge
+  and each submit requests a fresh token. Add a StarRatingInput component, Storybook
+  stories, docs, a sandbox example and Cypress coverage. Troop Leader, image
+  upload and an email field are not included. The host storefront opens the form
+  in its modal.
 
 ### Patch Changes
 

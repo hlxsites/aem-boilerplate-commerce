@@ -16,3 +16,5 @@
  *******************************************************************/
 export * from './StarRating/index.js';
 export * from './ReviewSummary/index.js';
+export * from './StarRatingInput/index.js';
+export * from './WriteReview/index.js';
