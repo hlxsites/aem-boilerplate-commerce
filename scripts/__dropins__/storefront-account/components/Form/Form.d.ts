@@ -15,6 +15,6 @@
  * from Adobe.
  *******************************************************************/
 import { FormProps, FormRef } from '../../types';
-export declare const Form: import("preact").FunctionComponent<import("preact/compat").PropsWithoutRef<FormProps> & {
+export declare const Form: import("preact").FunctionComponent<import("../../../node_modules/preact/compat/src").PropsWithoutRef<FormProps> & {
     ref?: import("preact").Ref<FormRef> | undefined;
 }>;

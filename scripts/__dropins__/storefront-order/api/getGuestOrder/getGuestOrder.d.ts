@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models';
+import { OrderDataModel } from '../../data/models/index.js';
 export declare const getGuestOrder: (form: {
     number: string;
     email: string;

@@ -15,3 +15,4 @@
  * from Adobe.
  *******************************************************************/
 export * from './StarRating/index.js';
+export * from './ReviewSummary/index.js';

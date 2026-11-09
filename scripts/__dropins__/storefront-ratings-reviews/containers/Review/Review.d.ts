@@ -26,7 +26,6 @@ export interface ReviewSlotContext {
 }
 export interface ReviewProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
     scope?: string;
-    totalCount?: number;
     slots?: {
         Header?: SlotProps<ReviewSlotContext & {
             title: string;
