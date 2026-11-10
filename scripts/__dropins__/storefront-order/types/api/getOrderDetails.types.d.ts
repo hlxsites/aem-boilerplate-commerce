@@ -23,7 +23,7 @@ export interface UserAddressesProps {
     firstname?: string;
     lastname?: string;
     middlename?: string;
-    postcode?: string;
+    postcode?: string | null;
     prefix?: string;
     region?: string;
     region_id?: number;

@@ -1,0 +1,4 @@
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+import{I as n,I as u}from"./CustomerDetails.js";import"@dropins/tools/lib.js";import"@dropins/tools/i18n.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/components.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/preact.js";import"../api.js";import"@dropins/tools/recaptcha.js";import"../fragments.js";import"@dropins/tools/fetch-graphql.js";export{n as InvoiceDetails,u as default};
+//# sourceMappingURL=InvoiceDetails.js.map
