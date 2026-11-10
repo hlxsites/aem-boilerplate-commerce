@@ -477,6 +477,7 @@ export const renderPaymentMethods = async (
           [PaymentMethodCode.GOOGLE_PAY]: {
             render: (ctx) => {
               mountPlaceOrderSlot((el) => PaymentServices.render(GooglePay, {
+                location: PaymentLocation.CHECKOUT,
                 onButtonClick: (showPaymentSheet) => {
                   if (validateCheckoutForms()) {
                     showPaymentSheet();
