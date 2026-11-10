@@ -1,6 +1,6 @@
 # dropin-template
 
-## 1.1.0-alpha-20261109234011
+## 1.1.0-alpha-20261110203432
 
 ### Minor Changes
 
@@ -53,11 +53,23 @@
   pnpm installation with shared workflows v7. Synchronize sandbox tools and
   Storybook's MSW worker with the SDK.
 
+- e6bd2dc: Reuse ratings metadata requests for the same store context, including across
+  sign-in. Fetch separately for different store contexts and allow failed requests
+  to be retried.
 - 9601507: Prepare native product-review reCAPTCHA integration with the shared Adobe
   reCAPTCHA dependency, an Auth-style internal token-header helper, focused tests,
   and integration instructions for the separately developed review form. Leave
   configuration and script lifecycle management with the boilerplate and shared
   library.
+- 46a7bee: Remove the drop-in's StarRating component and export. ReviewItem now uses
+  StarRating from the Elsie SDK.
+
+  Import StarRating and StarRatingProps directly from
+  `@adobe-commerce/elsie/components` instead of this drop-in. Migrate
+  `ratingsreviews-star-rating*` CSS selectors to `dropin-star-rating*` and
+  `Rating.*` translation overrides to `Dropin.StarRating.*`. Elsie rounds displayed
+  scores, star fills, and accessible labels consistently to one decimal place.
+  StarRatingInput is unchanged.
 
 ## 1.0.1
 
