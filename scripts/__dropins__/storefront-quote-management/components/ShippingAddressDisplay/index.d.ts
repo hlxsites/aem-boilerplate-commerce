@@ -6,5 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-export { ShippingAddressDisplay, ShippingAddressDisplaySkeleton } from './ShippingAddressDisplay';
+export { ShippingAddressDisplay, ShippingAddressDisplaySkeleton, } from './ShippingAddressDisplay';
 export type { ShippingAddressDisplayProps } from './ShippingAddressDisplay';

@@ -2,6 +2,10 @@ name: Check Test Shard Coverage
 on: push
 jobs:
   check-shard-coverage:
+    # If you want this job to run on your fork, remove the below "if" line.
+    # You will need to "fix" the tests as they are specific to Adobe Commerce's
+    # demo backend.
+    if: github.repository == 'hlxsites/aem-boilerplate-commerce'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

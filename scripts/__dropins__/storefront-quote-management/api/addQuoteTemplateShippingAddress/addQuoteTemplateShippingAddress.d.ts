@@ -39,4 +39,4 @@ export interface AddQuoteTemplateShippingAddressParams {
     templateId: string;
     shippingAddress: NegotiableQuoteTemplateShippingAddressInput;
 }
-export declare const addQuoteTemplateShippingAddress: (params: AddQuoteTemplateShippingAddressParams) => Promise<any>;
+export declare const addQuoteTemplateShippingAddress: (params: AddQuoteTemplateShippingAddressParams) => Promise<import("../../data/models").NegotiableQuoteTemplateModel>;

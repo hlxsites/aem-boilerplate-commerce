@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderMultipleSku';
-export { QuickOrderMultipleSku as default } from './QuickOrderMultipleSku';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderMultipleSku.js';
+export { QuickOrderMultipleSku as default } from './QuickOrderMultipleSku.js';

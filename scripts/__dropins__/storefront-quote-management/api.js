@@ -1046,7 +1046,15 @@ import{events as _}from"@dropins/tools/event-bus.js";import{FetchGraphQL as F}fr
     $referenceDocumentLinks: [NegotiableQuoteTemplateReferenceDocumentLinkInput]
     $attachments: [NegotiableQuoteCommentAttachmentInput]
   ) {
-    submitNegotiableQuoteTemplateForReview(input: { template_id: $templateId, name: $name, comment: $comment, reference_document_links: $referenceDocumentLinks, attachments: $attachments }) {
+    submitNegotiableQuoteTemplateForReview(
+      input: {
+        template_id: $templateId
+        name: $name
+        comment: $comment
+        reference_document_links: $referenceDocumentLinks
+        attachments: $attachments
+      }
+    ) {
       ...NegotiableQuoteTemplateFragment
     }
   }
@@ -1056,7 +1064,9 @@ import{events as _}from"@dropins/tools/event-bus.js";import{FetchGraphQL as F}fr
     $templateId: ID!
     $expirationDate: String!
   ) {
-    setQuoteTemplateExpirationDate(input: { template_id: $templateId, expiration_date: $expirationDate }) {
+    setQuoteTemplateExpirationDate(
+      input: { template_id: $templateId, expiration_date: $expirationDate }
+    ) {
       ...NegotiableQuoteTemplateFragment
     }
   }
@@ -1067,18 +1077,12 @@ import{events as _}from"@dropins/tools/event-bus.js";import{FetchGraphQL as F}fr
       ...NegotiableQuoteTemplateFragment
     }
   }
-  
+
   ${T}
 `,pt=async e=>{var a;if(!e.templateId)throw new Error("Template ID is required");if(!l.authenticated)throw new Error("Unauthorized");try{const t=await p(xe,{variables:{templateId:e.templateId}});if(!((a=t==null?void 0:t.data)!=null&&a.acceptNegotiableQuoteTemplate))throw new Error("No quote template data received");const r=f(t.data.acceptNegotiableQuoteTemplate);if(!r)throw new Error("Failed to transform quote template data");return _.emit("quote-management/quote-template-data",{quoteTemplate:r,permissions:l.permissions}),r}catch(t){return Promise.reject(t)}},Se=`
-  mutation CANCEL_QUOTE_TEMPLATE_MUTATION(
-    $templateId: ID!
-    $comment: String
-  ) {
+  mutation CANCEL_QUOTE_TEMPLATE_MUTATION($templateId: ID!, $comment: String) {
     cancelNegotiableQuoteTemplate(
-      input: {
-        template_id: $templateId
-        cancellation_comment: $comment
-      }
+      input: { template_id: $templateId, cancellation_comment: $comment }
     ) {
       ...NegotiableQuoteTemplateFragment
     }
@@ -1102,15 +1106,12 @@ import{events as _}from"@dropins/tools/event-bus.js";import{FetchGraphQL as F}fr
     $shippingAddress: NegotiableQuoteTemplateShippingAddressInput!
   ) {
     setNegotiableQuoteTemplateShippingAddress(
-      input: {
-        template_id: $templateId
-        shipping_address: $shippingAddress
-      }
+      input: { template_id: $templateId, shipping_address: $shippingAddress }
     ) {
       ...NegotiableQuoteTemplateFragment
     }
   }
-  
+
   ${T}
 `,Tt=async e=>{var t;if(!e.templateId)throw new Error("Template ID is required");if(!e.shippingAddress)throw new Error("Shipping address is required");if(!l.authenticated)throw new Error("Unauthorized");const a=[!!e.shippingAddress.address,e.shippingAddress.customerAddressUid!=null,e.shippingAddress.companyAddressId!=null].filter(Boolean).length;if(a===0)throw new Error("One of address, customerAddressUid or companyAddressId must be provided");if(a>1)throw new Error("Provide only one of address, customerAddressUid or companyAddressId");try{const r=await p(Fe,{variables:{templateId:e.templateId,shippingAddress:{address:e.shippingAddress.address?{city:e.shippingAddress.address.city,company:e.shippingAddress.address.company,country_code:e.shippingAddress.address.countryCode,fax:e.shippingAddress.address.fax,firstname:e.shippingAddress.address.firstname,lastname:e.shippingAddress.address.lastname,middlename:e.shippingAddress.address.middlename,postcode:e.shippingAddress.address.postcode,prefix:e.shippingAddress.address.prefix,region:e.shippingAddress.address.region,region_id:e.shippingAddress.address.regionId,save_in_address_book:e.shippingAddress.address.saveInAddressBook,street:e.shippingAddress.address.street,suffix:e.shippingAddress.address.suffix,telephone:e.shippingAddress.address.telephone,vat_id:e.shippingAddress.address.vatId}:void 0,customer_address_uid:e.shippingAddress.customerAddressUid,company_address_id:e.shippingAddress.companyAddressId,customer_notes:e.shippingAddress.customerNotes}}});if(!((t=r==null?void 0:r.data)!=null&&t.setNegotiableQuoteTemplateShippingAddress))throw new Error("No quote template data received");const o=f(r.data.setNegotiableQuoteTemplateShippingAddress);if(!o)throw new Error("Failed to transform quote template data");return _.emit("quote-management/quote-template-data",{quoteTemplate:o,permissions:l.permissions}),o}catch(r){return Promise.reject(r)}},$e=`
   mutation UPDATE_NEGOTIABLE_QUOTE_TEMPLATE_QUANTITIES_MUTATION(

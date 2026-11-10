@@ -13,10 +13,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AttributesFormModel, OrderDataModel, OrderItemModel } from '../data/models';
-import { InLineAlertProps, TaxTypes } from '.';
-import { SlotProps } from '../../node_modules/@dropins/tools/src/lib';
-import { ImageProps } from '../../node_modules/@dropins/tools/src/components';
+import { AttributesFormModel, OrderDataModel, OrderItemModel } from '../data/models/index.js';
+import { InLineAlertProps, TaxTypes } from './index.js';
+import { SlotProps } from '@dropins/tools/lib';
+import { ImageProps } from '@dropins/tools/components';
 import { RefObject } from 'preact';
 import { MutableRefObject } from 'preact/compat';
 type options = Record<string, string | number | boolean>;

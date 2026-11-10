@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
+export type { FetchGraphQL } from '@adobe-commerce/fetch-graphql';
 /**
  * GraphQL client methods for making API requests.
  * Provides methods to configure endpoints, headers, and execute GraphQL queries.

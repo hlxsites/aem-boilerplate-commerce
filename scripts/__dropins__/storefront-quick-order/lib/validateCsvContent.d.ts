@@ -1,5 +1,20 @@
-import { CSVValidationResult } from '../types';
-
+/********************************************************************
+ * ADOBE CONFIDENTIAL
+ * __________________
+ *
+ *  Copyright 2024 Adobe
+ *  All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe and its suppliers, if any. The intellectual
+ * and technical concepts contained herein are proprietary to Adobe
+ * and its suppliers and are protected by all applicable intellectual
+ * property laws, including trade secret and copyright laws.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe.
+ *******************************************************************/
+import { CSVValidationResult } from '../types/index.js';
 export interface ValidationMessages {
     emptyFile: string;
     missingColumns: string;
@@ -17,4 +32,3 @@ export interface ValidationMessages {
  * @returns Validation result with data or error
  */
 export declare const validateCsvContent: (content: string, messages: ValidationMessages) => CSVValidationResult;
-//# sourceMappingURL=validateCsvContent.d.ts.map

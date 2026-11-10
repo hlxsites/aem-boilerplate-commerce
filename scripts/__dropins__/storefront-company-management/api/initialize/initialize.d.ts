@@ -14,5 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const initialize: any;
-export declare const config: any;
+import { Initializer } from '@dropins/tools/lib';
+import { CompanyDropinConfig } from '../../types/api/initialize.types';
+export declare const initialize: Initializer<CompanyDropinConfig>;
+export declare const config: import("@dropins/tools/lib").Config<CompanyDropinConfig>;

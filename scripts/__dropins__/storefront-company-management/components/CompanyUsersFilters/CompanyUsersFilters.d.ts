@@ -25,4 +25,4 @@ export interface CompanyUsersFiltersProps {
         ariaFilterOptions: string;
     };
 }
-export declare const CompanyUsersFilters: ({ filterType, onFilterChange, translations }: CompanyUsersFiltersProps) => import("preact").JSX.Element;
+export declare const CompanyUsersFilters: ({ filterType, onFilterChange, translations, }: CompanyUsersFiltersProps) => import("preact").JSX.Element;

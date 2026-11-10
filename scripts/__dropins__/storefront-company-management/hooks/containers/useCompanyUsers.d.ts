@@ -45,4 +45,4 @@ export interface UseCompanyUsersReturn {
     handlePageChange: (newPage: number) => void;
     refreshUsers: () => Promise<void>;
 }
-export declare const useCompanyUsers: ({ translations }: UseCompanyUsersProps) => UseCompanyUsersReturn;
+export declare const useCompanyUsers: ({ translations, }: UseCompanyUsersProps) => UseCompanyUsersReturn;

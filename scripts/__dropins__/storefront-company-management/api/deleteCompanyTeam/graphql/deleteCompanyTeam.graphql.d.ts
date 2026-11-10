@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const DELETE_COMPANY_TEAM = "\n  mutation deleteCompanyTeam($id: ID!) {\n    deleteCompanyTeam(id: $id) { __typename }\n  }\n";
+export declare const DELETE_COMPANY_TEAM = "\n  mutation deleteCompanyTeam($id: ID!) {\n    deleteCompanyTeam(id: $id) {\n      __typename\n    }\n  }\n";

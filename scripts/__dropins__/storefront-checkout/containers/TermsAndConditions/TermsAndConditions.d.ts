@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { AgreementMode } from '../../data/models';
-import { Container, SlotMethod, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotMethod, SlotProps } from '@dropins/tools/lib';
 export interface TermsAndConditionsProps {
     active?: boolean;
     slots?: {

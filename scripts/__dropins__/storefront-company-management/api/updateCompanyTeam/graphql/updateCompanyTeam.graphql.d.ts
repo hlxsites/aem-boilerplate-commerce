@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const UPDATE_COMPANY_TEAM = "\n  mutation updateCompanyTeam($input: CompanyTeamUpdateInput!) {\n    updateCompanyTeam(input: $input) { __typename team { id name } }\n  }\n";
+export declare const UPDATE_COMPANY_TEAM = "\n  mutation updateCompanyTeam($input: CompanyTeamUpdateInput!) {\n    updateCompanyTeam(input: $input) {\n      __typename\n      team {\n        id\n        name\n      }\n    }\n  }\n";

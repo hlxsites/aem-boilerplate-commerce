@@ -35,14 +35,13 @@ export declare const removeOptionsFromStorage: (storageKey: string, itemId: stri
  */
 export declare const enrichCartItemsWithOptions: <T extends {
     sku: string;
-    itemId?: string | undefined;
+    itemId?: string;
 }>(cartItems: T[], items: Array<{
     id?: string;
     sku: string;
     variantSku?: string;
     parentSku?: string;
-}>, storageData: Record<string, string[]>) => (T & {
-    optionsUIDs?: string[] | undefined;
-    parentSku?: string | undefined;
-})[];
-//# sourceMappingURL=productOptionsStorage.d.ts.map
+}>, storageData: Record<string, string[]>) => Array<T & {
+    optionsUIDs?: string[];
+    parentSku?: string;
+}>;

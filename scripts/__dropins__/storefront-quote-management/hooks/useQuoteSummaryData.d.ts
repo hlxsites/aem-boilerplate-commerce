@@ -6,10 +6,11 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
+import { NegotiableQuoteModel } from '../data/models';
 /**
  * Custom hook to manage quote summary data and loading state
  */
 export declare const useQuoteSummaryData: () => {
-    quoteData: any;
+    quoteData: NegotiableQuoteModel | undefined;
     loading: boolean;
 };

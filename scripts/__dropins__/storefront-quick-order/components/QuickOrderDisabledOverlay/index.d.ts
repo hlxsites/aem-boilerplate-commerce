@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './QuickOrderDisabledOverlay';
-export { QuickOrderDisabledOverlay as default } from './QuickOrderDisabledOverlay';
-//# sourceMappingURL=index.d.ts.map
+export * from './QuickOrderDisabledOverlay.js';
+export { QuickOrderDisabledOverlay as default } from './QuickOrderDisabledOverlay.js';

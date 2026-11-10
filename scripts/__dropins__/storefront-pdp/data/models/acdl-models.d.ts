@@ -56,4 +56,3 @@ export declare enum ProductViewType {
     ComplexProductView = "ComplexProductView",
     SimpleProductView = "SimpleProductView"
 }
-//# sourceMappingURL=acdl-models.d.ts.map
