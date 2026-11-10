@@ -19,4 +19,5 @@ export * from './customer';
 export * from './customer-orders-return';
 export * from './request-return';
 export * from './order-details';
+export * from './order-invoices';
 export * from './store-config';

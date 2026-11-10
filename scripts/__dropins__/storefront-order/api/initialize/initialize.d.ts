@@ -15,13 +15,14 @@
  *******************************************************************/
 import { Initializer, Model } from '@dropins/tools/lib';
 import { Lang } from '@dropins/tools/i18n';
-import { CustomerOrdersReturnModel, OrderDataModel, RequestReturnModel } from '../../data/models/index.js';
+import { CustomerOrdersReturnModel, OrderDataModel, OrderInvoicesModel, RequestReturnModel } from '../../data/models/index.js';
 export type ConfigProps = {
     langDefinitions?: Lang;
     models?: {
         OrderDataModel?: Model<OrderDataModel>;
         CustomerOrdersReturnModel?: Model<CustomerOrdersReturnModel>;
         RequestReturnModel?: Model<RequestReturnModel>;
+        OrderInvoicesModel?: Model<OrderInvoicesModel>;
     };
     orderRef?: string;
     returnRef?: string;

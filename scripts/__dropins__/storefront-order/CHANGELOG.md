@@ -1,5 +1,106 @@
 # @dropins/storefront-order
 
+## 5.0.0-alpha-20261110114801
+
+### Major Changes
+
+- 837aaf5: Display each invoice's own status and reported item tax in invoice
+  details and downloaded PDFs. Distinguish zero item tax from unavailable tax,
+  and style Paid, Pending, and Canceled invoice statuses explicitly.
+
+  Improve PDF header spacing with separate logo, company, and invoice metadata
+  areas. Preserve logo aspect ratios within 36 x 18 mm, wrap header text, and
+  expand the header to avoid overlapping address panels. Missing or invalid
+  logos do not reserve an empty logo column.
+
+  Breaking change: requires a GraphQL endpoint exposing `Invoice.status` and
+  `InvoiceItemInterface.tax_amount`, available in Storefront Compatibility
+  4.7.21, 4.8.33, or 4.9.8 and later compatible patches on the corresponding
+  release line. Deploy the compatible backend schema before deploying this query
+  change; older schemas reject the invoice query.
+
+  Line subtotals use the stored invoice-item `row_total`. This adds a schema
+  requirement beyond the status/item-tax versions above; the deployed endpoint
+  must also expose `InvoiceItemInterface.row_total`.
+
+- b653e26: Use the backend-reported invoice-item `row_total` for line subtotals
+  in invoice details and downloaded PDFs instead of multiplying unit price by
+  invoiced quantity. Expose it as nullable `rowTotal` in the normalized
+  invoice-item model. Preserve the reported value and currency without
+  subtracting discounts or adding tax. Format valid zero amounts as money and
+  display an em dash for unavailable amounts, without a calculation fallback.
+
+  Breaking compatibility change: the shared invoice query now requires
+  `InvoiceItemInterface.row_total`, in addition to `Invoice.status` and
+  `InvoiceItemInterface.tax_amount`. Deploy a schema exposing all three fields
+  before deploying this drop-in. Older schemas reject the entire query,
+  affecting both invoice containers. The earlier status/item-tax minimum
+  versions alone do not guarantee row-total support; verify that the deployed
+  endpoint exposes `InvoiceItemInterface.row_total`.
+
+  The frontend preserves null row totals. Backend implementations that convert
+  missing stored totals to zero cannot distinguish those cases in the response;
+  the frontend displays those values as zero.
+
+### Minor Changes
+
+- f087a3b: Adds a new `getOrderInvoices` API function to retrieve a customer
+  order's invoices (invoice id, number, comments, invoiced items, and totals) by
+  order number. The response is transformed into a new `OrderInvoicesModel`,
+  following the same `data/transforms` + `data/models` pattern used by the other
+  order API functions.
+
+  ```ts
+  import { getOrderInvoices } from '@/order/api/getOrderInvoices';
+
+  const order = await getOrderInvoices('000000001');
+  ```
+
+- c811dcc: Adds an `InvoiceDetails` container/component and `useInvoiceDetails`
+  hook to render the full detail view for a single invoice (order #, order date,
+  payment method, invoice status, billing/shipping address, line items including
+  item tax, and totals), matching the updated (non-Luma) reference design.
+  Reuses the existing `getOrderInvoices` API, extended with invoice `status` and
+  item `product_sale_price`, `tax_amount`, and stored `row_total`. See
+  [backend compatibility requirements](../src/api/getOrderInvoices/getOrderInvoices.mdx#backend-compatibility)
+  before deploying.
+
+  ```tsx
+  import { InvoiceDetails } from '@/order/containers/InvoiceDetails';
+
+  <InvoiceDetails
+    invoiceRef="000000002"
+    routeInvoicesList={() => '/orders/invoices'}
+  />;
+  ```
+
+  The container downloads an invoice PDF by default. Use `getInvoicePdfBranding`
+  to supply the logo, store name, and address lines, or `onDownloadPdf` to
+  replace the default download behavior.
+
+- 5256d85: Add a reusable client-side invoice PDF renderer and wire the Invoice
+  Details download action to it. Storefront hosts can provide a site logo as PDF
+  branding; the same renderer can be reused by future bulk-export flows.
+- d883d8b: Adds an `OrderInvoices` component and container to display the
+  invoices associated with a customer order.
+
+  The container uses a new `useOrderInvoices` hook, which listens for the
+  `order/data` event and fetches invoices via `getOrderInvoices` for the current
+  order. The component renders each invoice's number, grand total, and item
+  count inside a card, with loading and empty states.
+
+  ```ts
+  import { OrderInvoices } from '@/order/containers';
+  ```
+
+### Patch Changes
+
+- 839bb26: Keep the shopper's active cart when an order is placed from a
+  different cart. `placeOrder` and `setPaymentMethodAndPlaceOrder` now emit
+  `cart/reset` only when the placed cart is the active cart (or the active cart
+  is unknown), so buying a product with an express payment button on a product
+  page no longer clears the cart.
+
 ## 4.1.1
 
 ### Patch Changes

@@ -10,13 +10,23 @@ import {
 // Initialize
 import '../../scripts/initializers/auth.js';
 
+function getRedirectAfterSignIn() {
+  const redirectUrl = new URL(window.location.href).searchParams.get('redirectUrl');
+  if (!redirectUrl) return rootLink(CUSTOMER_ACCOUNT_PATH);
+
+  const destination = new URL(redirectUrl, window.location.origin);
+  if (destination.origin !== window.location.origin) return rootLink(CUSTOMER_ACCOUNT_PATH);
+
+  return rootLink(`${destination.pathname}${destination.search}${destination.hash}`);
+}
+
 export default async function decorate(block) {
   if (checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
   } else {
     await authRenderer.render(SignIn, {
       routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
-      routeRedirectOnSignIn: () => rootLink(CUSTOMER_ACCOUNT_PATH),
+      routeRedirectOnSignIn: getRedirectAfterSignIn,
     })(block);
   }
 }

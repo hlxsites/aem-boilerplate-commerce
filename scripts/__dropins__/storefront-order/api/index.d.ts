@@ -21,6 +21,7 @@ export * from './getCustomer';
 export * from './getCustomerOrdersReturn';
 export * from './getGuestOrder';
 export * from './getOrderDetailsById';
+export * from './getOrderInvoices';
 export * from './getStoreConfig';
 export * from './guestOrderByToken';
 export * from './initialize';

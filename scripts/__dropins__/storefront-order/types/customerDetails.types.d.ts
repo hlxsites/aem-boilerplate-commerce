@@ -46,8 +46,8 @@ export interface CustomerDetailsContentProps extends Omit<CustomerDetailsProps, 
     loading: boolean;
     order?: OrderDataModel;
     normalizeAddress: {
-        billingAddress: NormalizeAddressProps[][];
-        shippingAddress: NormalizeAddressProps[][];
+        billingAddress: NormalizeAddressProps[] | NormalizeAddressProps[][];
+        shippingAddress: NormalizeAddressProps[] | NormalizeAddressProps[][];
     };
 }
 export interface CustomerAddressesModel {
