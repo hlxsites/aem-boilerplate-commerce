@@ -17,6 +17,12 @@ const WORKFLOW_FILES = [
   resolve(CYPRESS_DIR, '../.github/workflows/run-e2e-tests-aco.yaml'),
 ];
 
+// Backend-agnostic specs that intentionally run in a single workflow only.
+const SPECS_EXEMPT_FROM_WORKFLOW = {
+  'run-e2e-tests-saas.yaml': ['src/tests/b2c/events/consent.spec.js'],
+  'run-e2e-tests-aco.yaml': ['src/tests/b2c/events/consent.spec.js'],
+};
+
 const allSpecs = glob.sync('src/tests/b2c/**/*.spec.js', { cwd: CYPRESS_DIR });
 
 function parseShardsFromWorkflow(workflowPath) {
@@ -49,7 +55,8 @@ for (const workflowFile of WORKFLOW_FILES) {
     exitCode = 1;
   }
 
-  const missing = allSpecs.filter((s) => !shardedSpecs.includes(s));
+  const exempt = SPECS_EXEMPT_FROM_WORKFLOW[workflowName] || [];
+  const missing = allSpecs.filter((s) => !shardedSpecs.includes(s) && !exempt.includes(s));
   if (missing.length > 0) {
     console.error(`\n❌ ${workflowName}: spec files not assigned to any shard:`);
     missing.forEach((s) => console.error(`   ${s}`));

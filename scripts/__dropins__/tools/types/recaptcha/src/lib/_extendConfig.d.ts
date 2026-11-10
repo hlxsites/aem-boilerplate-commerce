@@ -6,5 +6,5 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { ReCaptchaModel } from '../types/recaptcha.types';
-export declare const extendConfig: (config: ReCaptchaModel, modifyParams: any[]) => ReCaptchaModel | undefined;
+import { ReCaptchaModel, PropsFormTypes } from '../types/recaptcha.types';
+export declare const extendConfig: (config: ReCaptchaModel, modifyParams: Array<PropsFormTypes | string>) => ReCaptchaModel | undefined;

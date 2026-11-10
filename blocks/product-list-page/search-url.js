@@ -12,8 +12,10 @@
 function parseSort(sortParam) {
   if (!sortParam) return [];
   return sortParam.split(',').map((item) => {
-    const [attribute, direction] = item.split('_');
-    return { attribute, direction };
+    // Attribute codes can contain underscores (e.g. ac_rating_summary), so split on the last one
+    const index = item.lastIndexOf('_');
+    if (index === -1) return { attribute: item, direction: undefined };
+    return { attribute: item.slice(0, index), direction: item.slice(index + 1) };
   });
 }
 
