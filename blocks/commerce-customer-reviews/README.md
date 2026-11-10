@@ -18,8 +18,36 @@ approved-only behavior passes QA.
 | Commerce Customer Reviews | |
 | --- | --- |
 | Page size | 10 |
+| Minified view | false |
+| Reviews page | /customer/reviews |
 
-Page size is optional, defaults to 10, and must be an integer from 1 to 50.
+Page size is optional, defaults to 10 (3 in minified view), and must be an integer
+from 1 to 50. Full view includes the page heading, review details, and paging.
+Minified view uses a level-two Recent reviews heading and responsive review
+summary cards, omits detail and paging controls, and includes a View all reviews
+card linking to Reviews page.
+These options require an Account package that supports `minifiedView` and
+`routeReviewsList`.
+
+### Account landing page
+
+Add a second instance of this block to the main column of the authored Account
+landing page alongside the existing minified Orders and Addresses blocks:
+
+| Commerce Customer Reviews | |
+| --- | --- |
+| Minified view | true |
+| Page size | 3 |
+| Reviews page | /drafts/ratings-reviews/customer/reviews |
+
+Use `/customer/reviews` for the production Reviews page value. This is authored
+content, not automatic insertion by the page decorator. Keep full view on the
+dedicated reviews page; no separate details page is needed.
+Set that page's metadata Title to My Product Reviews rather than retaining the
+title of a copied Account page.
+
+### Sidebar and translations
+
 Add this block in the main account column and `Commerce Account Sidebar` in the
 sidebar column. The sidebar accepts an optional `Fragment` row. Its default
 remains `/customer/sidebar-fragment`. Add My Product Reviews to the merchant's
@@ -87,3 +115,8 @@ approval and rejection changes.
 Author the reviews page and sidebar fragment in the CMS, merge localized
 placeholder rows, and verify the feature preview. Local demo pages are not
 part of this integration.
+
+Also verify that the landing summary has a level-two heading, no paging or
+See Details controls, and a working View all reviews link to the authored reviews
+page. Verify full list, detail, and Back focus behavior at mobile and desktop
+widths.

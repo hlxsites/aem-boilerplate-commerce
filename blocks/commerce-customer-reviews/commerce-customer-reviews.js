@@ -4,13 +4,17 @@ import { getStoreConfig } from '@dropins/storefront-account/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
-  CUSTOMER_LOGIN_PATH, checkIsAuthenticated, rootLink, getProductLink,
+  CUSTOMER_LOGIN_PATH, CUSTOMER_REVIEWS_PATH, checkIsAuthenticated, rootLink, getProductLink,
 } from '../../scripts/commerce.js';
 import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
   const authored = readBlockConfig(block);
-  const pageSize = authored['page-size'] === undefined ? 10 : Number(authored['page-size']);
+  const minifiedView = authored['minified-view'] === 'true';
+  const defaultPageSize = minifiedView ? 3 : 10;
+  const pageSize = authored['page-size'] === undefined
+    ? defaultPageSize
+    : Number(authored['page-size']);
   if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 50) {
     throw new RangeError('Customer review page size must be an integer from 1 to 50.');
   }
@@ -45,6 +49,8 @@ export default async function decorate(block) {
     const mountedGeneration = generation;
     accountView = await accountRenderer.render(ProductReviews, {
       pageSize,
+      minifiedView,
+      routeReviewsList: () => rootLink(authored['reviews-page'] || CUSTOMER_REVIEWS_PATH),
       enabled: (await getStoreConfig()).productReviewsEnabled,
       authenticated: checkIsAuthenticated(),
       contextKey: String(mountedGeneration),

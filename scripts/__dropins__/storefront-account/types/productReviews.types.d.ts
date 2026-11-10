@@ -23,6 +23,8 @@ export interface ProductReviewsProps extends Omit<HTMLAttributes<HTMLDivElement>
     authenticated?: boolean;
     contextKey?: string;
     withHeader?: boolean;
+    minifiedView?: boolean;
+    routeReviewsList?: () => string;
     routeProduct?: (product: CustomerReviewProductModel) => string | undefined;
     slots?: {
         Rating?: SlotProps<{

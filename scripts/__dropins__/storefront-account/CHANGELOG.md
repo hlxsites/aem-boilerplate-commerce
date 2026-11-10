@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 4.3.0-alpha-20261110154711
+## 4.3.0-alpha-20261110192921
 
 ### Minor Changes
 
@@ -15,6 +15,11 @@
   Expose normalized product review merchant enablement through the existing
   getStoreConfig API so hosts can gate account reviews without a separate
   GraphQL query or a Ratings/Reviews dependency.
+
+  Align review list and detail typography, headers, dividers, and cards with the
+  other Account views. Add a minified Recent reviews summary with configurable
+  page size and host-owned View all reviews routing for the Account landing
+  page.
 
 ## 4.2.1
 
