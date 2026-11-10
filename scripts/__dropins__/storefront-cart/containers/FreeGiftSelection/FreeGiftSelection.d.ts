@@ -15,7 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import type { CartModel } from '../../data/models';
 export interface FreeGiftSelectionProps extends HTMLAttributes<HTMLDivElement> {
     /** Shows the trigger button when pending free gifts are available. */

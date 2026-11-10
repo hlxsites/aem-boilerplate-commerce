@@ -15,9 +15,9 @@
  * from Adobe.
  *******************************************************************/
 import { HTMLAttributes } from 'preact/compat';
-import { Container, SlotProps } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartModel } from '../../data/models/cart-model';
-import { ImageProps } from '../../../node_modules/@dropins/tools/src/components';
+import { ImageProps } from '@dropins/tools/components';
 import { VNode } from 'preact';
 export interface CartSummaryTableContainerProps extends HTMLAttributes<HTMLDivElement> {
     /** Initial data for the cart */
