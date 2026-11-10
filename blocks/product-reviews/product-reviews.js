@@ -51,11 +51,16 @@ export default async function decorate(block) {
   const { sku: authoredSku } = readBlockConfig(block);
   block.replaceChildren();
   block.hidden = true;
+
   if (config.getConfig()?.isProductReviewsEnabled !== true || !block.isConnected) return;
+
   const sku = authoredSku?.trim() || getProductSku();
   if (!sku) throw new Error('A product SKU is required to display product reviews.');
 
+  const labels = await fetchPlaceholders('placeholders/ratings-reviews.json');
+
   const scope = `product-reviews-${crypto.randomUUID()}`;
+
   const fragment = document.createRange().createContextualFragment(`
     <div class="product-reviews__header">
       <h2 class="product-reviews__title"></h2>
@@ -65,11 +70,14 @@ export default async function decorate(block) {
     <div class="product-reviews__list"></div>
     <div class="product-reviews__pagination"></div>
   `);
-  const labels = await fetchPlaceholders('placeholders/ratings-reviews.json');
-  fragment.querySelector('.product-reviews__title').textContent = labels.Global?.ReviewsTitle ?? 'Reviews';
+
+  const title = fragment.querySelector('.product-reviews__title');
   const summary = fragment.querySelector('.product-reviews__summary');
   const reviews = fragment.querySelector('.product-reviews__list');
   const pagination = fragment.querySelector('.product-reviews__pagination');
+
+  title.textContent = labels.Global?.ReviewsTitle ?? 'Reviews';
+
   block.appendChild(fragment);
   block.hidden = false;
 
