@@ -66,9 +66,35 @@ following the cart/wishlist initialization convention. Both `STORE_CONFIG_QUERY`
 and `REVIEWS_QUERY` use Commerce Core. This drop-in must not use
 `CS_FETCH_GRAPHQL`, query catalog products, or fetch aggregate ratings.
 
+### Write a Review
+
+The block renders a header row with a **Reviews** title and a **Write review**
+button above the review list. Both belong to the block, not the drop-in, so
+projects can restyle or rearrange them freely. The button opens the drop-in's
+`WriteReview` container inside the shared `blocks/modal`.
+
+- The form renders before the modal opens, so the dialog never appears empty.
+  While it loads, the button is disabled and shows a spinner, and repeat clicks
+  are ignored. The drop-in caches rating categories in memory per store, so
+  later opens on the same page skip the request.
+
+- `sku` is the block's review SKU. When the page's `pdp/data` payload is for the
+  same SKU, its name and first image fill the form's product summary.
+  Standalone Reviews pages use the authored SKU and do not require PDP data.
+- `isAuthenticated` comes from `checkIsAuthenticated()`; `routeSignIn` returns
+  `rootLink(CUSTOMER_LOGIN_PATH)`.
+- The form honors `allowGuestsToWriteProductReviews`: when it is off, signed-out
+  shoppers see a sign-in prompt instead of the form.
+- After a successful submit the form shows a pending-moderation message and
+  stays open until the shopper closes the modal. The review list is not
+  refreshed because new reviews are not shown until approved.
+- reCAPTCHA is not configured here. The shared initializer already calls
+  `recaptcha.setConfig()`; the form initializes the `createProductReview` badge and
+  requests a fresh token on each submit.
+
 ### Heading and Ratings
 
-The heading is **Reviews**. The refactored Review container accepts an optional
+The block's own heading is **Reviews**. The refactored Review container accepts an optional
 `totalCount`, but the current Core reviews response provides no approved total.
 This block intentionally leaves that prop unset. Do not infer a total from page
 length or `pageSize * totalPages`, or subscribe to `pdp/data` to obtain one.
@@ -85,7 +111,10 @@ The drop-in supplies default labels.
 
 | Key | Purpose |
 | --- | --- |
-| `Review.title` | Heading without an approved total. |
+| `Global.ReviewsTitle` | Block title above the review list (default `Reviews`). |
+| `Global.WriteReview` | Write review button label (default `Write review`). |
+| `Global.WriteReviewLoading` | Screen-reader announcement while the review form loads (default `Loading review form`). |
+| `Review.title` | Drop-in list heading without an approved total. |
 | `Review.loading`, `Review.empty`, `Review.unavailable`, `Review.error` | List status messages. |
 | `Review.retry` | Retry button label. |
 | `Review.author`, `Review.unrated`, `Review.dateLocale` | Author (`{{nickname}}`), unrated label, and date locale. |
@@ -128,19 +157,16 @@ stays isolated using a generated scope. The refactored package has no
 - The Pagination container owns subsequent page requests. Do not fetch again in
   an `onPageChange` callback or add host event listeners. Empty and single-page
   results hide the controls and pagination spacing without hiding the review list.
-- Aggregate totals/graphs, badges, sorting, submission, and
+- Aggregate totals/graphs, badges, sorting, and
   helpfulness voting remain deferred or outside this block's current scope.
 
 ## Development
 
-Until [ACCS-2171](https://jira.corp.adobe.com/browse/ACCS-2171) is complete, the
-dependency uses `vendor/storefront-ratings-reviews-1.0.1-824c0fc.tgz`, built from
-`824c0fc68dbd431fd3f6be71e4fec31dd824ce06` after
-[adobe-commerce/storefront-ratings-reviews#7](https://github.com/adobe-commerce/storefront-ratings-reviews/pull/7).
-Include the archive and generated ratings/reviews assets when delivering the
-branch. `.hlxignore` excludes the archive from Edge Delivery; browsers load the
-generated files. No sibling repository is required to install. Replace the
-snapshot with an equivalent published package when available.
+The dependency uses the published
+`@dropins/storefront-ratings-reviews@1.1.0-alpha-20261109222008` package.
+Run `npm install` and `npm run install:dropins` to refresh the generated
+ratings/reviews assets. Include the generated files when delivering the branch;
+no vendored ratings/reviews archive or sibling repository is required.
 
 With the local AEM server running:
 
@@ -153,4 +179,8 @@ The focused suite covers Core/Catalog endpoint and header separation on retry
 and navigation, SKU precedence, standalone/authored placement, review
 auto-blocking, loading, errors/retry, disabled and failed configuration, guest
 reading, private scope isolation, pagination loading and recovery, escaping,
-purchase-control availability, and mobile/RTL layout.
+purchase-control availability, mobile/RTL layout, the header and Write review
+button, the button loading state, opening the modal only after the form is ready,
+submitting a review from the modal on PDPs and standalone Reviews pages,
+closing/reopening a fresh form without refetching rating categories, and the sign-in prompt when guests cannot write
+reviews.

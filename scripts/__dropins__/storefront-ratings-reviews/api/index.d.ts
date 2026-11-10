@@ -18,3 +18,5 @@ export * from './initialize';
 export * from './fetch-graphql';
 export * from './getStoreConfig/index.js';
 export * from './getProductReviews/index.js';
+export * from './getRatingsMetadata/index.js';
+export * from './createProductReview/index.js';

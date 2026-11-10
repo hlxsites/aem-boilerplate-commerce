@@ -14,6 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './Review.js';
 export * from './Pagination.js';
+export * from './Review.js';
 export * from './ReviewSummary.js';
+export * from './WriteReview.js';

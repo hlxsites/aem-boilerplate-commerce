@@ -6,6 +6,34 @@
   display: none;
 }
 
+.product-reviews__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-medium);
+  margin-block-end: var(--spacing-medium);
+}
+
+.product-reviews__title {
+  margin: 0;
+}
+
+.product-reviews__write-review .dropin-button {
+  text-transform: uppercase;
+}
+
+/* footer.css offsets every modal's close button by 40px with !important; restore the corner for this modal. */
+.modal:has(.product-reviews__modal-content) .close-button {
+  top: 0 !important;
+  right: 0 !important;
+}
+
+/* Keeps the form clear of the close button. */
+.product-reviews__modal-content {
+  padding-block-start: var(--spacing-big);
+}
+
 .product-reviews .product-reviews__pagination {
   min-width: 0;
   margin-block: var(--spacing-medium);

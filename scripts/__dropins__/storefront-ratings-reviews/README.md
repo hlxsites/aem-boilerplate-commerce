@@ -44,6 +44,7 @@ pnpm run dev
   http://localhost:6006/?path=/docs/ratingsreviews-getting-started--overview
 - HTML sandbox: http://127.0.0.1:3000/
 - Review stories: http://localhost:6006/?path=/story/ratingsreviews-containers-review--populated
+- WriteReview stories: http://localhost:6006/?path=/story/ratingsreviews-containers-writereview--default
 
 To run either separately, use `pnpm run storybook` or `pnpm run serve`.
 
@@ -110,6 +111,12 @@ Choose
 **Fixtures** for deterministic cases and sample reviews without contacting the
 live backend.
 
+The **Write a review** card opens the WriteReview form on demand, as a storefront
+would inside its modal. **Signed in** switches the shopper state. Fixtures start
+with guest reviews off, so signed-out shoppers see the sign-in prompt; add
+`&guests=1` to the URL to allow guests. In fixture mode a submit succeeds after a
+short delay. In live mode it creates a real review that awaits moderation.
+
 The Case selector controls the review list:
 
 | Case | Result |
@@ -150,14 +157,18 @@ with retry. It does not fetch: `getProductReviews()` publishes `reviews/request`
 `reviews/loading`, `reviews/result`, and `reviews/error` events, and Review
 subscribes to them. Pass the same `scope` to both to keep several review groups
 on one page independent. Only the newest request in a scope publishes its outcome,
-so stale page responses are ignored. The heading uses `stats.reviewCount` when
-available, retaining it across items-only pages, loading, and failures.
-Without statistics it shows "Reviews"; there is no count override prop.
-The cached count clears on SKU/scope changes, explicit null statistics, or an
-unavailable product, using the same snapshot rules as ReviewSummary. Review does
-not request statistics just to obtain a title. The count is never inferred from
-page metadata. Each review's own score uses the presentational `StarRating`
-component, which is also exported for hosts that render their own ratings.
+so stale page responses are ignored. The heading is "Reviews" unless the host
+passes a `totalCount` prop with the approved total. It is never inferred from
+page metadata. Each review's own score uses Elsie's presentational `StarRating`
+component. Hosts rendering their own ratings should import it directly from
+`@adobe-commerce/elsie/components`; this drop-in no longer exports it.
+
+When migrating from the local component, replace `ratingsreviews-star-rating*`
+CSS selectors with `dropin-star-rating*` selectors and move `Rating.*` translation
+overrides to `Dropin.StarRating.*`. Elsie supplies the default translations through
+the existing UI provider and rounds scores consistently to one decimal place.
+SDK integration examples are available under **SDK / StarRating** in Storybook.
+The separate `StarRatingInput` component is unchanged.
 
 The Review example shares the main sandbox's initialization and endpoint.
 Storybook includes deterministic Review states and custom Slots examples.
@@ -222,6 +233,17 @@ illustrative theme colors should be replaced with approved consumer values.
 Photos/helpfulness from the mockup remain out of scope. PDP/EDS wiring remains
 ACCS-1475. Pagination adds no events or caches of its own; it requests pages
 through `getProductReviews()`.
+
+### WriteReview Container
+
+The host must check `config.getConfig()?.isProductReviewsEnabled === true`
+after initialization before rendering the review section, its heading, and the
+button that opens `WriteReview` in a modal. `WriteReview` does not enforce this
+feature flag itself. The HTML sandbox demonstrates this host-side guard.
+
+The container still honors `allowGuestsToWriteProductReviews`: signed-out
+shoppers see a sign-in prompt instead of the form when guest reviews are disabled,
+and rating metadata is not requested for that state.
 
 ### Browser validation
 

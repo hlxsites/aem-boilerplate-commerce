@@ -14,17 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ComponentProps, FunctionComponent } from 'preact';
-import { HTMLAttributes } from 'preact/compat';
-import { Icon } from '@dropins/tools/components';
-export interface StarRatingProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children' | 'icon'> {
-    rating: number;
-    reviewCount?: number;
-    showCount?: boolean;
-    valueDisplay?: 'hidden' | 'value' | 'outOfFive';
-    countDisplay?: 'text' | 'parentheses';
-    layout?: 'inline' | 'stacked';
-    showDivider?: boolean;
-    icon?: ComponentProps<typeof Icon>['source'];
-}
-export declare const StarRating: FunctionComponent<StarRatingProps>;
+import { CreatedProductReviewModel, CreateProductReviewInput } from '../../data/models/index.js';
+export type { CreatedProductReviewModel, CreateProductReviewInput, } from '../../data/models/index.js';
+export declare const createProductReview: ({ sku, nickname, summary, text, ratings, }: CreateProductReviewInput) => Promise<CreatedProductReviewModel>;

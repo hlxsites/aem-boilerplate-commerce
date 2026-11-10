@@ -14,5 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './StarRating.js';
-export { StarRating as default } from './StarRating.js';
+export * from './getRatingsMetadata.js';
