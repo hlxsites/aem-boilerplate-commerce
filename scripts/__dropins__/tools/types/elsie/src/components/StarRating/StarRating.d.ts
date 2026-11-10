@@ -24,6 +24,7 @@ export interface StarRatingProps extends Omit<HTMLAttributes<HTMLDivElement>, 'c
     valueDisplay?: 'hidden' | 'value' | 'outOfFive';
     countDisplay?: 'text' | 'parentheses';
     layout?: 'inline' | 'stacked';
+    size?: 'small' | 'medium';
     showDivider?: boolean;
     icon?: ComponentProps<typeof Icon>['source'];
 }
