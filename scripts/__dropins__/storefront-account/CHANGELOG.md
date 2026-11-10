@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 4.3.0-alpha-20261110192921
+## 4.3.0-alpha-20261110202124
 
 ### Minor Changes
 
@@ -19,7 +19,9 @@
   Align review list and detail typography, headers, dividers, and cards with the
   other Account views. Add a minified Recent reviews summary with configurable
   page size and host-owned View all reviews routing for the Account landing
-  page.
+  page. Label the review's calculated average and the customer's individual
+  criterion ratings inline with their stars, with localized personal-rating
+  labels.
 
 ## 4.2.1
 

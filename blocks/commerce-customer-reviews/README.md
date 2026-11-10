@@ -76,8 +76,14 @@ No approval-capability row is required on either block.
   to the list; there is no fabricated review ID or durable details URL.
 - The table scrolls within a keyboard-accessible, labeled region on narrow
   screens. Back restores focus to the originating See Details action.
-- Account renders average and criterion stars with the SDK. Its optional
-  `ReviewDetails` slot is customization only; no Ratings bridge is installed.
+- Account renders average and criterion stars with the SDK. Detail labels
+  distinguish the customer's own ratings inline: `Average of your ratings:` and
+  `Your {{name}} rating:` (for example, `Your Quality rating:`).
+  The average comes from this review's API `average_rating`, normalized from
+  a percentage to five stars. It is calculated from the review's criteria,
+  not submitted separately and not a product-wide aggregate.
+  Its optional `ReviewDetails` slot is customization only; no Ratings bridge is
+  installed.
   The host removes its render instance and authentication listener on unmount.
   Do not wire this block to the public `reviews/*` PDP event stream.
 - Both blocks read the normalized `productReviewsEnabled` flag directly through
