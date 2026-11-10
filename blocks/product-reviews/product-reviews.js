@@ -123,7 +123,7 @@ export default async function decorate(block) {
     currentPage: 1,
     withStats: true,
     scope,
-}).catch((error) => {
+  }).catch((error) => {
     console.error('[Product Reviews] Failed to load reviews:', error);
   });
 }
