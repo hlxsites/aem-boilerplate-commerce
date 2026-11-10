@@ -1,8 +1,12 @@
 import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
+import { SignUp } from '@dropins/storefront-auth/containers/SignUp.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import {
   CORE_FETCH_GRAPHQL,
+  CUSTOMER_CREATE_PATH,
   CUSTOMER_FORGOTPASSWORD_PATH,
+  CUSTOMER_LOGIN_PATH,
+  authPrivacyPolicyConsentSlot,
   checkIsAuthenticated,
   fetchPlaceholders,
   rootLink,
@@ -23,6 +27,12 @@ const OAUTH_PARAMS = [
 ];
 
 const REQUIRED_PARAMS = ['client_id', 'redirect_uri', 'code_challenge', 'code_challenge_method'];
+
+// The request lives only in the sign-in page URL, so it is kept for the tab to survive the
+// sign-in to create-account navigation. It holds no secret: the PKCE code_verifier stays with the
+// client, and Commerce validates the request again when the code is issued.
+const STORAGE_KEY = 'oauth_authorization_request';
+const STORAGE_TTL_MS = 10 * 60 * 1000;
 
 const ISSUE_AUTHORIZATION_CODE = `
   mutation ISSUE_OAUTH_AUTHORIZATION_CODE($input: IssueOauthAuthorizationCodeInput!) {
@@ -53,6 +63,38 @@ export function getOauthAuthorizationRequest(href = window.location.href) {
   }, {});
 
   return REQUIRED_PARAMS.every((name) => request[name]) ? request : null;
+}
+
+function clearPendingOauthRequest() {
+  sessionStorage.removeItem(STORAGE_KEY);
+}
+
+/**
+ * Returns the OAuth 2.0 authorization request of the current tab. A request in the page URL is
+ * stored and replaces any earlier one; otherwise the request stored by a previous page of this
+ * tab is returned until it expires.
+ * @returns {Object|null} The request parameters, or null when there is none.
+ */
+function getPendingOauthRequest() {
+  const request = getOauthAuthorizationRequest();
+  if (request) {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+      request,
+      expires: Date.now() + STORAGE_TTL_MS,
+    }));
+    return request;
+  }
+
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
+    if (stored?.expires > Date.now() && REQUIRED_PARAMS.every((name) => stored.request?.[name])) {
+      return stored.request;
+    }
+  } catch (error) {
+    // Unreadable value: treated as no request.
+  }
+  clearPendingOauthRequest();
+  return null;
 }
 
 /**
@@ -86,6 +128,7 @@ export async function issueOauthAuthorizationCode(request) {
  * shows an inline error and keeps the shopper on the page.
  */
 async function completeOauthAuthorization(request, $notification) {
+  clearPendingOauthRequest();
   const labels = (await fetchPlaceholders('placeholders/auth.json'))?.Auth?.OAuth ?? {};
   $notification.textContent = labels.redirecting ?? 'Redirecting you back…';
 
@@ -112,7 +155,7 @@ async function completeOauthAuthorization(request, $notification) {
  * @returns {Promise<boolean>} True when the page was an OAuth request and was handled here.
  */
 export async function handleOauth(block) {
-  const request = getOauthAuthorizationRequest();
+  const request = getPendingOauthRequest();
   if (!request) {
     return false;
   }
@@ -130,8 +173,51 @@ export async function handleOauth(block) {
   // SuccessNotification slot, which shows the redirect status instead of the welcome message.
   await authRenderer.render(SignIn, {
     routeForgotPassword: () => rootLink(CUSTOMER_FORGOTPASSWORD_PATH),
+    renderSignUpLink: true,
+    routeSignUp: () => rootLink(CUSTOMER_CREATE_PATH),
     onSuccessCallback: () => completeOauthAuthorization(request, $notification),
     slots: {
+      SuccessNotification: (ctx) => ctx.replaceWith($notification),
+    },
+  })(block);
+  return true;
+}
+
+/**
+ * Handles a create-account page reached from an OAuth 2.0 sign-in: the new customer is signed in
+ * automatically and then sent back to the OAuth client with an authorization code.
+ * @param {HTMLElement} block - The commerce-create-account block.
+ * @returns {Promise<boolean>} True when an OAuth request is pending and was handled here.
+ */
+export async function handleOauthSignUp(block) {
+  const request = getPendingOauthRequest();
+  if (!request) {
+    return false;
+  }
+
+  const $notification = document.createElement('div');
+  $notification.className = 'commerce-login__oauth-notification';
+
+  if (checkIsAuthenticated()) {
+    block.append($notification);
+    await completeOauthAuthorization(request, $notification);
+    return true;
+  }
+
+  await authRenderer.render(SignUp, {
+    hideCloseBtnOnEmailConfirmation: true,
+    isAutoSignInEnabled: true,
+    routeSignIn: () => rootLink(CUSTOMER_LOGIN_PATH),
+    // SignUp also reports success when the account was created but the customer is not signed in
+    // (email confirmation required, or the automatic sign-in failed). The request is then kept, so
+    // signing in from this tab still completes the authorization.
+    onSuccessCallback: async () => {
+      if (checkIsAuthenticated()) {
+        await completeOauthAuthorization(request, $notification);
+      }
+    },
+    slots: {
+      ...authPrivacyPolicyConsentSlot,
       SuccessNotification: (ctx) => ctx.replaceWith($notification),
     },
   })(block);

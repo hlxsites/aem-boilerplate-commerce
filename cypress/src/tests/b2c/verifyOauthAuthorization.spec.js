@@ -1,5 +1,6 @@
 /**
- * The commerce-login block completes OAuth 2.0 authorization requests (authorization code + PKCE).
+ * The commerce-login and commerce-create-account blocks complete OAuth 2.0 authorization requests
+ * (authorization code + PKCE).
  * Commerce is stubbed: the spec covers the block, not a backend with OAuth 2.0 enabled.
  */
 const OAUTH_REQUEST = {
@@ -16,6 +17,22 @@ const CUSTOMER_TOKEN = 'cypress-customer-token';
 const visitAuthorizationPage = (params = OAUTH_REQUEST) => {
   const search = new URLSearchParams({ response_type: 'code', ...params });
   cy.visit(`/customer/login?${search}`);
+};
+
+const STORAGE_KEY = 'oauth_authorization_request';
+
+/**
+ * Opens the create-account page with an OAuth request stored by an earlier sign-in page of the tab.
+ */
+const visitCreateAccountWithStoredRequest = (expires = Date.now() + 60000) => {
+  cy.visit('/customer/create', {
+    onBeforeLoad(win) {
+      win.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        request: OAUTH_REQUEST,
+        expires,
+      }));
+    },
+  });
 };
 
 const isOperation = (req, name) => req.method === 'POST'
@@ -74,6 +91,7 @@ const assertIssueCodeRequest = () => {
 
 const assertRedirectedToClient = () => {
   cy.location('pathname').should('not.include', '/customer/login');
+  cy.location('pathname').should('not.include', '/customer/create');
   cy.location('search').should('include', 'code=cypress-code');
 };
 
@@ -127,6 +145,93 @@ describe('Verify OAuth 2.0 authorization from the sign-in page', () => {
     visitAuthorizationPage(withoutPkce);
 
     cy.location('pathname').should('include', '/customer/account');
+    cy.then(() => expect(issueCodeCalls.count).to.equal(0));
+  });
+});
+
+describe('Verify OAuth 2.0 authorization from the create-account page', () => {
+  beforeEach(stubCustomerCalls);
+
+  afterEach(() => cy.clearCookie('auth_dropin_user_token'));
+
+  it('links the sign-in page to create-account and keeps the OAuth request', () => {
+    visitAuthorizationPage();
+
+    cy.get('.commerce-login .auth-sign-in-form').find('a, button').contains(/create|sign up|register/i)
+      .should('be.visible')
+      .click();
+
+    cy.location('pathname').should('include', '/customer/create');
+    cy.get('.commerce-create-account input[name="email"]').should('be.visible');
+    cy.window().then((win) => {
+      const stored = JSON.parse(win.sessionStorage.getItem(STORAGE_KEY));
+      expect(stored.request).to.deep.equal(OAUTH_REQUEST);
+    });
+  });
+
+  it('redirects the signed-in new customer back to the client', () => {
+    stubIssueAuthorizationCode(redirectResponse());
+    cy.setCookie('auth_dropin_user_token', CUSTOMER_TOKEN);
+
+    visitCreateAccountWithStoredRequest();
+
+    assertIssueCodeRequest();
+    assertRedirectedToClient();
+    cy.window().then((win) => expect(win.sessionStorage.getItem(STORAGE_KEY)).to.equal(null));
+  });
+
+  it('keeps the OAuth request when the new customer must confirm the email first', () => {
+    const issueCodeCalls = countIssueCodeCalls();
+    cy.intercept('**/graphql*', (req) => {
+      if (isOperation(req, 'createCustomerV2')) {
+        req.alias = 'createCustomer';
+        req.reply({
+          data: {
+            createCustomerV2: {
+              customer: {
+                firstname: 'Cypress', lastname: 'Shopper', email: 'oauth.signup@example.com',
+              },
+            },
+          },
+        });
+      } else if (decodeURIComponent(req.url).includes('GET_STORE_CONFIG')
+        || isOperation(req, 'GET_STORE_CONFIG')) {
+        req.continue((res) => {
+          if (res.body?.data?.storeConfig) {
+            res.body.data.storeConfig.create_account_confirmation = true;
+          }
+        });
+      }
+    });
+
+    visitCreateAccountWithStoredRequest();
+    cy.get('.commerce-create-account input[name="firstName"]').type('Cypress');
+    cy.get('.commerce-create-account input[name="lastName"]').type('Shopper');
+    cy.get('.commerce-create-account input[name="email"]').type('oauth.signup@example.com');
+    cy.get('.commerce-create-account input[name="password"]').type('Cypress!Pass2026');
+    cy.get('.commerce-create-account input[type="checkbox"]').check({ force: true });
+    cy.get('.commerce-create-account button[type="submit"]').click();
+
+    cy.wait('@createCustomer');
+    cy.get('.commerce-create-account .auth-email-confirmation-form__title').should('be.visible');
+    // Gives a code request, if any, time to start before asserting there was none.
+    cy.wait(1000);
+    cy.location('pathname').should('include', '/customer/create');
+    cy.window().then((win) => {
+      const stored = JSON.parse(win.sessionStorage.getItem(STORAGE_KEY));
+      expect(stored.request).to.deep.equal(OAUTH_REQUEST);
+    });
+    cy.then(() => expect(issueCodeCalls.count).to.equal(0));
+  });
+
+  it('ignores an expired OAuth request', () => {
+    const issueCodeCalls = countIssueCodeCalls();
+
+    visitCreateAccountWithStoredRequest(Date.now() - 1000);
+
+    cy.get('.commerce-create-account input[name="email"]').should('be.visible');
+    cy.get('.commerce-login__oauth-notification').should('not.exist');
+    cy.window().then((win) => expect(win.sessionStorage.getItem(STORAGE_KEY)).to.equal(null));
     cy.then(() => expect(issueCodeCalls.count).to.equal(0));
   });
 });
