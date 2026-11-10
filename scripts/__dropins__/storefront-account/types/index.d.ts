@@ -38,6 +38,7 @@ export * from './api/getAdminAssistanceActions.types';
 export * from './api/updateCustomerPassword.types';
 export * from './api/storeConfig.types';
 export * from './ordersList.types';
+export * from './productReviews.types';
 export * from './emptyList.types';
 export * from './customerInformation.types';
 export * from './notification.types';

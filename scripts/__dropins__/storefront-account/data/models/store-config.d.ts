@@ -19,6 +19,7 @@ export interface StoreConfigModel {
     minLength: number;
     requiredCharacterClasses: number;
     storeCode: string;
+    productReviewsEnabled: boolean;
     shoppingAssistanceEnabled: boolean;
     shoppingAssistanceCheckboxTitle: string;
     shoppingAssistanceCheckboxTooltip: string;

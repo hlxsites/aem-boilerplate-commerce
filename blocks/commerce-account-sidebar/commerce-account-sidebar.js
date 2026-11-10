@@ -1,12 +1,17 @@
 import { Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
+import { getStoreConfig } from '@dropins/storefront-account/api.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { CUSTOMER_ORDERS_PATH, rootLink } from '../../scripts/commerce.js';
+import { readBlockConfig } from '../../scripts/aem.js';
+import { CUSTOMER_ORDERS_PATH, CUSTOMER_REVIEWS_PATH, rootLink } from '../../scripts/commerce.js';
+import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
-  const fragment = await loadFragment('/customer/sidebar-fragment');
+  const authored = readBlockConfig(block);
+  const { fragment: authoredFragment } = authored;
+  const fragment = await loadFragment(authoredFragment || '/customer/sidebar-fragment');
   const sidebarItemsConfig = fragment.querySelectorAll('.default-content-wrapper > ol > li');
-  const sidebarItems = Array.from(sidebarItemsConfig).map((item) => {
+  const items = Array.from(sidebarItemsConfig).map((item) => {
     const itemParams = Array.from(item.querySelectorAll('ol > li'));
     const itemTitle = item.childNodes[0]?.textContent?.trim() || item.querySelector(':scope > p')?.textContent?.trim() || 'Default Title';
     const itemSubtitle = itemParams[0]?.innerText || '';
@@ -18,7 +23,15 @@ export default async function decorate(block) {
       itemLink,
       itemIcon,
     };
-
+    return itemConfig;
+  });
+  const isReviewsItem = (item) => item.itemLink.replace(/\/$/, '').endsWith(CUSTOMER_REVIEWS_PATH);
+  let reviewsEnabled = false;
+  if (items.some(isReviewsItem)) {
+    reviewsEnabled = (await getStoreConfig()).productReviewsEnabled;
+  }
+  const visibleItems = items.filter((item) => !isReviewsItem(item) || reviewsEnabled);
+  const sidebarItems = visibleItems.map((itemConfig) => {
     const menuItemEl = document.createElement('a');
     menuItemEl.classList.add('commerce-account-sidebar-item');
     menuItemEl.href = rootLink(itemConfig.itemLink);

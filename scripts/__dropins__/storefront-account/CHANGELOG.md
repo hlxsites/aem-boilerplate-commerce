@@ -1,5 +1,21 @@
 # @dropins/storefront-account
 
+## 4.3.0-alpha-20261110154711
+
+### Minor Changes
+
+- 78f24e8: Add authenticated customer review history and an accessible
+  ProductReviews container with presentational list and complete
+  ProductReviewDetails components, a data hook, SDK controls/stars, and an
+  optional detail slot. Customer history and details work without the
+  Ratings/Reviews drop-in. Temporarily use the supported deprecated product
+  reference for product context and host-owned product routing. Use the
+  StarRating-capable SDK alpha.
+
+  Expose normalized product review merchant enablement through the existing
+  getStoreConfig API so hosts can gate account reviews without a separate
+  GraphQL query or a Ratings/Reviews dependency.
+
 ## 4.2.1
 
 ### Patch Changes

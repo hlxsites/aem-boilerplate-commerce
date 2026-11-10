@@ -1,0 +1,7 @@
+.commerce-customer-reviews .account-product-reviews {
+  min-width: 0;
+}
+
+.commerce-customer-reviews .account-product-reviews__product img {
+  height: auto;
+}
