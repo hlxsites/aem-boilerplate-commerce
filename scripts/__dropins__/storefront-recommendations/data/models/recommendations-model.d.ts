@@ -42,6 +42,13 @@ export interface Item {
     queryType: string;
     itemType: string;
     inStock?: boolean;
+    attributes?: ItemAttribute[];
+    rating?: number;
+    reviewCount?: number;
+}
+export interface ItemAttribute {
+    name: string;
+    value: unknown;
 }
 interface ItemImage {
     label: string;
@@ -72,4 +79,3 @@ export interface GraphQLResponse {
     };
 }
 export {};
-//# sourceMappingURL=recommendations-model.d.ts.map
