@@ -32,6 +32,7 @@ function visitProduct({
   unavailable = false,
   responseGate,
   pageResponseGate,
+  metadataGate,
   requestedSku = 'adb102',
   authored = false,
   secondInstance = false,
@@ -58,7 +59,9 @@ function visitProduct({
         },
       });
     } else if (query.includes('RATINGS_METADATA_QUERY')) {
-      req.reply({ data: { productReviewRatingsMetadata: { items: ratingsMetadata } } });
+      req.alias = 'ratingsMetadata';
+      const body = { data: { productReviewRatingsMetadata: { items: ratingsMetadata } } };
+      return metadataGate ? metadataGate.then(() => req.reply(body)) : req.reply(body);
     } else if (query.includes('CREATE_PRODUCT_REVIEW')) {
       req.alias = 'createReview';
       req.reply({ data: { createProductReview: { review: createdReview } } });
@@ -69,7 +72,9 @@ function visitProduct({
       requests.reviews += 1;
       const { currentPage } = variables;
       expect(currentPage).to.be.oneOf([1, 2]);
-      expect(variables).to.deep.equal({ sku: requestedSku, pageSize: 20, currentPage });
+      expect(variables).to.deep.equal({
+        sku: requestedSku, pageSize: 20, currentPage, withStats: false,
+      });
       if (isolatedCore && requests.reviews > 1) {
         expect(url.pathname).to.equal('/reviews-core-test/graphql');
         expect(req.headers['x-reviews-core-test']).to.equal('core');
@@ -397,6 +402,27 @@ describe('Product reviews block', () => {
       text: 'Fits well and washes easily.',
       ratings: [{ id: 'MQ==', value_id: 'MQ==-4' }],
     });
+  });
+
+  it('shows a loading button until the review form is ready and reuses its ratings', () => {
+    let release;
+    const metadataGate = new Cypress.Promise((resolve) => { release = resolve; });
+    visitProduct({ metadataGate });
+    const button = `${region} .product-reviews__write-review button`;
+    cy.wait('@productReviews');
+    cy.get(button).click();
+    cy.get(button).should('be.disabled').and('have.attr', 'aria-busy', 'true');
+    cy.get(`${button} .dropin-progress-spinner`).should('be.visible');
+    cy.get('dialog[open]').should('not.exist');
+    cy.then(() => release());
+    cy.get('dialog[open] .ratingsreviews-write-review input[type="radio"]').first().should('have.focus');
+    cy.get(button).should('not.be.disabled').and('not.have.attr', 'aria-busy');
+    cy.get(`${button} .dropin-progress-spinner`).should('not.exist');
+    cy.get('dialog[open] .close-button').click();
+    cy.get('dialog').should('not.exist');
+    cy.get(button).click();
+    cy.get('dialog[open] .ratingsreviews-write-review input[type="radio"]').should('have.length', 5);
+    cy.get('@ratingsMetadata.all').should('have.length', 1);
   });
 
   it('asks signed-out shoppers to sign in when guests cannot write reviews', () => {

@@ -51,7 +51,63 @@ To run either separately, use `pnpm run storybook` or `pnpm run serve`.
 The sandbox starts with live `ADB102` data and imports the built package from
 port 3002. Run `pnpm run build` before starting it. A Review container displays
 reviews with Pagination below it. **Apply** updates the mounted containers using
-the selected values. Changing the SKU fetches that product's reviews. Choose
+the selected values. Changing the SKU or page size and selecting **Apply**
+fetches page 1 again. **Include review statistics** starts checked and controls
+whether the summary is shown. The host requests `withStats: true` only when the
+summary is enabled and no statistics have been loaded for the active SKU.
+Toggling the summary with an existing snapshot needs no request. Disabling it
+before statistics load starts an items-only request, so retries also omit them.
+The API itself defaults `withStats` to `false`.
+Returned optional `stats` contains `reviewCount`, `ratingVotesCount`,
+`ratingSummary`, and `ratingsDistribution` entries (`value`/`count`); numeric
+rating values retain the backend scale. These statistics are available to hosts
+through the result and events, but do not change the Review/Pagination display.
+Pagination always requests items and page metadata without statistics, including
+returning to page 1. Host first-page and page-size actions also omit statistics
+once loaded. Review retries preserve the failed request's `withStats`, so an
+initial failure can still load the summary, whereas a page retry stays items-only.
+The sandbox's ReviewSummary container listens to `reviews/result` and displays
+the returned `stats` through the presentational ReviewSummary component as a
+five-to-one star distribution alongside the overall rating and review count.
+The component takes a `stats` prop; the container owns the event subscription.
+The component's optional `loading` prop defaults to `false` and replaces the
+statistics with decorative SDK skeletons in the same responsive layout.
+Statistics may be omitted while loading. The container forwards its scoped
+`reviews/loading` value directly, so skeletons appear on initial and page loads,
+with `aria-busy` on the component root. Loading does not discard the snapshot;
+cached statistics return when loading finishes.
+The read-only stars, score, and count use Elsie's `StarRating` component from
+`@adobe-commerce/elsie/components`; its labels use the `Dropin.StarRating`
+translation namespace.
+Distribution percentages use `ratingVotesCount`, round to whole percentages,
+and treat missing star buckets as zero. They are not percentages of the
+potentially larger text-review count. The overall rating uses `ratingSummary / 20`;
+the displayed count uses `reviewCount`. With no rating votes, the component shows
+the review count (and "Not rated" for existing text reviews) rather than inventing
+a customer score. The summary uses a container query: it stacks by default and
+places the rating beside the distribution when its own content area is at least
+768px wide, independently of the viewport. It also supports right-to-left layout.
+Its bar and count colors use the SDK's `--color-informational-500`
+and `--color-positive-800` tokens, respectively.
+The container makes no requests. It keeps an in-memory statistics snapshot for
+its active SKU while mounted, retaining it through items-only results, loading,
+and pagination errors. A successful response with statistics replaces it.
+An explicit `stats: null`, unavailable product, new SKU request, or changed scope
+clears it; zero-count statistics remain valid. Without a snapshot or active loading it renders
+nothing, including no wrapper.
+
+Pass the same `scope` to ReviewSummary, Review, Pagination, and
+`getProductReviews()` for one review group. Different scopes have independent
+snapshots, even for the same SKU; omitting scope uses the default event stream.
+Use a new scope when changing the storefront/store context to avoid replaying
+events from the previous context. There is no shared, persistent, or cross-scope
+cache. Removing the container discards its snapshot: mount it before pagination
+starts and request statistics again when mounting a new summary if the last
+result no longer includes them. Merchants decide whether to mount the summary
+and enable `withStats` on the initial request; an integration without a summary
+should leave it `false`. The sandbox hides, rather than unmounts, its summary
+when the checkbox is unchecked, preserving its snapshot for re-enabling.
+Choose
 **Fixtures** for deterministic cases and sample reviews without contacting the
 live backend.
 
@@ -103,14 +159,25 @@ subscribes to them. Pass the same `scope` to both to keep several review groups
 on one page independent. Only the newest request in a scope publishes its outcome,
 so stale page responses are ignored. The heading is "Reviews" unless the host
 passes a `totalCount` prop with the approved total. It is never inferred from
-page metadata. Each review's own score uses the presentational `StarRating`
-component, which is also exported for hosts that render their own ratings.
+page metadata. Each review's own score uses Elsie's presentational `StarRating`
+component. Hosts rendering their own ratings should import it directly from
+`@adobe-commerce/elsie/components`; this drop-in no longer exports it.
+
+When migrating from the local component, replace `ratingsreviews-star-rating*`
+CSS selectors with `dropin-star-rating*` selectors and move `Rating.*` translation
+overrides to `Dropin.StarRating.*`. Elsie supplies the default translations through
+the existing UI provider and rounds scores consistently to one decimal place.
+SDK integration examples are available under **SDK / StarRating** in Storybook.
+The separate `StarRatingInput` component is unchanged.
 
 The Review example shares the main sandbox's initialization and endpoint.
 Storybook includes deterministic Review states and custom Slots examples.
 
 The verified QA schema has no review ID, badge exposure, helpfulness API,
-media, total count, or sort argument. Voting and badges are out of scope for
+media, or sort argument. Optional aggregate counts and ratings are available via
+`getProductReviews(sku, { withStats: true })` on schemas exposing `reviews.stats`.
+GraphQL validates those fields even when the directive skips them, so an older
+schema without `stats` cannot execute this query. Voting and badges are out of scope for
 ACCS-1472 because the backend does not support them. No preview badges or
 simulated production votes are included. Sorting controls,
 photos, submission, and PDP integration are separate work.

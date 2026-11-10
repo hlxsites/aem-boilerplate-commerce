@@ -1,5 +1,6 @@
 import { events } from '@dropins/tools/event-bus.js';
-import { Button, provider as UI } from '@dropins/tools/components.js';
+import { Button, ProgressSpinner, provider as UI } from '@dropins/tools/components.js';
+import { h } from '@dropins/tools/preact.js';
 import { config, getProductReviews } from '@dropins/storefront-ratings-reviews/api.js';
 import { render as reviewsRenderer } from '@dropins/storefront-ratings-reviews/render.js';
 import { Review } from '@dropins/storefront-ratings-reviews/containers/Review.js';
@@ -27,18 +28,22 @@ function getPageProduct(sku) {
   };
 }
 
+// Renders the form before creating the modal so the dialog never opens empty.
 async function openWriteReview(sku) {
   const content = document.createElement('div');
   content.className = 'product-reviews__modal-content';
-  const modal = await createModal([content]);
-  // Open first: the form's rating data loads before the container mounts.
-  modal.showModal();
   await reviewsRenderer.render(WriteReview, {
     sku,
     ...getPageProduct(sku),
     isAuthenticated: checkIsAuthenticated(),
     routeSignIn: () => rootLink(CUSTOMER_LOGIN_PATH),
   })(content);
+
+  // Appending after showModal() lets the modal focus the first input once.
+  const wrapper = document.createElement('div');
+  const modal = await createModal([wrapper]);
+  modal.showModal();
+  wrapper.append(content);
 }
 
 export default async function decorate(block) {
@@ -65,10 +70,34 @@ export default async function decorate(block) {
   block.appendChild(fragment);
   block.hidden = false;
 
-  await UI.render(Button, {
+  let isOpening = false;
+  const writeReviewButton = await UI.render(Button, {
     children: labels.Global?.WriteReview ?? 'Write review',
     variant: 'secondary',
-    onClick: () => openWriteReview(sku),
+    onClick: async () => {
+      if (isOpening) return;
+      isOpening = true;
+      writeReviewButton.setProps((prev) => ({
+        ...prev,
+        disabled: true,
+        loading: true,
+        icon: h(ProgressSpinner, { size: 'small', stroke: '2' }),
+      }));
+      try {
+        await openWriteReview(sku);
+      } catch (error) {
+        console.error('[Product Reviews] Failed to open the review form:', error);
+      } finally {
+        isOpening = false;
+        writeReviewButton.setProps((prev) => ({
+          ...prev,
+          disabled: false,
+          loading: false,
+          icon: undefined,
+        }));
+      }
+    },
+    loadingLabel: labels.Global?.WriteReviewLoading ?? 'Loading review form',
   })(block.querySelector('.product-reviews__write-review'));
 
   await Promise.all([

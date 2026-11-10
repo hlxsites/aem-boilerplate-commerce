@@ -73,6 +73,11 @@ button above the review list. Both belong to the block, not the drop-in, so
 projects can restyle or rearrange them freely. The button opens the drop-in's
 `WriteReview` container inside the shared `blocks/modal`.
 
+- The form renders before the modal opens, so the dialog never appears empty.
+  While it loads, the button is disabled and shows a spinner, and repeat clicks
+  are ignored. The drop-in caches rating categories in memory per store, so
+  later opens on the same page skip the request.
+
 - `sku` is the block's review SKU. When the page's `pdp/data` payload is for the
   same SKU, its name and first image fill the form's product summary.
   Standalone Reviews pages use the authored SKU and do not require PDP data.
@@ -108,6 +113,7 @@ The drop-in supplies default labels.
 | --- | --- |
 | `Global.ReviewsTitle` | Block title above the review list (default `Reviews`). |
 | `Global.WriteReview` | Write review button label (default `Write review`). |
+| `Global.WriteReviewLoading` | Screen-reader announcement while the review form loads (default `Loading review form`). |
 | `Review.title` | Drop-in list heading without an approved total. |
 | `Review.loading`, `Review.empty`, `Review.unavailable`, `Review.error` | List status messages. |
 | `Review.retry` | Retry button label. |
@@ -174,6 +180,7 @@ and navigation, SKU precedence, standalone/authored placement, review
 auto-blocking, loading, errors/retry, disabled and failed configuration, guest
 reading, private scope isolation, pagination loading and recovery, escaping,
 purchase-control availability, mobile/RTL layout, the header and Write review
-button, submitting a review from the modal on PDPs and standalone Reviews pages,
-closing/reopening a fresh form, and the sign-in prompt when guests cannot write
+button, the button loading state, opening the modal only after the form is ready,
+submitting a review from the modal on PDPs and standalone Reviews pages,
+closing/reopening a fresh form without refetching rating categories, and the sign-in prompt when guests cannot write
 reviews.

@@ -1,6 +1,18 @@
 # dropin-template
 
-## 1.1.0-alpha-20261109222008
+## 2.0.0-alpha-20261110183157
+
+### Major Changes
+
+- 46a7bee: Remove the drop-in's StarRating component and export. ReviewItem now uses
+  StarRating from the Elsie SDK.
+
+  Import StarRating and StarRatingProps directly from
+  `@adobe-commerce/elsie/components` instead of this drop-in. Migrate
+  `ratingsreviews-star-rating*` CSS selectors to `dropin-star-rating*` and
+  `Rating.*` translation overrides to `Dropin.StarRating.*`. Elsie rounds displayed
+  scores, star fills, and accessible labels consistently to one decimal place.
+  StarRatingInput is unchanged.
 
 ### Minor Changes
 
@@ -17,7 +29,19 @@
   localized states, retry, and responsive layout. Expose customization Slots for
   Review and include deterministic Storybook and HTML-host examples. Voting and
   badges are not included.
-- d730b1d: Add a WriteReview container and the `createProductReview()` and
+- 008c52d: Add optional product review statistics through `getProductReviews()`'s
+  `withStats` option and a read-only ReviewSummary component and container.
+  Display rating distribution, aggregate score, and review count with SDK stars,
+  loading skeletons, localization, RTL support, and container-responsive layout.
+
+  Retain statistics in memory for the active product and event scope while
+  containers are mounted. Pagination omits statistics on subsequent requests,
+  while retries preserve the failed request's statistics flag. Derive the Review
+  heading and slot count from API statistics instead of a `totalCount` input prop.
+  Include updated HTML-host controls, fixtures, Storybook examples, and
+  integration documentation.
+
+- cddb2bd: Add a WriteReview container and the `createProductReview()` and
   `getRatingsMetadata()` APIs. The form renders one star row per rating category
   from `productReviewRatingsMetadata`, loaded through `getInitialData`, and requires a rating, title, description
   and name, which map to `summary`, `text` and `nickname`. It honors review

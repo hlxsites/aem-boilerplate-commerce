@@ -14,6 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './StarRating/index.js';
 export * from './StarRatingInput/index.js';
 export * from './WriteReview/index.js';

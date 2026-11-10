@@ -15,10 +15,11 @@
  * from Adobe.
  *******************************************************************/
 import { ProductReviewsModel } from '../../data/models/index.js';
-export type { ProductReviewModel, ProductReviewsModel, ProductReviewsRequest } from '../../data/models/index.js';
+export type { ProductReviewModel, ProductReviewsModel, ProductReviewsRequest, ProductReviewsStatsModel } from '../../data/models/index.js';
 export type ProductReviewsOptions = {
     pageSize?: number;
     currentPage?: number;
     scope?: string;
+    withStats?: boolean;
 };
-export declare function getProductReviews(sku: string, { pageSize, currentPage, scope }?: ProductReviewsOptions): Promise<ProductReviewsModel | null>;
+export declare function getProductReviews(sku: string, { pageSize, currentPage, scope, withStats }?: ProductReviewsOptions): Promise<ProductReviewsModel | null>;
