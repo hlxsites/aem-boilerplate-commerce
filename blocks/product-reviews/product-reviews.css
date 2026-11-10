@@ -24,6 +24,10 @@
     background-color: var(--color-neutral-200);
 }
 
+.product-reviews > .product-reviews__summary:empty {
+  display: none;
+}
+
 .product-reviews__title {
   margin: 0;
 }
