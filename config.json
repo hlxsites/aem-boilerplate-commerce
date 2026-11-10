@@ -12,7 +12,7 @@
           "content-type":"application/json",
           "AC-View-Id":"08115f8d-bf17-4dfc-a6dd-af8fea7fb574",
           "AC-Environment-Id":"TfpwVBcuyz6LwDnKMNBVxP",
-          "AC-Price-Book-Id":"b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
+          "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "AC-Source-Locale":"default",
           "X-Api-Key": "storefront-catalog-apollo"        }
       },
@@ -23,7 +23,8 @@
         "locale":"default",
         "environment-id": "TfpwVBcuyz6LwDnKMNBVxP",
         "store-url": "https://e2e-rel12qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/"
-        }
+        
+}
     }
   }
 }

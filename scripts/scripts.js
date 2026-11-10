@@ -217,7 +217,9 @@ async function loadEager(doc) {
       await loadCommerceEager();
     } catch (e) {
       console.error('Error initializing commerce configuration:', e);
-      loadErrorPage(418);
+      await loadErrorPage(418);
+      document.body.classList.add('appear');
+      return;
     }
     document.body.classList.add('appear');
     await loadSection(main.querySelector('.section'), waitForFirstImage);
