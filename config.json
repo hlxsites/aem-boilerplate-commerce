@@ -14,7 +14,8 @@
           "AC-Environment-Id":"TfpwVBcuyz6LwDnKMNBVxP",
           "AC-Price-Book-Id":"base::b6589fc6ab0dc82cf12099d1c2d40ab994e8410c",
           "AC-Source-Locale":"default",
-          "X-Api-Key": "storefront-catalog-apollo"        }
+          "X-Api-Key": "storefront-catalog-apollo"
+        }
       },
       "analytics": {
         "view-id": "08115f8d-bf17-4dfc-a6dd-af8fea7fb574",
