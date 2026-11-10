@@ -1,2 +1,1 @@
-export * from './AcdlTestContainer';
-//# sourceMappingURL=index.d.ts.map
+export * from '@/recommendations/containers/AcdlTestContainer';
