@@ -229,7 +229,7 @@ export default async function decorate(block) {
           label,
           recId: recid,
           ...requestContext,
-          showRatings: config.getConfig()?.isProductReviewsEnabled,
+          showRatings: config.getConfig()?.isProductReviewsEnabled === true,
           slots: {
             Footer: (ctx) => {
               const wrapper = document.createElement('div');
