@@ -22,7 +22,6 @@ import {
   loadErrorPage,
   decorateSections,
   IS_DA,
-  IS_EW,
 } from './commerce.js';
 import { applyDesignTokenDataAttributes, applyDesignTokenStyle, loadDesignTokens } from './design-tokens.js';
 
@@ -280,7 +279,7 @@ async function loadPage() {
 }
 
 // Experience Workspace canvas: let the style picker plugin restyle the page live
-if (IS_EW && window.self !== window.top) {
+if (window.self !== window.top) {
   import('./style-switcher.js').then(({ initCanvasStyleSwitcher }) => initCanvasStyleSwitcher());
 }
 

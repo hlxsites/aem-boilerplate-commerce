@@ -57,7 +57,7 @@ Run these in the root of your own storefront repository (a fork or clone of this
 
    ```bash
    git remote add boilerplate https://github.com/hlxsites/aem-boilerplate-commerce.git
-   git fetch boilerplate feat/style-picker
+   git fetch boilerplate main feat/style-picker
    ```
 
 2. Copy the plugin and its shared scripts:
@@ -74,7 +74,7 @@ Run these in the root of your own storefront repository (a fork or clone of this
 
    If you have customized those files and the patch conflicts, resolve the conflict markers, or make the changes by hand:
 
-   - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, `await loadDesignTokens()` and, unless `window.daStyleSwitcherLive` is set, apply the page `Theme` metadata with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `IS_EW` and in a frame, before `loadPage()`.
+   - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, `await loadDesignTokens()` and, unless `window.daStyleSwitcherLive` is set, apply the page `Theme` metadata with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `window.self !== window.top`, before `loadPage()`.
    - `styles/styles.css`: add `--foreground-color: var(--color-neutral-800)` to the root tokens and use it for `body` `color`.
 
    The example blocks are optional. To include them, add `blocks/columns blocks/cards blocks/accordion` to the paths in the `git diff` command above.
