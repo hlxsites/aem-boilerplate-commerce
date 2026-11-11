@@ -21,11 +21,14 @@ export interface SearchResultsProps extends HTMLAttributes<HTMLDivElement> {
     imageWidth?: number;
     imageHeight?: number;
     skeletonCount?: number;
+    /** Shows the product rating above the product name. Off by default. */
+    showRating?: boolean;
     onSearchResult?: (payload: Product[]) => void;
     slots?: {
         ProductActions?: SlotProps<SlotDefaultContext>;
         ProductPrice?: SlotProps<SlotDefaultContext>;
         ProductName?: SlotProps<SlotDefaultContext>;
+        ProductRating?: SlotProps<SlotDefaultContext>;
         ProductImage?: SlotProps<SlotDefaultContext & {
             defaultImageProps: ImageProps;
         }>;

@@ -12,6 +12,7 @@ export interface Product {
     lowStock: boolean;
     links: any[];
     attributes: ProductViewAttribute[];
+    rating?: ProductRatingSummary;
     images: ProductImage[];
     description: string;
     externalId: string;
@@ -25,6 +26,12 @@ export interface Product {
     inStock: boolean;
     typename: string;
     initialized?: boolean;
+}
+export interface ProductRatingSummary {
+    /** Average rating on a 0-5 scale. */
+    value: number;
+    /** Number of approved reviews. */
+    count: number;
 }
 export interface ProductViewPrice {
     final: ProductPrice;

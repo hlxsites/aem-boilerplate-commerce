@@ -5,9 +5,11 @@ import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
 import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
 import {
-  Button, Icon, StarRating, provider as UI,
+  Button, Icon, provider as UI,
 } from '@dropins/tools/components.js';
 import { search } from '@dropins/storefront-product-discovery/api.js';
+// Ratings & Reviews Dropin
+import { config as reviewsConfig } from '@dropins/storefront-ratings-reviews/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
@@ -24,6 +26,7 @@ import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
 // Initializers
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/ratings-reviews.js';
 
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
@@ -130,25 +133,6 @@ export default async function decorate(block) {
     return button;
   };
 
-  // ac_rating_summary is a 0-100 percentage; products without ac_review_count get no rating.
-  const getReviewSummary = (product) => {
-    const getValue = (name) => product.attributes?.find((attr) => attr.name === name)?.value;
-    const reviewCount = Number.parseInt(getValue('ac_review_count'), 10);
-    if (!Number.isSafeInteger(reviewCount) || reviewCount < 0) return null;
-
-    const rating = Math.min(Math.max(Number(getValue('ac_rating_summary')) / 20 || 0, 0), 5);
-    const $rating = document.createElement('div');
-    $rating.className = 'product-discovery-product-rating';
-    UI.render(StarRating, {
-      rating,
-      reviewCount,
-      showCount: true,
-      valueDisplay: 'value',
-      countDisplay: 'parentheses',
-    })($rating);
-    return $rating;
-  };
-
   await Promise.all([
     // Sort By
     provider.render(SortBy, {})($productSort),
@@ -176,6 +160,7 @@ export default async function decorate(block) {
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => getProductLink(product.urlKey, product.sku),
+      showRating: reviewsConfig.getConfig()?.isProductReviewsEnabled === true,
       slots: {
         ProductImage: (ctx) => {
           const { product, defaultImageProps } = ctx;
@@ -192,10 +177,6 @@ export default async function decorate(block) {
               height: defaultImageProps.height,
             },
           });
-        },
-        ProductName: (ctx) => {
-          const $rating = getReviewSummary(ctx.product);
-          if ($rating) ctx.appendChild($rating);
         },
         ProductActions: (ctx) => {
           const actionsWrapper = document.createElement('div');
