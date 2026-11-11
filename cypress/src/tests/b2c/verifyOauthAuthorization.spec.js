@@ -147,6 +147,44 @@ describe('Verify OAuth 2.0 authorization from the sign-in page', () => {
     cy.location('pathname').should('include', '/customer/account');
     cy.then(() => expect(issueCodeCalls.count).to.equal(0));
   });
+
+  it('drops a stored request when the URL starts a new incomplete one', () => {
+    const withoutPkce = { ...OAUTH_REQUEST, client_id: 'other-client' };
+    delete withoutPkce.code_challenge;
+    const issueCodeCalls = countIssueCodeCalls();
+    cy.setCookie('auth_dropin_user_token', CUSTOMER_TOKEN);
+
+    cy.visit(`/customer/login?${new URLSearchParams({ response_type: 'code', ...withoutPkce })}`, {
+      onBeforeLoad(win) {
+        win.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          request: OAUTH_REQUEST,
+          expires: Date.now() + 60000,
+        }));
+      },
+    });
+
+    cy.location('pathname').should('include', '/customer/account');
+    cy.window().then((win) => expect(win.sessionStorage.getItem(STORAGE_KEY)).to.equal(null));
+    cy.then(() => expect(issueCodeCalls.count).to.equal(0));
+  });
+
+  it('still shows the sign-in form when sessionStorage cannot be written', () => {
+    const search = new URLSearchParams({ response_type: 'code', ...OAUTH_REQUEST });
+    cy.visit(`/customer/login?${search}`, {
+      onBeforeLoad(win) {
+        const { setItem } = win.Storage.prototype;
+        cy.stub(win.Storage.prototype, 'setItem').callsFake(function fake(key, value) {
+          if (key === STORAGE_KEY) {
+            throw new win.DOMException('Quota exceeded', 'QuotaExceededError');
+          }
+          return setItem.call(this, key, value);
+        });
+      },
+    });
+
+    cy.get('.commerce-login input[name="email"]').should('be.visible');
+    cy.get('.commerce-login input[name="password"]').should('be.visible');
+  });
 });
 
 describe('Verify OAuth 2.0 authorization from the create-account page', () => {
@@ -217,6 +255,46 @@ describe('Verify OAuth 2.0 authorization from the create-account page', () => {
     // Gives a code request, if any, time to start before asserting there was none.
     cy.wait(1000);
     cy.location('pathname').should('include', '/customer/create');
+    cy.window().then((win) => {
+      const stored = JSON.parse(win.sessionStorage.getItem(STORAGE_KEY));
+      expect(stored.request).to.deep.equal(OAUTH_REQUEST);
+    });
+    cy.then(() => expect(issueCodeCalls.count).to.equal(0));
+  });
+
+  it('asks the new customer to sign in when the automatic sign-in fails', () => {
+    const issueCodeCalls = countIssueCodeCalls();
+    cy.intercept('**/graphql*', (req) => {
+      if (isOperation(req, 'createCustomerV2')) {
+        req.reply({
+          data: {
+            createCustomerV2: {
+              customer: {
+                firstname: 'Cypress', lastname: 'Shopper', email: 'oauth.signup@example.com',
+              },
+            },
+          },
+        });
+      } else if (isOperation(req, 'GET_CUSTOMER_TOKEN')) {
+        req.alias = 'customerToken';
+        req.reply({ errors: [{ message: 'The account sign-in was incorrect.' }] });
+      }
+    });
+
+    visitCreateAccountWithStoredRequest();
+    cy.get('.commerce-create-account input[name="firstName"]').type('Cypress');
+    cy.get('.commerce-create-account input[name="lastName"]').type('Shopper');
+    cy.get('.commerce-create-account input[name="email"]').type('oauth.signup@example.com');
+    cy.get('.commerce-create-account input[name="password"]').type('Cypress!Pass2026');
+    cy.get('.commerce-create-account input[type="checkbox"]').check({ force: true });
+    cy.get('.commerce-create-account button[type="submit"]').click();
+
+    cy.wait('@customerToken');
+    cy.get('.commerce-create-account .commerce-login__oauth-notification')
+      .should('contain.text', 'Sign in to continue')
+      .find('a')
+      .should('have.attr', 'href')
+      .and('include', '/customer/login');
     cy.window().then((win) => {
       const stored = JSON.parse(win.sessionStorage.getItem(STORAGE_KEY));
       expect(stored.request).to.deep.equal(OAUTH_REQUEST);

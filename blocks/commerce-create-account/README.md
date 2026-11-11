@@ -70,7 +70,7 @@ OAuth 2.0 sign-up mode:
 2. **Authorization Code**: After sign-in, calls the `issueOauthAuthorizationCode` GraphQL mutation with the stored request
 3. **Client Redirect**: Redirects the browser to the `redirect_url` returned by Commerce (it carries `code`, `state` and `iss`)
 
-When the store requires email confirmation, or the automatic sign-in fails, no code is requested and the pending request is kept: signing in from the same tab before it expires completes the authorization.
+When the store requires email confirmation, or the automatic sign-in fails, no code is requested and the pending request is kept: signing in from the same tab before it expires completes the authorization. When the automatic sign-in fails, the block shows that the account was created, with a link to the sign-in page.
 
 ### Error Handling
 

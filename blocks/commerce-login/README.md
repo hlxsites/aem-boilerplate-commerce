@@ -60,6 +60,8 @@ Optional keys in `placeholders/auth.json`:
 |---|---|
 | `Auth.OAuth.redirecting` | `Redirecting you back…` |
 | `Auth.OAuth.errorHeading` | `We could not complete the sign-in for this app.` |
+| `Auth.OAuth.accountCreated` | `Your account was created. Sign in to continue.` |
+| `Auth.OAuth.signIn` | `Sign in` |
 
 ### Session Storage
 
@@ -99,7 +101,9 @@ OAuth 2.0 authorization mode:
 2. **Authorization Code**: Calls the `issueOauthAuthorizationCode` GraphQL mutation with the customer token and the URL parameters
 3. **Client Redirect**: Redirects the browser to the `redirect_url` returned by Commerce (it carries `code`, `state` and `iss`)
 
-Commerce validates the client, redirect URI, scopes and PKCE, and rejects the request when the OAuth 2.0 server is disabled. No consent screen is shown.
+Commerce validates the client, redirect URI, scopes and PKCE, and rejects the request when the OAuth 2.0 server is disabled. No consent screen is shown: OAuth clients can only be registered by the merchant (Commerce Admin or the admin REST API), and registering a client preapproves it for the shoppers of the store.
+
+Authorization parameters in the URL always start a new request and replace a pending one; when they are incomplete, the pending request is dropped and the regular sign-in flow is used. If `sessionStorage` is unavailable, the request of the URL is still completed, but it is not kept for the sign-up page.
 
 ### Error Handling
 

@@ -65,26 +65,32 @@ export function getOauthAuthorizationRequest(href = window.location.href) {
   return REQUIRED_PARAMS.every((name) => request[name]) ? request : null;
 }
 
-function clearPendingOauthRequest() {
-  sessionStorage.removeItem(STORAGE_KEY);
+function hasOauthParams(href = window.location.href) {
+  const { searchParams } = new URL(href);
+  return searchParams.has('response_type') || searchParams.has('client_id');
 }
 
-/**
- * Returns the OAuth 2.0 authorization request of the current tab. A request in the page URL is
- * stored and replaces any earlier one; otherwise the request stored by a previous page of this
- * tab is returned until it expires.
- * @returns {Object|null} The request parameters, or null when there is none.
- */
-function getPendingOauthRequest() {
-  const request = getOauthAuthorizationRequest();
-  if (request) {
+// Storage can be unavailable or full: the flow then keeps the request of the page URL only.
+function clearPendingOauthRequest() {
+  try {
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.warn('Could not remove the pending OAuth request.', error);
+  }
+}
+
+function storePendingOauthRequest(request) {
+  try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
       request,
       expires: Date.now() + STORAGE_TTL_MS,
     }));
-    return request;
+  } catch (error) {
+    console.warn('Could not keep the OAuth request for the sign-up page.', error);
   }
+}
 
+function readPendingOauthRequest() {
   try {
     const stored = JSON.parse(sessionStorage.getItem(STORAGE_KEY));
     if (stored?.expires > Date.now() && REQUIRED_PARAMS.every((name) => stored.request?.[name])) {
@@ -93,8 +99,36 @@ function getPendingOauthRequest() {
   } catch (error) {
     // Unreadable value: treated as no request.
   }
-  clearPendingOauthRequest();
   return null;
+}
+
+/**
+ * Returns the OAuth 2.0 authorization request of the current tab. Authorization parameters in the
+ * page URL start a new request that replaces any stored one, even when they are incomplete (the
+ * page then falls back to its regular flow). Without them, the request stored by a previous page of
+ * this tab is resumed until it expires.
+ * @returns {Object|null} The request parameters, or null when there is none.
+ */
+function getPendingOauthRequest() {
+  if (hasOauthParams()) {
+    const request = getOauthAuthorizationRequest();
+    if (request) {
+      storePendingOauthRequest(request);
+    } else {
+      clearPendingOauthRequest();
+    }
+    return request;
+  }
+
+  const stored = readPendingOauthRequest();
+  if (!stored) {
+    clearPendingOauthRequest();
+  }
+  return stored;
+}
+
+async function getOauthLabels() {
+  return (await fetchPlaceholders('placeholders/auth.json'))?.Auth?.OAuth ?? {};
 }
 
 /**
@@ -129,7 +163,7 @@ export async function issueOauthAuthorizationCode(request) {
  */
 async function completeOauthAuthorization(request, $notification) {
   clearPendingOauthRequest();
-  const labels = (await fetchPlaceholders('placeholders/auth.json'))?.Auth?.OAuth ?? {};
+  const labels = await getOauthLabels();
   $notification.textContent = labels.redirecting ?? 'Redirecting you back…';
 
   try {
@@ -204,6 +238,7 @@ export async function handleOauthSignUp(block) {
     return true;
   }
 
+  const labels = await getOauthLabels();
   await authRenderer.render(SignUp, {
     hideCloseBtnOnEmailConfirmation: true,
     isAutoSignInEnabled: true,
@@ -218,7 +253,21 @@ export async function handleOauthSignUp(block) {
     },
     slots: {
       ...authPrivacyPolicyConsentSlot,
-      SuccessNotification: (ctx) => ctx.replaceWith($notification),
+      SuccessNotification: (ctx) => {
+        if (checkIsAuthenticated()) {
+          ctx.replaceWith($notification);
+          return;
+        }
+        // The account exists but the automatic sign-in failed: the shopper signs in to continue.
+        const $message = document.createElement('p');
+        $message.textContent = labels.accountCreated ?? 'Your account was created. Sign in to continue.';
+        const $signIn = document.createElement('a');
+        $signIn.className = 'button';
+        $signIn.href = rootLink(CUSTOMER_LOGIN_PATH);
+        $signIn.textContent = labels.signIn ?? 'Sign in';
+        $notification.replaceChildren($message, $signIn);
+        ctx.replaceWith($notification);
+      },
     },
   })(block);
   return true;
