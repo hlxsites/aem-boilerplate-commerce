@@ -127,6 +127,7 @@
   /* Additional tokens */
   --type-fixed-font-family: adobe-clean, "Roboto Mono", menlo, consolas, "Liberation Mono", monospace, system-ui, sans-serif;
   --background-color: var(--color-neutral-50);
+  --foreground-color: var(--color-neutral-800);
   --nav-height: 6.4rem;
 }
 
@@ -149,7 +150,7 @@ body {
   font: var(--type-body-1-default-font);
   letter-spacing: var(--type-body-1-default-letter-spacing);
   margin: 0;
-  color: var(--color-neutral-800);
+  color: var(--foreground-color);
   background-color: var(--background-color);
   display: grid;
   grid-template-rows: auto 1fr auto;

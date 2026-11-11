@@ -97,6 +97,10 @@ If your GitHub organization disallows the "Allow GitHub Actions to create and ap
 
 If you want to incorporate code changes made to this upstream boilerplate after you forked — for example, a new block or a bug fix in `scripts/` — you can do so by adding this repo as a git remote and merging selectively. This is entirely optional. Upstream changes may conflict with modifications you have made to your fork, so expect to resolve conflicts manually. There is no guarantee of a clean merge, and nothing in your project depends on staying in sync with the upstream boilerplate code.
 
+## Style Picker
+
+An optional Experience Workspace plugin that lets authors preview and apply page, section and block styles from a `/config/styles` sheet. See [tools/style-switcher/README.md](tools/style-switcher/README.md) for how it works and how to install it.
+
 ## Analytics loading
 
 Following the upstream [AEM consent gate](https://www.aem.live/developer/cmp-integration#how-consent-gating-works), the Adobe Commerce event SDK and collector (`scripts/consented.js`) load only after consent is granted. Without consent they are not loaded.

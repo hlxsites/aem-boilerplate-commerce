@@ -9,6 +9,7 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  getMetadata,
 } from './aem.js';
 import {
   buildPDPBlock,
@@ -21,7 +22,9 @@ import {
   loadErrorPage,
   decorateSections,
   IS_DA,
+  IS_EW,
 } from './commerce.js';
+import { applyDesignTokenDataAttributes, applyDesignTokenStyle, loadDesignTokens } from './design-tokens.js';
 
 /*
  * Trusted Types default policy.
@@ -197,6 +200,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  applyDesignTokenDataAttributes(main);
   decorateButtons(main);
 }
 
@@ -207,6 +211,11 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  await loadDesignTokens();
+  if (!window.daStyleSwitcherLive) {
+    const theme = getMetadata('theme');
+    if (theme) applyDesignTokenStyle(document.body, theme);
+  }
 
   const main = doc.querySelector('main');
   if (main) {
@@ -268,6 +277,11 @@ async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
+}
+
+// Experience Workspace canvas: let the style picker plugin restyle the page live
+if (IS_EW && window.self !== window.top) {
+  import('./style-switcher.js').then(({ initCanvasStyleSwitcher }) => initCanvasStyleSwitcher());
 }
 
 loadPage();

@@ -31,3 +31,41 @@
     order: unset;
   }
 }
+
+/*
+ * Style picker: a `layout-split` column in /config/styles.json sets data-layout-split
+ * on the block, its section or the page. Applies to two-column blocks on desktop.
+ */
+.columns[data-layout-split='30-70'],
+[data-layout-split='30-70'] .columns {
+  --columns-split-first: 3;
+  --columns-split-second: 7;
+}
+
+.columns[data-layout-split='40-60'],
+[data-layout-split='40-60'] .columns {
+  --columns-split-first: 4;
+  --columns-split-second: 6;
+}
+
+.columns[data-layout-split='60-40'],
+[data-layout-split='60-40'] .columns {
+  --columns-split-first: 6;
+  --columns-split-second: 4;
+}
+
+.columns[data-layout-split='70-30'],
+[data-layout-split='70-30'] .columns {
+  --columns-split-first: 7;
+  --columns-split-second: 3;
+}
+
+@media (min-width: 900px) {
+  .columns-2-cols > div > div:first-child {
+    flex: var(--columns-split-first, 1);
+  }
+
+  .columns-2-cols > div > div:last-child {
+    flex: var(--columns-split-second, 1);
+  }
+}

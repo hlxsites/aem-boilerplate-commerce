@@ -1,5 +1,5 @@
 .accordion details {
-    border: 1px solid #dadada;
+    border: 1px solid var(--accent-color, #dadada);
 }
 
 /* stylelint-disable-next-line no-descending-specificity */
@@ -44,6 +44,7 @@
     height: 6px;
     border: 2px solid;
     border-width: 2px 2px 0 0;
+    border-color: var(--accent-color, currentcolor);
     transition: transform 0.2s;
 }
 
@@ -56,6 +57,6 @@
 }
 
 .accordion details[open] .accordion-item-body {
-    border-top: 1px solid #dadada;
+    border-top: 1px solid var(--accent-color, #dadada);
     background-color: var(--background-color);
 }
