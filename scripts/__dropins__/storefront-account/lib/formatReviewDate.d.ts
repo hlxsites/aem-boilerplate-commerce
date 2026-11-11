@@ -14,4 +14,4 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export declare const formatReviewDate: (value: string, locale: string, unavailable: string) => string;
+export declare const formatReviewDate: (value: string) => string | null;

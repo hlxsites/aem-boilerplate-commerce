@@ -91,12 +91,19 @@ No approval-capability row is required on either block.
   normalization, caching policy, and error handling. Configuration errors
   propagate from that API. Use an Account package that exposes this boolean.
 
-The backend **must** exclude unapproved reviews and other customers' reviews.
-The payload does not expose moderation status, so frontend filtering cannot
-enforce approval. ACCS testing confirmed that native customer history includes
-pending/rejected reviews. Server-side approval filtering is tracked in
-[ACCS-2303](https://jira.corp.adobe.com/browse/ACCS-2303), which blocks ACCS-1479.
-There is currently no frontend approval gate or approval filtering.
+Account requests `customer.reviews` with `filter: { status: [APPROVED] }` for
+both the full history and minified landing summary. The backend excludes
+pending and rejected (`NOT_APPROVED`) reviews before paging and calculating
+`page_info`; the selected details come from that same approved-only page.
+The payload does not expose moderation status, so there is no client-side
+status filtering or pagination adjustment.
+
+Use an Account package that sends this filter and an endpoint implementing
+the contract documented in
+[ACCS-2303](https://jira.corp.adobe.com/browse/ACCS-2303). Unfiltered requests
+still return all statuses. An unsupported filter must surface through Account's
+normal error state, not retry without filtering. No authored approval-capability
+row is needed.
 
 ## Validation
 
@@ -106,10 +113,10 @@ Run lint from the repository root:
 npm run lint
 ```
 
-During interim testing, verify that reviews render without an approval-capability
-row, including all approval states returned by the backend. Verify that merchant
-disablement hides the sidebar entry and disables review loading, and that
-logged-out access redirects to login.
+Verify that requests include only the `APPROVED` status filter, including
+subsequent pages and the minified summary. Verify that merchant disablement
+hides the sidebar entry and disables review loading, and that logged-out access
+redirects to login.
 
 Before release, verify customer isolation, approved-only filtering, paging, and
 nullability against the target endpoint. Complete signed-in QA
@@ -118,6 +125,9 @@ Use approved, pending, and rejected reviews across multiple pages and at least
 two customers. Verify that only the authenticated customer's approved reviews
 appear, pagination excludes unapproved reviews, and fresh requests reflect
 approval and rejection changes.
+Customers with only pending/rejected reviews must see the empty state, not
+unapproved entries or extra pages. Unsupported backends must show an error,
+never unfiltered history.
 Author the reviews page and sidebar fragment in the CMS, merge localized
 placeholder rows, and verify the feature preview. Local demo pages are not
 part of this integration.

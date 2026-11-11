@@ -28,7 +28,7 @@ type ConfigProps = {
     models?: {
         OrderHistoryModel?: Model<OrderHistoryModel>;
         CustomerDataModelShort?: Model<CustomerDataModelShort>;
-        CustomerReviewModel?: Model<CustomerReviewModel>;
+        CustomerReviewModel?: Model<Partial<CustomerReviewModel>>;
         CustomerReviewsModel?: Model<CustomerReviewsModel>;
     };
 };

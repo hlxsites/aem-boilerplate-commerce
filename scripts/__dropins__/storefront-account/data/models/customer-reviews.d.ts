@@ -28,6 +28,7 @@ export type CustomerReviewModel = {
     summary: string;
     text: string;
     createdAt: string;
+    createdDate: string | null;
     rating: number | null;
     ratingsBreakdown: {
         name: string;

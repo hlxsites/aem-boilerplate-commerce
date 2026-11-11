@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 4.3.0-alpha-20261110202124
+## 4.3.0-alpha-20261111215036
 
 ### Minor Changes
 
@@ -22,6 +22,18 @@
   page. Label the review's calculated average and the customer's individual
   criterion ratings inline with their stars, with localized personal-rating
   labels.
+
+  Always request merchant-approved customer reviews with the server-side status
+  filter, preserving approved-only pagination for full and minified views.
+  Require backend support for the filter rather than falling back to unfiltered
+  history.
+
+  Prepare review dates during model transformation with the shared formatter's
+  default locale, preserving the raw timestamp and UTC calendar-day validation.
+  Keep unavailable-date text in UI translations rather than using translations
+  to configure the date locale. Derive default display dates after resolving
+  custom timestamp overrides, while preserving explicit display-date overrides,
+  including null.
 
 ## 4.2.1
 
