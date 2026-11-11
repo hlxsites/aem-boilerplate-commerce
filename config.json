@@ -19,8 +19,8 @@
       },
       "analytics": {
         "view-id": "08115f8d-bf17-4dfc-a6dd-af8fea7fb574",
-        "environment": "Testing",
         "base-currency-code": "USD",
+        "environment": "Testing",
         "locale":"default",
         "environment-id": "TfpwVBcuyz6LwDnKMNBVxP",
         "store-url": "https://e2e-rel12qapaas-aco-preprod--aem-boilerplate-commerce--hlxsites.aem.live/"
