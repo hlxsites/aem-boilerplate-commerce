@@ -1,0 +1,28 @@
+{
+  "total": 3,
+  "limit": 3,
+  "offset": 0,
+  "data": [
+    {
+      "style": "Forest",
+      "background": "#1f3d2b",
+      "foreground": "#f2f2f2",
+      "accent": "#9bd770"
+    },
+    {
+      "style": "Ocean",
+      "background": "#0b3c5d",
+      "foreground": "#ffffff",
+      "accent": "#f9a620",
+      "layout-split": "70-30"
+    },
+    {
+      "style": "Sand",
+      "background": "#f4ead5",
+      "foreground": "#3b2f1e",
+      "accent": "#b5532a",
+      "layout-split": "40-60"
+    }
+  ],
+  ":type": "sheet"
+}
