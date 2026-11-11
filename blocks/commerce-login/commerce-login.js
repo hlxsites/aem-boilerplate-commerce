@@ -6,11 +6,16 @@ import {
   checkIsAuthenticated,
   rootLink,
 } from '../../scripts/commerce.js';
+import { handleOauth } from '../../scripts/oauth-authorize.js';
 
 // Initialize
 import '../../scripts/initializers/auth.js';
 
 export default async function decorate(block) {
+  if (await handleOauth(block)) {
+    return;
+  }
+
   if (checkIsAuthenticated()) {
     window.location.href = rootLink(CUSTOMER_ACCOUNT_PATH);
   } else {
