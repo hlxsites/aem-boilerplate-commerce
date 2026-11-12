@@ -47,15 +47,15 @@ Background, foreground and every other column do not reach drop-ins.
 
 When styles are nested, the nearest one wins for each token it sets: block over section over page, regardless of the row order in the sheet. A style only overrides the tokens it has a value for.
 
-### Blocks that read the tokens
+### Example: reading a token in a block
 
-A style class sets the variables on its element, so every block inside inherits them. Three blocks use them as examples; copy the pattern into your own blocks. Defaults are unchanged when no style is applied.
+A style class sets the variables on its element, so every block inside inherits them. `blocks/cards/cards.css` shows the pattern with one line: the card border reads `--accent-color` and falls back to the previous value, so nothing changes when no style is applied.
 
-| Block       | Token used                         | Effect                                                                                  |
-| ----------- | ---------------------------------- | --------------------------------------------------------------------------------------- |
-| `columns`   | `layout-split` (`30-70`, `40-60`, `60-40`, `70-30`) | Column proportions of two-column blocks on desktop. Set it on the page, section or block. |
-| `cards`     | `--background-color`, `--accent-color` | Card background and border                                                              |
-| `accordion` | `--accent-color`                   | Item border, open-item divider and arrow                                                |
+```css
+border: var(--shape-border-width-1) solid var(--accent-color, var(--color-neutral-500));
+```
+
+Use the same approach in your own blocks. For a non-color column such as `layout-split`, the value is also set as a `data-layout-split` attribute on the block, its section or the page, so you can select on it (`[data-layout-split='40-60'] .columns { … }`).
 
 ## What this adds
 
@@ -66,7 +66,7 @@ A style class sets the variables on its element, so every block inside inherits 
 | `scripts/style-switcher.js`   | Channel between the plugin and the EW canvas for live preview           |
 | `scripts/scripts.js`          | Loads tokens before decoration and starts the canvas listener in EW     |
 | `styles/styles.css`           | `--foreground-color`; the body uses the foreground token                |
-| `blocks/columns`, `blocks/cards`, `blocks/accordion` | Example blocks that read the tokens (see above)  |
+| `blocks/cards`                | Example block that reads `--accent-color` (see above)                    |
 
 `/config/styles.json` is requested on every page load. If your site has no `/config/styles` sheet, the request returns a 404 and the page renders unstyled by the picker.
 
@@ -98,7 +98,7 @@ Run these in the root of your own storefront repository (a fork or clone of this
    - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, `await loadDesignTokens()` and, unless `window.daStyleSwitcherLive` is set, apply the page `Theme` metadata with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `window.self !== window.top`, before `loadPage()`.
    - `styles/styles.css`: add `--foreground-color: var(--color-neutral-800)` to the root tokens and use it for `body` `color`.
 
-   The example blocks are optional. To include them, add `blocks/columns blocks/cards blocks/accordion` to the paths in the `git diff` command above.
+   The example block is optional. To include it, add `blocks/cards` to the paths in the `git diff` command above.
 
 4. Commit and push to your branch, e.g. `git push origin style-picker`.
 
