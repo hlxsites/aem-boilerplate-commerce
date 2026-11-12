@@ -21,10 +21,17 @@ Token columns become CSS custom properties on that class:
 | ------------ | --------------------- | ---------------------------------------------------------------------------- |
 | `background` | `--background-color`  | Page background. On a section or block with the style, that element is painted with it |
 | `foreground` | `--foreground-color`  | Page text color. On a section or block with the style, that element's text color |
-| `accent`     | `--accent-color`      | Links and buttons (`--color-brand-500/600/700`, `--link-color`)             |
+| `accent`     | `--accent-color`      | Links and buttons (`--color-brand-500/600/700`, `--link-color`), including drop-ins |
 | any other    | `--<column>`          | Available to your CSS. Non-color values are also set as `data-<column>`.     |
 
-Drop-ins keep their own design tokens (`.dropin-design`) and are not restyled.
+### Drop-ins
+
+Drop-in roots (`.dropin-design`) re-declare the design tokens on themselves, so a value set on the page, section or block does not reach them by inheritance. The picker therefore also sets these tokens on the drop-ins inside the styled element:
+
+- the accent (`--color-brand-500/600/700`), which drives drop-in buttons and links;
+- any column named after a drop-in token scale: `color-*`, `shape-*`, `spacing-*`, `type-*`, `grid-*`, `shadow-*` (for example a column `shape-border-radius-3`).
+
+Background, foreground and every other column do not reach drop-ins.
 
 ### Blocks that read the tokens
 

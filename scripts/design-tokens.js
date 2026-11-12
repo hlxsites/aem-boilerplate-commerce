@@ -124,6 +124,17 @@ function tokenAliases(cssVar, value) {
 }
 
 /**
+ * Drop-in roots (`.dropin-design`) re-declare the design tokens on themselves, which beats
+ * a value inherited from a styled page, section or block. Tokens named after the drop-in
+ * scales (`--color-brand-500`, `--shape-border-radius-2`, `--spacing-small`, ...) are
+ * therefore also set on the drop-ins inside the styled element.
+ * @param {string} cssVar
+ */
+function isDropinToken(cssVar) {
+  return /^--(color|shape|spacing|type|grid|shadow)-/.test(cssVar);
+}
+
+/**
  * @param {Record<string, string>} token
  * @param {string[]} columns
  */
@@ -165,9 +176,16 @@ function tokenToCssRule(token, columns) {
     ? `\n.block.${className}, .section.${className} { ${paint.join('; ')}; }`
     : '';
 
+  const dropinVars = vars.filter(({ cssVar }) => isDropinToken(cssVar));
+  const dropinDeclarations = dropinVars.map(({ cssVar, value }) => `${cssVar}: ${value}`);
+  const dropinRule = dropinVars.length
+    ? `\n.${className} .dropin-design, .${className}.dropin-design { ${dropinDeclarations.join('; ')}; }`
+    : '';
+
+  const rules = `${paintRule}${dropinRule}`;
   return {
     className,
-    rule: `.${className} { ${declarations.join('; ')}; }${paintRule}`,
+    rule: `.${className} { ${declarations.join('; ')}; }${rules}`,
     vars,
   };
 }
