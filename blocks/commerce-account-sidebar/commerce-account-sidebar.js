@@ -2,14 +2,14 @@ import { Icon, provider as UI } from '@dropins/tools/components.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { getStoreConfig } from '@dropins/storefront-account/api.js';
 import { loadFragment } from '../fragment/fragment.js';
-import { readBlockConfig } from '../../scripts/aem.js';
 import { CUSTOMER_ORDERS_PATH, CUSTOMER_REVIEWS_PATH, rootLink } from '../../scripts/commerce.js';
 import '../../scripts/initializers/account.js';
 
 export default async function decorate(block) {
-  const authored = readBlockConfig(block);
-  const { fragment: authoredFragment } = authored;
-  const fragment = await loadFragment(authoredFragment || '/customer/sidebar-fragment');
+  const fragment = await loadFragment('/customer/sidebar-fragment');
+  if (!fragment) {
+    throw new Error('Unable to load account sidebar fragment: /customer/sidebar-fragment');
+  }
   const sidebarItemsConfig = fragment.querySelectorAll('.default-content-wrapper > ol > li');
   const items = Array.from(sidebarItemsConfig).map((item) => {
     const itemParams = Array.from(item.querySelectorAll('ol > li'));

@@ -18,6 +18,7 @@ export default async function decorate(block) {
   if (!Number.isSafeInteger(pageSize) || pageSize < 1 || pageSize > 50) {
     throw new RangeError('Customer review page size must be an integer from 1 to 50.');
   }
+  const reviewsPage = authored['reviews-page'] || CUSTOMER_REVIEWS_PATH;
   block.replaceChildren();
   if (!checkIsAuthenticated()) {
     window.location.assign(rootLink(CUSTOMER_LOGIN_PATH));
@@ -26,18 +27,7 @@ export default async function decorate(block) {
 
   let generation = 0;
   let accountView;
-  let subscription;
-  let observer;
-  const dispose = () => {
-    accountView?.remove();
-    subscription?.off();
-    observer.disconnect();
-  };
-  observer = new MutationObserver(() => {
-    if (!block.isConnected) dispose();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-  subscription = events.on('authenticated', (authenticated) => {
+  const subscription = events.on('authenticated', (authenticated) => {
     generation += 1;
     accountView?.setProps((previous) => ({
       ...previous, authenticated, contextKey: String(generation),
@@ -50,7 +40,9 @@ export default async function decorate(block) {
     accountView = await accountRenderer.render(ProductReviews, {
       pageSize,
       minifiedView,
-      routeReviewsList: () => rootLink(authored['reviews-page'] || CUSTOMER_REVIEWS_PATH),
+      routeReviewsList: () => (
+        /^https?:\/\//i.test(reviewsPage) ? reviewsPage : rootLink(reviewsPage)
+      ),
       enabled: (await getStoreConfig()).productReviewsEnabled,
       authenticated: checkIsAuthenticated(),
       contextKey: String(mountedGeneration),
@@ -65,11 +57,9 @@ export default async function decorate(block) {
         contextKey: String(generation),
       }));
     }
-    if (!block.isConnected) {
-      dispose();
-    }
   } catch (error) {
-    dispose();
+    accountView?.remove();
+    subscription.off();
     throw error;
   }
 }

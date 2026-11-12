@@ -29,6 +29,9 @@ card linking to Reviews page.
 These options require an Account package that supports `minifiedView` and
 `routeReviewsList`.
 
+Reviews page accepts a plain root-relative path, localized to the storefront
+root, or an HTTP(S) link, used as authored without adding a locale prefix.
+
 ### Account landing page
 
 Add a second instance of this block to the main column of the authored Account
@@ -38,10 +41,10 @@ landing page alongside the existing minified Orders and Addresses blocks:
 | --- | --- |
 | Minified view | true |
 | Page size | 3 |
-| Reviews page | /drafts/ratings-reviews/customer/reviews |
+| Reviews page | /customer/reviews |
 
-Use `/customer/reviews` for the production Reviews page value. This is authored
-content, not automatic insertion by the page decorator. Keep full view on the
+This is authored content, not automatic insertion by the page decorator. Keep full
+view on the
 dedicated reviews page; no separate details page is needed.
 Set that page's metadata Title to My Product Reviews rather than retaining the
 title of a copied Account page.
@@ -49,8 +52,8 @@ title of a copied Account page.
 ### Sidebar and translations
 
 Add this block in the main account column and `Commerce Account Sidebar` in the
-sidebar column. The sidebar accepts an optional `Fragment` row. Its default
-remains `/customer/sidebar-fragment`. Add My Product Reviews to the merchant's
+sidebar column. The sidebar loads `/customer/sidebar-fragment`. Add My Product
+Reviews to the merchant's
 existing sidebar fragment, linking to the authored reviews page, and preserve
 the other sidebar entries.
 
@@ -65,6 +68,8 @@ No approval-capability row is required on either block.
   headers. No separate customer token or persisted review cache is introduced.
 - Sign-out redirects to the existing login route. Authentication changes
   invalidate selected details, old rows, and outstanding requests.
+  The block follows the EDS document lifecycle without observing DOM removal.
+  Render failures clean up the view and authentication listener before propagating.
 - Reviews are unavailable when merchant review enablement is disabled. The
   corresponding authored sidebar entry is hidden; other entries are unaffected.
 - Product names, images, and links temporarily use the supported deprecated
@@ -84,7 +89,6 @@ No approval-capability row is required on either block.
   not submitted separately and not a product-wide aggregate.
   Its optional `ReviewDetails` slot is customization only; no Ratings bridge is
   installed.
-  The host removes its render instance and authentication listener on unmount.
   Do not wire this block to the public `reviews/*` PDP event stream.
 - Both blocks read the normalized `productReviewsEnabled` flag directly through
   Account's existing `getStoreConfig` API. Account owns the GraphQL query,
