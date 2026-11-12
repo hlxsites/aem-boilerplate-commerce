@@ -61,10 +61,10 @@ const assertOrderPlaced = (firstName) => {
   cy.contains("p", /ORDER #\d+/).should("be.visible");
 };
 
-// The vault is only enabled on the SaaS sandbox tenant.
+// The vault is only enabled on the SaaS sandbox and ACO tenants.
 describe(
   "Verify auth user can place an order with a vaulted card",
-  { tags: ["@skipPaas", "@skipAco", "@skipSaasProd"] },
+  { tags: ["@skipPaas", "@skipSaasProd"] },
   () => {
     it("Saves a card on the first order and pays with it on the second", () => {
       trackCustomerCartLoads();
