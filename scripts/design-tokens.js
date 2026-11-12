@@ -102,8 +102,8 @@ function colorSchemeFor(color) {
 
 /**
  * Page-level aliases so a style class on the body also drives the boilerplate tokens.
- * `--foreground-color` is consumed directly by styles.css. The accent drives links and
- * buttons (`--color-brand-*`) and the accent button (`--link-color`).
+ * `--foreground-color` is applied to the body by the generated `body.<style>` rule.
+ * The accent drives links and buttons (`--color-brand-*`) and the accent button (`--link-color`).
  * @param {string} cssVar
  * @param {string} value
  * @returns {Array<[string, string]>}
@@ -167,14 +167,16 @@ function tokenToCssRule(token, columns) {
   if (scheme) declarations.push(`color-scheme: ${scheme}`);
 
   // A style class on a section or block also paints that element with its own colors.
+  const hasForeground = vars.some(({ cssVar }) => cssVar === '--foreground-color');
   const paint = [];
   if (background) paint.push('background-color: var(--background-color)');
-  if (vars.some(({ cssVar }) => cssVar === '--foreground-color')) {
-    paint.push('color: var(--foreground-color)');
-  }
+  if (hasForeground) paint.push('color: var(--foreground-color)');
   const paintRule = paint.length
     ? `\n.block.${className}, .section.${className} { ${paint.join('; ')}; }`
     : '';
+  // The body already paints `--background-color` (styles.css); the text color is set here so
+  // styles.css needs no change.
+  const bodyRule = hasForeground ? `\nbody.${className} { color: var(--foreground-color); }` : '';
 
   // Drop-in roots re-declare the tokens, so the nearest style must win whatever the row order:
   // specificity rises from page (0,2,1) to section (0,3,0) to block (0,4,0).
@@ -191,7 +193,7 @@ function tokenToCssRule(token, columns) {
     ? `\n${dropinSelectors.join(', ')} { ${dropinDeclarations.join('; ')}; }`
     : '';
 
-  const rules = `${paintRule}${dropinRule}`;
+  const rules = `${paintRule}${bodyRule}${dropinRule}`;
   return {
     className,
     rule: `.${className} { ${declarations.join('; ')}; }${rules}`,

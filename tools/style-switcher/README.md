@@ -65,7 +65,7 @@ Use the same approach in your own blocks. For a non-color column such as `layout
 | `scripts/design-tokens.js`    | Loads `/config/styles.json` and turns each row into a CSS class         |
 | `scripts/style-switcher.js`   | Channel between the plugin and the EW canvas for live preview           |
 | `scripts/scripts.js`          | Loads tokens before decoration and starts the canvas listener in EW     |
-| `styles/styles.css`           | `--foreground-color`; the body uses the foreground token                |
+| `.eslintignore`               | Excludes `tools/style-switcher` from lint, like `tools/pdp-metadata`     |
 | `blocks/cards`                | Example block that reads `--accent-color` (see above)                    |
 
 `/config/styles.json` is requested on every page load. If your site has no `/config/styles` sheet, the request returns a 404 and the page renders unstyled by the picker.
@@ -87,16 +87,16 @@ Run these in the root of your own storefront repository (a fork or clone of this
    git checkout boilerplate/feat/style-picker -- tools/style-switcher scripts/design-tokens.js scripts/style-switcher.js
    ```
 
-3. Apply the changes to your existing `scripts/scripts.js` and `styles/styles.css` (and lint ignore):
+3. Apply the changes to your existing `scripts/scripts.js` (and lint ignore):
 
    ```bash
-   git diff boilerplate/main...boilerplate/feat/style-picker -- scripts/scripts.js styles/styles.css .eslintignore | git apply --3way
+   git diff boilerplate/main...boilerplate/feat/style-picker -- scripts/scripts.js .eslintignore | git apply --3way
    ```
 
    If you have customized those files and the patch conflicts, resolve the conflict markers, or make the changes by hand:
 
    - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, `await loadDesignTokens()` and, unless `window.daStyleSwitcherLive` is set, apply the page `Theme` metadata with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `window.self !== window.top`, before `loadPage()`.
-   - `styles/styles.css`: add `--foreground-color: var(--color-neutral-800)` to the root tokens and use it for `body` `color`.
+   - `.eslintignore`: add `tools/style-switcher` (optional, only if your lint rules reject the plugin code).
 
    The example block is optional. To include it, add `blocks/cards` to the paths in the `git diff` command above.
 
