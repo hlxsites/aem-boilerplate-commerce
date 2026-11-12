@@ -50,6 +50,8 @@ Background, foreground and every other column do not reach drop-ins.
 
 When styles are nested, the nearest one wins for each token it sets: block over section over page, regardless of the row order in the sheet. A style only overrides the tokens it has a value for.
 
+Tokens a style leaves empty come from the style above it. A drop-in block styled `sand` on a `forest` page therefore gets Sand's accent but Forest's `color-neutral-*` values, which can mix colors and lose contrast. Give every style you use on drop-ins a value for each `color-neutral-*` column (or for none of them).
+
 ### Example: reading a token in a block
 
 A style class sets the variables on its element, so every block inside inherits them. `blocks/cards/cards.css` shows the pattern with one line: the card border reads `--accent-color` and falls back to the previous value, so nothing changes when no style is applied.
