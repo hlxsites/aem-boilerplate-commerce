@@ -4,10 +4,10 @@ Experience Workspace (EW) / Document Authoring (DA) library plugin that lets aut
 
 Styles are rows in a sheet at `/config/styles`. The first column is the style name, every other column is a design token:
 
-| style  | background | foreground | accent  |
-| ------ | ---------- | ---------- | ------- |
-| ocean  | #0b3c5d    | #ffffff    | #f9a620 |
-| forest | #1f3d2b    | #f2f2f2    | #9bd770 |
+| style  | background | foreground | accent  | shape-border-radius-3 |
+| ------ | ---------- | ---------- | ------- | --------------------- |
+| ocean  | #0b3c5d    | #ffffff    | #f9a620 | 4px                   |
+| forest | #1f3d2b    | #f2f2f2    | #9bd770 |                       |
 
 A style is applied as a class on the element it is assigned to:
 
@@ -33,13 +33,16 @@ Drop-in roots (`.dropin-design`) re-declare the design tokens on themselves, so 
 
 These are the tokens the `commerce-login` drop-in reads, so you know which columns to add:
 
-| Column               | Colors in the login drop-in                            |
-| -------------------- | ------------------------------------------------------ |
-| `accent`             | Primary button, links, password eye icon               |
-| `color-neutral-50`   | Card background                                        |
-| `color-neutral-600`  | Input borders                                          |
-| `color-neutral-700`  | Input labels                                           |
-| `color-neutral-800`  | Heading and typed text                                 |
+| Column                  | Effect in the login drop-in                                        |
+| ----------------------- | ------------------------------------------------------------------ |
+| `accent`                | Primary button, links, password eye icon                           |
+| `color-neutral-50`      | Card background                                                    |
+| `color-neutral-600`     | Input borders                                                      |
+| `color-neutral-700`     | Input labels                                                       |
+| `color-neutral-800`     | Heading and typed text                                             |
+| `shape-border-radius-3` | Primary button corners (default `24px`). `-2` is the card (`8px`), `-1` the inputs (`3px`) |
+
+The example above sets `shape-border-radius-3` to `4px` for `ocean`, which squares the Sign in button; `forest` leaves it empty and keeps the default. A column accepts a color, `var(--token)` or a simple value such as `4px` or `60-40`. Decimals such as `0.8rem` are not accepted.
 
 Neutral tokens are shared by all drop-ins, so a style that sets them also restyles the other drop-ins it contains. Check the drop-ins you use before adding them to a style.
 
