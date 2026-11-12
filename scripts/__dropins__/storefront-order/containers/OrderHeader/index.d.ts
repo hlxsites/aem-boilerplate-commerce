@@ -13,5 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './OrderHeader';
-export { OrderHeader as default } from './OrderHeader';
+export * from './OrderHeader.js';
+export { OrderHeader as default } from './OrderHeader.js';

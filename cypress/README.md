@@ -10,6 +10,14 @@ Note - Following commands expects local server is running at <http://127.0.0.1:3
 6. Now select respective test to Run from Cypress UI.
 7. To run all tests use `npm run cypress:run`
 
+## Continuous integration
+
+By default, the Cypress E2E and Percy visual-test jobs, their result-aggregation
+gates, and the test shard-coverage check run only in
+`hlxsites/aem-boilerplate-commerce`. These jobs are skipped in clones, forks, and
+repositories generated from the template. Local test commands remain available
+in derived repositories.
+
 ## SaaS vs PaaS vs ACO
 
 By default, the `cypress:open` and `cypress:run` commands run tests targeting the PaaS commerce environment created for the boilerplate.
