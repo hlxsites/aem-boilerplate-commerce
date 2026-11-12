@@ -46,6 +46,8 @@ The example above sets `shape-border-radius-3` to `4px` for `ocean`, which squar
 
 Neutral tokens are shared by all drop-ins, so a style that sets them also restyles the other drop-ins it contains. Check the drop-ins you use before adding them to a style.
 
+Other drop-ins use more steps of the neutral scale than the login block. In the cart, the Order Summary background is `color-neutral-200` and its text is `color-neutral-800`. A dark style that sets only 800 (light text) leaves the panel at the default light grey and the text is unreadable. For a dark style, set the whole scale used by the drop-ins you show: `color-neutral-50` to `color-neutral-800`, with background steps (50 to 400) darker than the text steps (600 to 800).
+
 Background, foreground and every other column do not reach drop-ins.
 
 When styles are nested, the nearest one wins for each token it sets: block over section over page, regardless of the row order in the sheet. A style only overrides the tokens it has a value for.
