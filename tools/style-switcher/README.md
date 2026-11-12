@@ -33,6 +33,8 @@ Drop-in roots (`.dropin-design`) re-declare the design tokens on themselves, so 
 
 Background, foreground and every other column do not reach drop-ins.
 
+When styles are nested, the nearest one wins for each token it sets: block over section over page, regardless of the row order in the sheet. A style only overrides the tokens it has a value for.
+
 ### Blocks that read the tokens
 
 A style class sets the variables on its element, so every block inside inherits them. Three blocks use them as examples; copy the pattern into your own blocks. Defaults are unchanged when no style is applied.

@@ -176,10 +176,19 @@ function tokenToCssRule(token, columns) {
     ? `\n.block.${className}, .section.${className} { ${paint.join('; ')}; }`
     : '';
 
+  // Drop-in roots re-declare the tokens, so the nearest style must win whatever the row order:
+  // specificity rises from page (0,2,1) to section (0,3,0) to block (0,4,0).
   const dropinVars = vars.filter(({ cssVar }) => isDropinToken(cssVar));
   const dropinDeclarations = dropinVars.map(({ cssVar, value }) => `${cssVar}: ${value}`);
+  const scope = `.${className}`;
+  const dropinSelectors = [
+    `body${scope} .dropin-design`,
+    `.section${scope} .dropin-design`,
+    `.block${scope}${scope} .dropin-design`,
+    `.block${scope}${scope}.dropin-design`,
+  ];
   const dropinRule = dropinVars.length
-    ? `\n.${className} .dropin-design, .${className}.dropin-design { ${dropinDeclarations.join('; ')}; }`
+    ? `\n${dropinSelectors.join(', ')} { ${dropinDeclarations.join('; ')}; }`
     : '';
 
   const rules = `${paintRule}${dropinRule}`;
