@@ -31,6 +31,18 @@ Drop-in roots (`.dropin-design`) re-declare the design tokens on themselves, so 
 - the accent (`--color-brand-500/600/700`), which drives drop-in buttons and links;
 - any column named after a drop-in token scale: `color-*`, `shape-*`, `spacing-*`, `type-*`, `grid-*`, `shadow-*` (for example a column `shape-border-radius-3`).
 
+These are the tokens the `commerce-login` drop-in reads, so you know which columns to add:
+
+| Column               | Colors in the login drop-in                            |
+| -------------------- | ------------------------------------------------------ |
+| `accent`             | Primary button, links, password eye icon               |
+| `color-neutral-50`   | Card background                                        |
+| `color-neutral-600`  | Input borders                                          |
+| `color-neutral-700`  | Input labels                                           |
+| `color-neutral-800`  | Heading and typed text                                 |
+
+Neutral tokens are shared by all drop-ins, so a style that sets them also restyles the other drop-ins it contains. Check the drop-ins you use before adding them to a style.
+
 Background, foreground and every other column do not reach drop-ins.
 
 When styles are nested, the nearest one wins for each token it sets: block over section over page, regardless of the row order in the sheet. A style only overrides the tokens it has a value for.
