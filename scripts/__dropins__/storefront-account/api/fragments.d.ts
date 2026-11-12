@@ -19,3 +19,4 @@ export { ADDRESS_FRAGMENT } from './graphql/CustomerAddressFragment.graphql';
 export { COMPANY_ADDRESS_FRAGMENT } from './graphql/CompanyAddressFragment.graphql';
 export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql';
 export { CUSTOMER_ORDER_FRAGMENT } from './graphql/CustomerOrderFragment.graphql';
+export { CUSTOMER_REVIEW_FRAGMENT } from './graphql/CustomerReviewFragment.graphql';

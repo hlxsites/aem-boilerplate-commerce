@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './getCustomerReviews';
-export type { CustomerReviewModel, CustomerReviewsModel, } from '../../data/models/customer-reviews';

@@ -1,6 +1,6 @@
 # @dropins/storefront-account
 
-## 4.3.0-alpha-20261111215036
+## 4.3.0-alpha-20261112144502
 
 ### Minor Changes
 
@@ -34,6 +34,9 @@
   to configure the date locale. Derive default display dates after resolving
   custom timestamp overrides, while preserving explicit display-date overrides,
   including null.
+
+  Expose customer review fields through the shared GraphQL fragment barrel for
+  customization, and keep review model exports in the model barrel.
 
 ## 4.2.1
 
