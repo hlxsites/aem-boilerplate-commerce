@@ -34,6 +34,11 @@ jobs:
         run: npm ci
       - name: Install adobe aem cli dependencies
         run: npm install -g @adobe/aem-cli
+      - name: Load ACO test configuration
+        run: |
+          curl --fail --silent --show-error --location \
+            https://main--boilerplate-aco--adobe-commerce.aem.live/config.json \
+            --output config.json
       - name: Start server in the background
         run: aem up --url https://main--boilerplate-aco--adobe-commerce.aem.live/ &
       - name: Install Cypress and run tests
