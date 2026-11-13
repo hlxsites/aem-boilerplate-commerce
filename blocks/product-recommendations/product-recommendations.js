@@ -18,6 +18,9 @@ import { publishRecsItemAddToCartClick } from '@dropins/storefront-recommendatio
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
+// Ratings & Reviews Dropin
+import { config } from '@dropins/storefront-ratings-reviews/api.js';
+
 // Block-level
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
@@ -27,6 +30,7 @@ import {
 // Initializers
 import '../../scripts/initializers/recommendations.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/ratings-reviews.js';
 
 const isMobile = window.matchMedia('only screen and (max-width: 900px)').matches;
 
@@ -225,6 +229,7 @@ export default async function decorate(block) {
           label,
           recId: recid,
           ...requestContext,
+          showRatings: config.getConfig()?.isProductReviewsEnabled === true,
           slots: {
             Footer: (ctx) => {
               const wrapper = document.createElement('div');

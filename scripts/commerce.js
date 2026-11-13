@@ -911,3 +911,14 @@ export function buildPDPBlock(main) {
     main.prepend(section);
   }
 }
+
+/**
+ * Appends a product-reviews section unless reviews are already authored.
+ * @param {Element} main The main element
+ */
+export function buildProductRatingsAndReviews(main) {
+  if (main.querySelector('.product-reviews')) return;
+  const section = document.createElement('div');
+  section.append(buildBlock('product-reviews', { elems: [] }));
+  main.append(section);
+}

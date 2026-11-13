@@ -37,6 +37,10 @@ On load, the block normalizes the URL (e.g. filter format) with `replaceState`. 
 
 The block does not emit events; it calls the dropin’s `search()` API and reacts to `search/result`.
 
+### Product Ratings
+
+Product cards show star ratings when Commerce product reviews are enabled. The block imports the Ratings & Reviews initializer and passes `showRating: isProductReviewsEnabled` to `SearchResults`; the dropin renders the stars and count from the `ac_rating_summary` and `ac_review_count` attributes (both need the `visible_in_plp` role). Products without a rating show nothing. When reviews are disabled or the store configuration fails to load, no ratings are shown.
+
 ### Local Storage
 
 This block does not use localStorage.

@@ -16,3 +16,4 @@
 export * from './product-model';
 export * from './values-model';
 export * from './customizable-options-model';
+export * from './product-rating-model';

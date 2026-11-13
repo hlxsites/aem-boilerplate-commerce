@@ -16,6 +16,7 @@ import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistA
 
 // Containers
 import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
+import ProductRating from '@dropins/storefront-pdp/containers/ProductRating.js';
 import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
 import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
 import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
@@ -84,6 +85,7 @@ export default async function decorate(block) {
       </div>
       <div class="product-details__right-column">
         <div class="product-details__header"></div>
+        <div class="product-details__rating"></div>
         <div class="product-details__price"></div>
         <div class="product-details__gallery"></div>
         <div class="product-details__short-description"></div>
@@ -107,6 +109,7 @@ export default async function decorate(block) {
   const $alert = fragment.querySelector('.product-details__alert');
   const $gallery = fragment.querySelector('.product-details__gallery');
   const $header = fragment.querySelector('.product-details__header');
+  const $rating = fragment.querySelector('.product-details__rating');
   const $price = fragment.querySelector('.product-details__price');
   const $galleryMobile = fragment.querySelector('.product-details__right-column .product-details__gallery');
   const $shortDescription = fragment.querySelector('.product-details__short-description');
@@ -194,6 +197,9 @@ export default async function decorate(block) {
 
     // Header
     pdpRendered.render(ProductHeader, {})($header),
+
+    // Rating
+    pdpRendered.render(ProductRating, {})($rating),
 
     // Price
     pdpRendered.render(ProductPrice, {})($price),
