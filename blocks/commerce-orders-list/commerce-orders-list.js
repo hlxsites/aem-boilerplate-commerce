@@ -1,10 +1,6 @@
-import { render as accountRenderer } from '@dropins/storefront-account/render.js';
-import { OrdersList } from '@dropins/storefront-account/containers/OrdersList.js';
-import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {
-  checkIsAuthenticated,
-  CUSTOMER_LOGIN_PATH,
+  redirectIfUnauthenticated,
   CUSTOMER_ORDER_DETAILS_PATH,
   CUSTOMER_ORDERS_PATH,
   CUSTOMER_RETURN_DETAILS_PATH,
@@ -13,10 +9,9 @@ import {
   getProductLink,
 } from '../../scripts/commerce.js';
 
-// Initialize
-import '../../scripts/initializers/account.js';
-
 export default async function decorate(block) {
+  if (redirectIfUnauthenticated()) return;
+
   const {
     'minified-view': minifiedViewConfig = 'false',
     search: searchConfig = 'true',
@@ -35,43 +30,52 @@ export default async function decorate(block) {
     return rootLink('#');
   };
 
-  if (!checkIsAuthenticated()) {
-    window.location.href = rootLink(CUSTOMER_LOGIN_PATH);
-  } else {
-    await accountRenderer.render(OrdersList, {
-      minifiedView: minifiedViewConfig === 'true',
-      // OrdersList defaults search off; enable it here.
-      withSearch: searchConfig === 'true',
-      // Search all orders, not just the selected date range.
-      searchScope: 'allOrders',
-      routeTracking: ({ carrier, number }) => {
-        if (carrier === 'ups') {
-          return `${UPS_TRACKING_URL}?tracknum=${number}`;
-        }
-        return '';
-      },
-      routeOrdersList: () => rootLink(CUSTOMER_ORDERS_PATH),
-      routeOrderDetails: (orderNumber) => rootLink(`${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderNumber}`),
-      routeReturnDetails: ({ orderNumber, returnNumber }) => rootLink(`${CUSTOMER_RETURN_DETAILS_PATH}?orderRef=${orderNumber}&returnRef=${returnNumber}`),
-      routeOrderProduct: createProductLink,
-      slots: {
-        OrderItemImage: (ctx) => {
-          const { data, defaultImageProps } = ctx;
-          const anchor = document.createElement('a');
-          anchor.href = createProductLink(ctx.data);
+  // Load the account drop-in only after the auth guard, so logged-out visitors
+  // don't download the storefront-account + tools + preact chain to be redirected.
+  const [
+    { render: accountRenderer },
+    { OrdersList },
+    { tryRenderAemAssetsImage },
+  ] = await Promise.all([
+    import('@dropins/storefront-account/render.js'),
+    import('@dropins/storefront-account/containers/OrdersList.js'),
+    import('@dropins/tools/lib/aem/assets.js'),
+    import('../../scripts/initializers/account.js'),
+  ]);
 
-          tryRenderAemAssetsImage(ctx, {
-            alias: data.product.sku,
-            imageProps: defaultImageProps,
-            wrapper: anchor,
+  await accountRenderer.render(OrdersList, {
+    minifiedView: minifiedViewConfig === 'true',
+    // OrdersList defaults search off; enable it here.
+    withSearch: searchConfig === 'true',
+    // Search all orders, not just the selected date range.
+    searchScope: 'allOrders',
+    routeTracking: ({ carrier, number }) => {
+      if (carrier === 'ups') {
+        return `${UPS_TRACKING_URL}?tracknum=${number}`;
+      }
+      return '';
+    },
+    routeOrdersList: () => rootLink(CUSTOMER_ORDERS_PATH),
+    routeOrderDetails: (orderNumber) => rootLink(`${CUSTOMER_ORDER_DETAILS_PATH}?orderRef=${orderNumber}`),
+    routeReturnDetails: ({ orderNumber, returnNumber }) => rootLink(`${CUSTOMER_RETURN_DETAILS_PATH}?orderRef=${orderNumber}&returnRef=${returnNumber}`),
+    routeOrderProduct: createProductLink,
+    slots: {
+      OrderItemImage: (ctx) => {
+        const { data, defaultImageProps } = ctx;
+        const anchor = document.createElement('a');
+        anchor.href = createProductLink(ctx.data);
 
-            params: {
-              width: defaultImageProps.width,
-              height: defaultImageProps.height,
-            },
-          });
-        },
+        tryRenderAemAssetsImage(ctx, {
+          alias: data.product.sku,
+          imageProps: defaultImageProps,
+          wrapper: anchor,
+
+          params: {
+            width: defaultImageProps.width,
+            height: defaultImageProps.height,
+          },
+        });
       },
-    })(block);
-  }
+    },
+  })(block);
 }
