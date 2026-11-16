@@ -102,7 +102,7 @@ Run these in the root of your own storefront repository (a fork or clone of this
 
    If you have customized those files and the patch conflicts, resolve the conflict markers, or make the changes by hand:
 
-   - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, `await loadDesignTokens()` and, unless `window.daStyleSwitcherLive` is set, apply the page `Theme` metadata with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `window.self !== window.top`, before `loadPage()`.
+   - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, start `const tokensReady = loadDesignTokens()` without awaiting it, and only when the page has a `theme` metadata, `await tokensReady` and, unless `window.daStyleSwitcherLive` is set, apply it with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `IS_EW_CANVAS` (exported from `commerce.js`: `quick-edit=on` and framed) is true, before `loadPage()`.
    - `.eslintignore`: add `tools/style-switcher` (optional, only if your lint rules reject the plugin code).
 
    The example block is optional. To include it, add `blocks/cards` to the paths in the `git diff` command above.

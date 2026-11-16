@@ -247,6 +247,8 @@ export function applyTokenPayload(payload) {
 /**
  * Fetches /config/styles.json and injects one class per style row.
  * First sheet column is the class name. Remaining columns become CSS variables.
+ * Data attributes are re-applied once the sheet arrives, so callers that do not await it
+ * still get them on styled sections and blocks already in the DOM.
  * @returns {Promise<void>}
  */
 export async function loadDesignTokens() {
@@ -257,6 +259,7 @@ export async function loadDesignTokens() {
     const payload = await response.json();
     if (generation !== gen) return;
     applyTokenPayload(payload);
+    applyDesignTokenDataAttributes(document.body);
   } catch (error) {
     console.error('Failed to load design tokens', error);
   }

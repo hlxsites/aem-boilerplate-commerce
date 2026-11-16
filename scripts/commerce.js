@@ -63,6 +63,7 @@ export const CS_FETCH_GRAPHQL = new FetchGraphQL();
 // Environment checks
 export const IS_DA = new URL(window.location.href).searchParams.has('dapreview');
 export const IS_EW = new URL(window.location.href).searchParams.get('quick-edit') === 'on';
+export const IS_EW_CANVAS = IS_EW && window.self !== window.top;
 
 // PATHS
 export const SUPPORT_PATH = '/support';

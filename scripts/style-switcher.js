@@ -95,14 +95,6 @@ export function getSavedStyle(docPath) {
 }
 
 /**
- * Only the EW canvas (framed page with the quick-edit param) reacts to the plugin.
- */
-export function isCanvas() {
-  return window.self !== window.top
-    && new URLSearchParams(window.location.search).has('quick-edit');
-}
-
-/**
  * @param {string} style
  */
 function applyPageStyle(style) {
@@ -119,7 +111,7 @@ function applyPageStyle(style) {
  * Quick-edit only swaps body.innerHTML on re-render, so the class sticks.
  */
 export function initCanvasStyleSwitcher() {
-  if (!isCanvas() || window.daStyleSwitcherReady) return;
+  if (window.daStyleSwitcherReady) return;
   window.daStyleSwitcherReady = true;
 
   if (getSavedStyle() !== null) window.daStyleSwitcherLive = true;

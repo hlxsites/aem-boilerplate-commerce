@@ -1,8 +1,8 @@
+import { DESIGN_TOKENS_URL } from '../../scripts/design-tokens.js';
+
 const DA_ADMIN = 'https://admin.da.live';
 const AEM_API = 'https://api.aem.live';
 const HLX_ADMIN = 'https://admin.hlx.page';
-
-const STYLES_PATH = '/config/styles.json';
 
 /** @type {Map<string, Promise<boolean>>} */
 const hlx6Cache = new Map();
@@ -54,8 +54,8 @@ export async function saveStylesSheet({
 
   const hlx6 = await probeHlx6(daFetch, org, site);
   const sourceUrl = hlx6
-    ? `${AEM_API}/${org}/sites/${site}/source${STYLES_PATH}`
-    : `${DA_ADMIN}/source/${org}/${site}${STYLES_PATH}`;
+    ? `${AEM_API}/${org}/sites/${site}/source${DESIGN_TOKENS_URL}`
+    : `${DA_ADMIN}/source/${org}/${site}${DESIGN_TOKENS_URL}`;
   const body = sheetBody(rows, sheetName);
   /** @type {Record<string, string>} */
   const authHeaders = {};
@@ -76,8 +76,8 @@ export async function saveStylesSheet({
   if (!sourceResp?.ok) throw new Error(`source ${sourceResp?.status || 0}`);
 
   const previewUrl = hlx6
-    ? `${AEM_API}/${org}/sites/${site}/preview${STYLES_PATH}`
-    : `${HLX_ADMIN}/preview/${org}/${site}/main${STYLES_PATH}`;
+    ? `${AEM_API}/${org}/sites/${site}/preview${DESIGN_TOKENS_URL}`
+    : `${HLX_ADMIN}/preview/${org}/${site}/main${DESIGN_TOKENS_URL}`;
   try {
     const previewResp = await daFetch(previewUrl, {
       method: 'POST',
