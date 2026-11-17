@@ -1,5 +1,43 @@
 # @adobe-commerce/elsie
 
+## 3.1.0-alpha-20261109140213
+
+### Minor Changes
+
+- 19d9b59: Add a consolidated `containers.js` entry to `elsie build`. It exports
+  every container by name, so a storefront page can load all the containers it
+  needs with a single request instead of one request per container. This reduces
+  request pressure on EDS. The per-container entry points
+  (`containers/<Name>.js`) remain available for backwards compatibility, and
+  both entries share the same `api.js`, `components.js`, `fragments.js`, and
+  `render.js` modules.
+
+  Only named imports are supported from `containers.js`:
+
+  ```diff
+  - import SignIn from '@dropins/storefront-auth/containers/SignIn.js';
+  + import { SignIn } from '@dropins/storefront-auth/containers.js';
+  ```
+
+  `containers.js` is built from `src/containers/index.ts`. `elsie build` now
+  fails before building if that file does not export every container directory,
+  because a missing container would be absent from `containers.js` and could
+  break its per-container entry. Use `export * from '<path to container>';`
+  statements.
+
+- 0d54094: feat: add `StarRating` component that displays a 0-5 rating with
+  partial star fill, optional value, review count and accessible label
+
+### Patch Changes
+
+- dc2c0f3: fix(elsie): render the latest context after an async slot callback
+  resolves
+
+  Context changes made while an async `slot` callback was pending were dropped:
+  once the callback resolved, `Slot` rendered with the children and context from
+  its first render and passed that stale context to `onRender`. It now renders
+  with the latest children and context.
+
 ## 3.0.0
 
 ### Major Changes

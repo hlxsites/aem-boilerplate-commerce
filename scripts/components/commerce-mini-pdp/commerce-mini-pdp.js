@@ -21,9 +21,11 @@ import { h } from '@dropins/tools/preact.js';
 import * as Cart from '@dropins/storefront-cart/api.js';
 
 // PDP Containers for Mini PDP
-import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
-import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
-import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.js';
+import {
+  ProductPrice,
+  ProductOptions,
+  ProductQuantity,
+} from '@dropins/storefront-pdp/containers.js';
 
 // Initializers
 import '../../initializers/cart.js';

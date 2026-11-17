@@ -1,5 +1,5 @@
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
-import { SellerAssistedBuyingActivity } from '@dropins/storefront-account/containers/SellerAssistedBuyingActivity.js';
+import { SellerAssistedBuyingActivity } from '@dropins/storefront-account/containers.js';
 import { CUSTOMER_LOGIN_PATH, checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 
 // Initialize

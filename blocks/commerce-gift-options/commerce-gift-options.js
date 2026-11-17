@@ -1,4 +1,4 @@
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import { GiftOptions } from '@dropins/storefront-cart/containers.js';
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
 
 export default async function decorate(block) {

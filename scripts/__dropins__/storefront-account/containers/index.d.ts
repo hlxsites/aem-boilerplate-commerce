@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './AddressForm';
+export * from './AddressValidation';
 export * from './Addresses';
 export * from './OrdersList';
 export * from './CustomerInformation';

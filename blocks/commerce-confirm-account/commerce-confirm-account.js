@@ -1,5 +1,4 @@
-import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
-import { SuccessNotification } from '@dropins/storefront-auth/containers/SuccessNotification.js';
+import { SignIn, SuccessNotification } from '@dropins/storefront-auth/containers.js';
 import * as authApi from '@dropins/storefront-auth/api.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import { Button, provider as UI } from '@dropins/tools/components.js';

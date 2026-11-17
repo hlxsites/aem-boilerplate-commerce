@@ -1,5 +1,18 @@
 # @dropins/storefront-cart
 
+## 3.5.0-alpha-20261109151750
+
+### Minor Changes
+
+- bef5dc7: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+- 2efe1cb: Add a CheckoutAction slot to MiniCart for adding actions, such as
+  payment buttons, after Checkout. The slot mounts and unmounts with Checkout
+  and exposes cart data, checkout availability, the checkout URL, and the
+  checkout handler.
+
 ## 3.4.1
 
 ### Patch Changes
