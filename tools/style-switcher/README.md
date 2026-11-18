@@ -62,7 +62,22 @@ A style class sets the variables on its element, so every block inside inherits 
 border: var(--shape-border-width-1) solid var(--accent-color, var(--color-neutral-500));
 ```
 
-Use the same approach in your own blocks. For a non-color column such as `layout-split`, the value is also set as a `data-layout-split` attribute on the block, its section or the page, so you can select on it (`[data-layout-split='40-60'] .columns { … }`).
+Use the same approach in your own blocks. For a non-color column such as `layout-split`, the value is also set as a `data-layout-split` attribute on the block, its section or the page, so you can select on it.
+
+Set a custom property on the element that carries the attribute and read it in the block. Custom properties inherit, so the nearest style wins when styles are nested (a block's split overrides its section's, which overrides the page's):
+
+```css
+[data-layout-split='40-60'] {
+  --split-first: 4;
+  --split-second: 6;
+}
+
+.columns > div > div:first-child {
+  flex: var(--split-first, 1);
+}
+```
+
+Do not select the block from the ancestor (`[data-layout-split='40-60'] .columns { … }`). That has the same specificity as a rule on the block itself, so with nested styles the rule later in the file wins instead of the nearest one.
 
 ## What this adds
 
