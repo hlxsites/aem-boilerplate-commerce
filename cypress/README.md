@@ -28,6 +28,30 @@ You can run tests against the ACO (Adobe Commerce Optimizer) environment with `c
 
 All commands use a base config defined in `cypress.base.config.js`, extended by the corresponding config: `cypress.paas.config.js`, `cypress.saas.config.js`, or `cypress.aco.config.js`. This allows us to use variables for things which differ in the environments, such as product option UIDs, state IDs, etc.
 
+## Invoice integration coverage
+
+From the repository root, run `npm test` for invoice host routing, sign-in
+destination preservation, guest-token navigation, and PDF branding adapter tests.
+The Build workflow runs these tests on pushes.
+
+With the local AEM server running on port 3000, run this command from `cypress/`:
+
+```sh
+npx cypress run --config-file cypress.saas.config.js --spec src/tests/integration/invoices.spec.js
+```
+
+The Build workflow also runs this standalone smoke test. It loads the checked-in
+Order assets and real invoice blocks, navigates from list to details and back,
+and verifies that a PDF file is downloaded. Page markup, order initialization,
+and invoice GraphQL responses are deterministic test fixtures; it does not create
+customers or orders or require backend credentials. Sign-in redirect decisions
+are covered separately by the host tests, not by a real login in this smoke test.
+The smoke test uses no branding configuration; the adapter tests cover branding
+configuration and failures.
+
+Before deployment, still verify real sign-in, partial-invoice amounts, and
+branded/unbranded PDFs against a backend exposing the required invoice fields.
+
 ### Skipping Tests
 
 For various reasons, certain tests fail against certain environments. Eventually these issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.

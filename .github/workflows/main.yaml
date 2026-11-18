@@ -12,3 +12,23 @@ jobs:
         node-version: 24
     - run: npm ci
     - run: npm run lint
+    - run: npm test
+  invoice-smoke:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 24
+    - run: npm ci
+    - uses: cypress-io/github-action@v6
+      with:
+        working-directory: cypress
+        start: npm --prefix .. start -- --url https://main--boilerplate-accs--adobe-commerce.aem.live/ --no-open
+        wait-on: http://localhost:3000
+        command: npx cypress run --config-file cypress.saas.config.js --spec src/tests/integration/invoices.spec.js
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: invoice-smoke-screenshots
+        path: cypress/screenshots

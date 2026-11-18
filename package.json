@@ -4,6 +4,7 @@
   "version": "12.0.0",
   "description": "Starter project for Adobe Commerce on Edge Delivery Services",
   "scripts": {
+    "test": "node --experimental-vm-modules --test tests/*.test.mjs",
     "lint:js": "eslint .",
     "lint:css": "stylelint \"blocks/**/*.css\" \"styles/*.css\"",
     "lint": "npm run lint:js && npm run lint:css",
