@@ -34,10 +34,17 @@ From the repository root, run `npm test` for invoice host routing, sign-in
 destination preservation, guest-token navigation, and PDF branding adapter tests.
 The Build workflow runs these tests on pushes.
 
-With the local AEM server running on port 3000, run this command from `cypress/`:
+For this fixture-based smoke test, no remote AEM site is needed. With Python 3
+installed, start a loopback-only static server from the repository root:
 
 ```sh
-npx cypress run --config-file cypress.saas.config.js --spec src/tests/integration/invoices.spec.js
+python3 -m http.server 3000 --bind 127.0.0.1
+```
+
+In another terminal, run this command from `cypress/`:
+
+```sh
+npx cypress run --config-file cypress.saas.config.js --config baseUrl=http://127.0.0.1:3000 --spec src/tests/integration/invoices.spec.js
 ```
 
 The Build workflow also runs this standalone smoke test. It loads the checked-in
@@ -48,6 +55,8 @@ customers or orders or require backend credentials. Sign-in redirect decisions
 are covered separately by the host tests, not by a real login in this smoke test.
 The smoke test uses no branding configuration; the adapter tests cover branding
 configuration and failures.
+CI checks that the static server serves a real local script before starting
+Cypress, and uploads its server log alongside failure screenshots.
 
 Before deployment, still verify real sign-in, partial-invoice amounts, and
 branded/unbranded PDFs against a backend exposing the required invoice fields.
