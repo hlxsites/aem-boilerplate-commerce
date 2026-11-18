@@ -44,10 +44,16 @@ python3 -m http.server 3000 --bind 127.0.0.1
 In another terminal, run this command from `cypress/`:
 
 ```sh
-npx cypress run --config-file cypress.saas.config.js --config baseUrl=http://127.0.0.1:3000 --spec src/tests/integration/invoices.spec.js
+npx cypress run --config-file cypress.saas.config.js --config baseUrl=http://127.0.0.1:3000 --spec src/tests/b2c/invoices.spec.js
 ```
 
-The Build workflow also runs this standalone smoke test. It loads the checked-in
+The Auth/account shard in each existing PaaS, SaaS, and ACO E2E workflow runs
+this smoke test using its existing local AEM server, Cypress setup, and failure
+screenshots. It follows those workflows' existing triggers and repository/fork
+restrictions; there is no dedicated invoice CI job. Moving the spec under
+`src/tests/b2c/` also includes it in the existing shard-coverage check.
+
+The test loads the checked-in
 Order assets and real invoice blocks, navigates from list to details and back,
 and verifies that a PDF file is downloaded. Page markup, order initialization,
 and invoice GraphQL responses are deterministic test fixtures; it does not create
@@ -55,8 +61,6 @@ customers or orders or require backend credentials. Sign-in redirect decisions
 are covered separately by the host tests, not by a real login in this smoke test.
 The smoke test uses no branding configuration; the adapter tests cover branding
 configuration and failures.
-CI checks that the static server serves a real local script before starting
-Cypress, and uploads its server log alongside failure screenshots.
 
 Before deployment, still verify real sign-in, partial-invoice amounts, and
 branded/unbranded PDFs against a backend exposing the required invoice fields.
