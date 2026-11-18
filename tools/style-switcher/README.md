@@ -87,6 +87,7 @@ Do not select the block from the ancestor (`[data-layout-split='40-60'] .columns
 | `scripts/design-tokens.js`    | Loads `/config/styles.json` and turns each row into a CSS class         |
 | `scripts/style-switcher.js`   | Channel between the plugin and the EW canvas for live preview           |
 | `scripts/scripts.js`          | Loads tokens before decoration and starts the canvas listener in EW     |
+| `scripts/commerce.js`         | Exports `IS_EW_CANVAS`, which `scripts/scripts.js` imports               |
 | `head.html`                   | Preloads `/config/styles.json` so the sheet request starts with the HTML |
 | `.eslintignore`               | Excludes `tools/style-switcher` from lint, like `tools/pdp-metadata`     |
 | `blocks/cards`                | Example block that reads `--accent-color` (see above)                    |
@@ -110,15 +111,16 @@ Run these in the root of your own storefront repository (a fork or clone of this
    git checkout boilerplate/feat/style-picker -- tools/style-switcher scripts/design-tokens.js scripts/style-switcher.js
    ```
 
-3. Apply the changes to your existing `scripts/scripts.js` (and lint ignore):
+3. Apply the changes to your existing `scripts/scripts.js`, `scripts/commerce.js`, `head.html` (and lint ignore):
 
    ```bash
-   git diff boilerplate/main...boilerplate/feat/style-picker -- scripts/scripts.js head.html .eslintignore | git apply --3way
+   git diff boilerplate/main...boilerplate/feat/style-picker -- scripts/scripts.js scripts/commerce.js head.html .eslintignore | git apply --3way
    ```
 
    If you have customized those files and the patch conflicts, resolve the conflict markers, or make the changes by hand:
 
    - `scripts/scripts.js`: import `applyDesignTokenDataAttributes`, `applyDesignTokenStyle` and `loadDesignTokens` from `./design-tokens.js`; call `applyDesignTokenDataAttributes(main)` in `decorateMain`; in `loadEager`, right after `decorateTemplateAndTheme()`, start `const tokensReady = loadDesignTokens()` without awaiting it, and only when the page has a `theme` metadata, `await tokensReady` and, unless `window.daStyleSwitcherLive` is set, apply it with `applyDesignTokenStyle(document.body, theme)`; import `./style-switcher.js` and call `initCanvasStyleSwitcher()` when `IS_EW_CANVAS` (exported from `commerce.js`: `quick-edit=on` and framed) is true, before `loadPage()`.
+   - `scripts/commerce.js`: export `IS_EW_CANVAS` next to `IS_EW`: `export const IS_EW_CANVAS = IS_EW && window.self !== window.top;`. Without it `scripts/scripts.js` fails to load and the page does not render.
    - `head.html`: add `<link rel="preload" as="fetch" href="/config/styles.json" crossorigin />` before the scripts, so a page with a `theme` does not wait for the sheet request to start.
    - `.eslintignore`: add `tools/style-switcher` (optional, only if your lint rules reject the plugin code).
 
