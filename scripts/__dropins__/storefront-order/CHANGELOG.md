@@ -1,10 +1,10 @@
 # @dropins/storefront-order
 
-## 5.0.0-alpha-20261110114801
+## 5.0.0-alpha-20261117102052
 
 ### Major Changes
 
-- 837aaf5: Display each invoice's own status and reported item tax in invoice
+- 6abac56: Display each invoice's own status and reported item tax in invoice
   details and downloaded PDFs. Distinguish zero item tax from unavailable tax,
   and style Paid, Pending, and Canceled invoice statuses explicitly.
 
@@ -23,7 +23,7 @@
   requirement beyond the status/item-tax versions above; the deployed endpoint
   must also expose `InvoiceItemInterface.row_total`.
 
-- b653e26: Use the backend-reported invoice-item `row_total` for line subtotals
+- 6abac56: Use the backend-reported invoice-item `row_total` for line subtotals
   in invoice details and downloaded PDFs instead of multiplying unit price by
   invoiced quantity. Expose it as nullable `rowTotal` in the normalized
   invoice-item model. Preserve the reported value and currency without
@@ -44,7 +44,7 @@
 
 ### Minor Changes
 
-- f087a3b: Adds a new `getOrderInvoices` API function to retrieve a customer
+- 6abac56: Adds a new `getOrderInvoices` API function to retrieve a customer
   order's invoices (invoice id, number, comments, invoiced items, and totals) by
   order number. The response is transformed into a new `OrderInvoicesModel`,
   following the same `data/transforms` + `data/models` pattern used by the other
@@ -56,7 +56,7 @@
   const order = await getOrderInvoices('000000001');
   ```
 
-- c811dcc: Adds an `InvoiceDetails` container/component and `useInvoiceDetails`
+- 6abac56: Adds an `InvoiceDetails` container/component and `useInvoiceDetails`
   hook to render the full detail view for a single invoice (order #, order date,
   payment method, invoice status, billing/shipping address, line items including
   item tax, and totals), matching the updated (non-Luma) reference design.
@@ -78,10 +78,10 @@
   to supply the logo, store name, and address lines, or `onDownloadPdf` to
   replace the default download behavior.
 
-- 5256d85: Add a reusable client-side invoice PDF renderer and wire the Invoice
+- 6abac56: Add a reusable client-side invoice PDF renderer and wire the Invoice
   Details download action to it. Storefront hosts can provide a site logo as PDF
   branding; the same renderer can be reused by future bulk-export flows.
-- d883d8b: Adds an `OrderInvoices` component and container to display the
+- 6abac56: Adds an `OrderInvoices` component and container to display the
   invoices associated with a customer order.
 
   The container uses a new `useOrderInvoices` hook, which listens for the
@@ -95,6 +95,27 @@
 
 ### Patch Changes
 
+- 6abac56: Export a reusable `INVOICE_FRAGMENT` through the existing GraphQL
+  fragment entry point and use it in `getOrderInvoices`. Preserve the invoice
+  field selection, order filtering, pagination, and response shape.
+- 6abac56: Size invoice PDF address panels from their wrapped text while
+  retaining the existing 39 mm minimum body height. Position payment and
+  shipping method panels and the item table below the taller address panel to
+  prevent long addresses from overlapping subsequent sections.
+- 6abac56: Move invoice PDF label colons into `Order.InvoiceDetails.pdf`
+  translations so translators control punctuation and spacing. Keep the existing
+  English output, and render only the number when the telephone label is empty.
+  Add separate `totalsSubtotal` and `totalsTax` labels so table headings remain
+  independent from punctuated totals. Custom dictionaries and direct renderer
+  label overrides must include their desired punctuation and use the new totals
+  keys.
+- 6abac56: Localize built-in invoice PDF labels through the
+  `Order.InvoiceDetails.pdf` dictionary, including metadata, address and method
+  headings, table columns, totals, and the telephone prefix. Pass the
+  container's translated labels to the PDF renderer while preserving existing
+  English defaults. Direct renderer calls can supply partial
+  `InvoicePdfInput.labels` overrides. Backend-provided values and the renderer's
+  locale behavior are unchanged.
 - 839bb26: Keep the shopper's active cart when an order is placed from a
   different cart. `placeOrder` and `setPaymentMethodAndPlaceOrder` now emit
   `cart/reset` only when the placed cart is the active cart (or the active cart
