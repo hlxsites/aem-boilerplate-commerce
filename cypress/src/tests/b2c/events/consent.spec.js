@@ -141,7 +141,11 @@ describe('Commerce consent load gate', () => {
     });
   });
 
-  function visitWithStoredHistory(consented, path = Cypress.env('prexPages').pdpAcdlOnly) {
+  function visitWithStoredHistory(
+    consented,
+    path = Cypress.env('prexPages').pdpAcdlOnly,
+    onBeforeLoad = () => {},
+  ) {
     cy.request('/config.json').then(({ body }) => {
       const config = body.public.default;
       const headers = { ...config.headers?.all, ...config.headers?.cs };
@@ -160,10 +164,125 @@ describe('Commerce consent load gate', () => {
           win.localStorage.setItem(`${identifier}:purchaseHistory`, JSON.stringify([
             { items: ['ADB174'], date },
           ]));
+          onBeforeLoad(win);
         },
       });
     });
   }
+
+  function pushHistoryActivity(win, sku) {
+    win.adobeDataLayer.push(
+      { productContext: { sku } },
+      { shoppingCartContext: { items: [{ product: { sku } }] } },
+      { event: 'place-order' },
+    );
+  }
+
+  it('retains existing history while consent is unknown, then deletes it on denial without reading it', () => {
+    const gate = holdModule('**/scripts/consent-check.js', 'consentGate');
+    visitWithStoredHistory(false, '/', (win) => {
+      cy.spy(win.Storage.prototype, 'getItem').as('historyReads');
+      cy.spy(win.Storage.prototype, 'setItem').as('historyWrites');
+    });
+    gate.waitForStart();
+    cy.window().should((win) => {
+      expect(win.adobeDataLayer?.getState).to.be.a('function');
+      expect(win.__consentDecisions).to.deep.equal([]);
+    }).then((win) => {
+      const identifier = getStoreIdentifier(win);
+      // Property access checks preservation without calling the spied getItem.
+      expect(win.localStorage[`${identifier}:productViewHistory`]).to.contain('ADB156');
+      expect(win.localStorage[`${identifier}:purchaseHistory`]).to.contain('ADB174');
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+    });
+    gate.release();
+    waitForConsentGate(false);
+    cy.window().then((win) => { pushHistoryActivity(win, 'DENIED'); });
+    ['historyReads', 'historyWrites'].forEach((alias) => {
+      cy.get(`@${alias}`).should((spy) => {
+        const historyCalls = spy.getCalls().filter(
+          ({ args }) => /:(productViewHistory|purchaseHistory)$/.test(args[0]),
+        );
+        expect(historyCalls, `${alias} without consent`).to.have.length(0);
+      });
+    });
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+    });
+    expectNoCollectors();
+  });
+
+  it('records only consented activity and clears history on withdrawal without replay on reacceptance', () => {
+    visitWithStoredHistory(false, '/');
+    waitForConsentGate(false);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const viewKey = `${identifier}:productViewHistory`;
+      const purchaseKey = `${identifier}:purchaseHistory`;
+      win.localStorage.setItem('other-store:productViewHistory', '[]');
+      win.localStorage.setItem('essential-test-data', 'keep');
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+
+      pushHistoryActivity(win, 'CONSENTED');
+      expect(JSON.parse(win.localStorage.getItem(viewKey)).map(({ sku }) => sku))
+        .to.deep.equal(['CONSENTED']);
+      expect(JSON.parse(win.localStorage.getItem(purchaseKey)).map(({ items }) => items))
+        .to.deep.equal([['CONSENTED']]);
+
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: false } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+      expect(win.localStorage.getItem('other-store:productViewHistory')).to.equal('[]');
+      expect(win.localStorage.getItem('essential-test-data')).to.equal('keep');
+      pushHistoryActivity(win, 'AFTER-WITHDRAWAL');
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+      pushHistoryActivity(win, 'NEW-CONSENT');
+      expect(JSON.parse(win.localStorage.getItem(viewKey)).map(({ sku }) => sku))
+        .to.deep.equal(['NEW-CONSENT']);
+      expect(JSON.parse(win.localStorage.getItem(purchaseKey)).map(({ items }) => items))
+        .to.deep.equal([['NEW-CONSENT']]);
+    });
+    expectNoCollectors();
+  });
+
+  it('does not persist retained activity when consent is granted before history tracking initializes', () => {
+    const acdl = holdModule('**/scripts/acdl/adobe-client-data-layer.min.js', 'acdl');
+    cy.intercept('**/config.json', (request) => {
+      request.continue((response) => { delete response.body.public.default.analytics; });
+    });
+    cy.visit('/?consent=accept');
+    acdl.waitForStart();
+    cy.window().then((win) => {
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+    });
+    acdl.release();
+    cy.wait('@consentGate');
+    cy.window().should((win) => {
+      expect(win.__consentDecisions).to.deep.equal([{ consented: true }, { consented: true }]);
+    });
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+      pushHistoryActivity(win, 'NEW-ACTIVITY');
+      expect(JSON.parse(win.localStorage.getItem(`${identifier}:productViewHistory`))
+        .map(({ sku }) => sku)).to.deep.equal(['NEW-ACTIVITY']);
+      expect(JSON.parse(win.localStorage.getItem(`${identifier}:purchaseHistory`))
+        .map(({ items }) => items)).to.deep.equal([['NEW-ACTIVITY']]);
+    });
+    expectNoCollectors();
+  });
 
   function interceptRecommendations() {
     cy.intercept({ method: 'GET', url: /recommendationsByUnitIds/ }, (request) => {
