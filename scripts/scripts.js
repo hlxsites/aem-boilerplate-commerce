@@ -9,6 +9,7 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  getMetadata,
 } from './aem.js';
 import {
   buildPDPBlock,
@@ -21,7 +22,9 @@ import {
   loadErrorPage,
   decorateSections,
   IS_DA,
+  IS_EW_CANVAS,
 } from './commerce.js';
+import { applyDesignTokenDataAttributes, applyDesignTokenStyle, loadDesignTokens } from './design-tokens.js';
 
 /*
  * Trusted Types default policy.
@@ -197,6 +200,7 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  applyDesignTokenDataAttributes(main);
   decorateButtons(main);
 }
 
@@ -207,6 +211,14 @@ export function decorateMain(main) {
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
   decorateTemplateAndTheme();
+  // Only a page theme must wait for the sheet. Section and block styles are plain CSS classes
+  // and apply when the sheet arrives, so pages without a theme (or without the sheet) never block.
+  const tokensReady = loadDesignTokens();
+  const theme = getMetadata('theme');
+  if (theme) {
+    await tokensReady;
+    if (!window.daStyleSwitcherLive) applyDesignTokenStyle(document.body, theme);
+  }
 
   const main = doc.querySelector('main');
   if (main) {
@@ -268,6 +280,11 @@ async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
   loadDelayed();
+}
+
+// Experience Workspace canvas: let the style picker plugin restyle the page live
+if (IS_EW_CANVAS) {
+  import('./style-switcher.js').then(({ initCanvasStyleSwitcher }) => initCanvasStyleSwitcher());
 }
 
 loadPage();

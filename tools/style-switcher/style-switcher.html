@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Style Switcher</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/tools/style-switcher/style-switcher.css">
+    <script src="https://da.live/nx/utils/sdk.js" type="module"></script>
+    <script src="/tools/style-switcher/style-switcher.js" type="module"></script>
+  </head>
+  <body>
+    <main data-style-picker>
+      <div class="sheet-toolbar">
+        <h1>Styles</h1>
+        <div class="toolbar-actions">
+          <button type="button" class="mode-btn" data-mode-btn aria-pressed="false">Manage styles</button>
+          <button type="button" class="add-btn" data-add-btn hidden>Add style</button>
+          <button type="button" class="save-btn" data-save-btn hidden disabled>Save</button>
+        </div>
+      </div>
+
+      <p class="empty-state" data-empty-state hidden>No styles found.</p>
+      <p class="target-hint" data-target-hint>Select a block to apply a style.</p>
+      <p class="error-state" data-error-state hidden></p>
+
+      <div class="preview-list" data-preview-list></div>
+
+      <section class="property-sheet" data-property-sheet hidden>
+        <div class="sheet-toolbar">
+          <button type="button" class="mode-btn" data-sheet-back>Back</button>
+          <h2 data-sheet-title>Edit style</h2>
+        </div>
+        <div data-sheet-preview></div>
+        <div class="property-fields" data-sheet-fields></div>
+      </section>
+    </main>
+  </body>
+</html>
