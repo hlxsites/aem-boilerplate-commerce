@@ -200,9 +200,13 @@ export default async function decorate(block) {
     block.classList.toggle('product-list-page--empty', totalCount === 0);
 
     // Results Info
-    $resultInfo.innerHTML = payload.request?.phrase
-      ? `${totalCount} results found for <strong>"${payload.request.phrase}"</strong>.`
-      : `${totalCount} results found.`;
+    $resultInfo.textContent = `${totalCount} results found`;
+    if (payload.request?.phrase) {
+      const $phrase = document.createElement('strong');
+      $phrase.textContent = `"${payload.request.phrase}"`;
+      $resultInfo.append(' for ', $phrase);
+    }
+    $resultInfo.append('.');
 
     // Update the view facets button with the number of filters
     if (payload.request.filter.length > 0) {

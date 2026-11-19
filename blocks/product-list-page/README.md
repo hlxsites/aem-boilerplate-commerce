@@ -21,7 +21,7 @@ Search state is read from and written to the URL by this project (see `search-ur
 
 | Parameter | Description |
 |-----------|-------------|
-| `q`       | Search phrase (search page only). |
+| `q`       | Search phrase (search page only), displayed as plain text in the result summary. |
 | `page`    | Current page number (1-based). |
 | `sort`    | Sort spec: comma-separated `attribute_DIRECTION` (e.g. `price_ASC,name_DESC`). |
 | `filter`  | Filters: pipe-separated segments. Each segment is `attribute:value`; multiple values for the same attribute use multiple segments (e.g. `categories:val1\|categories:val2`). Supports `in` (single/multi-value) and numeric `range` (e.g. `price:0-100`). |
