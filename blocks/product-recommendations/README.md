@@ -26,15 +26,15 @@ The block updates its existing ProductList after acceptance rather than awaiting
 - `{storeViewCode|catalogViewId}:productViewHistory` - Stores user's product view history for recommendation context
 - `{storeViewCode|catalogViewId}:purchaseHistory` - Stores user's purchase history for recommendation context
 
-Custom code in [`scripts/commerce.js`](../../scripts/commerce.js) records these histories from ACDL events, separately from this block and the analytics collector. Our code stores browsing and purchase history locally before consent is granted, but does not include that history in recommendation requests until the shopper grants consent.
+Custom code in [`scripts/commerce.js`](../../scripts/commerce.js) records these histories from new ACDL activity only while consent is granted, separately from this block and the analytics collector. It does not buffer pre-consent activity for later history storage or use cookies, sessionStorage, IndexedDB, or server-side storage as an alternative.
 
-Unlike ACDL's in-memory state, `localStorage` persists across page navigations and can survive browser restarts. `getProductViewHistory()` and `getPurchaseHistory()` return undefined before acceptance without reading `localStorage`, so their inputs are omitted from requests. This restriction does not prevent history recording or clear existing history when consent is absent. The initializer retains its original shared Catalog Service endpoint and header configuration.
+Unlike ACDL's in-memory state, `localStorage` persists across page navigations and can survive browser restarts. `getProductViewHistory()` and `getPurchaseHistory()` return undefined before acceptance without reading `localStorage`, so their inputs are omitted from requests. Recording is also disabled without consent. A `consent.update` notification with `consented: false` deletes both history keys for the current store, including on withdrawal. Existing histories remain untouched while the initial CMP decision is unknown; a restored positive decision can reuse histories from earlier consented visits. Cleanup failures are logged. Cart/authentication storage and histories for other stores are not deleted. The initializer retains its original shared Catalog Service endpoint and header configuration.
 
 ### CMP and Commerce Cookie Restrictions
 
 Boilerplate's consent gate does not automatically integrate with Adobe Commerce Cookie Restriction Mode or manage the `mg_dnt` cookie. Adobe's [Product Recommendations cookie-restriction documentation](https://experienceleague.adobe.com/en/docs/commerce/product-recommendations/developer/setting-cookie) describes the behaviour of the Commerce integration and a do-not-track cookie mechanism for custom consent solutions; it should not be assumed to apply automatically to this EDS storefront.
 
-The custom history-storage code does not check `mg_dnt` or Cookie Restriction Mode. If a merchant's consent policy requires blocking local history storage before consent, the CMP integration must also address that code. Setting `mg_dnt` alone does not prevent these writes.
+The custom history-storage code checks Boilerplate's consent state, not `mg_dnt` or Cookie Restriction Mode. The CMP integration must connect the applicable decision to `consent.update`. Setting `mg_dnt` alone does not control these writes.
 
 Merchants and implementation partners must connect the CMP decision to Boilerplate's consented script loading and `consent.update` notifications. If the implementation also uses Commerce components that rely on `mg_dnt`, the integration must keep that signal consistent with the applicable consent decision. Managing that cookie is not a substitute for integrating Boilerplate's consent-dependent behaviour.
 

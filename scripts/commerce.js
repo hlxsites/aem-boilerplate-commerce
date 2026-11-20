@@ -15,11 +15,11 @@ import {
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
-let consentGranted = false;
+let consentGranted;
 
 /** Returns the latest upstream consent notification for this document. */
 export function isConsentGranted() {
-  return consentGranted;
+  return consentGranted === true;
 }
 
 window.addEventListener('consent.update', ({ detail }) => {
@@ -741,12 +741,27 @@ function trackHistory() {
   const storeIdentifier = getStoreIdentifier();
   if (storeIdentifier) {
     historyTrackingInitialized = true;
+    const clearHistory = () => {
+      ['productViewHistory', 'purchaseHistory'].forEach((history) => {
+        try {
+          window.localStorage.removeItem(`${storeIdentifier}:${history}`);
+        } catch (error) {
+          console.error(`Error clearing ${history}`, error);
+        }
+      });
+    };
+    window.addEventListener('consent.update', ({ detail }) => {
+      if (detail?.consented === false) clearHistory();
+    });
+    // Wait for a decision before deleting history from an earlier consented visit.
+    if (consentGranted === false) clearHistory();
     window.adobeDataLayer.push((dl) => {
       const recordProductView = (event) => {
         // Speculation Rules prerendering pushes productContext once immediately and
         // again on activation. Ignore the prerender-only push so hovering a link
         // doesn't record a view that never actually happened.
-        if (document.prerendering || !event.productContext || !event.productContext.sku) {
+        if (!isConsentGranted() || document.prerendering
+          || !event.productContext || !event.productContext.sku) {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;
@@ -757,9 +772,10 @@ function trackHistory() {
       };
       dl.addEventListener('adobeDataLayer:change', recordProductView, {
         path: 'productContext',
+        scope: 'future',
       });
       dl.addEventListener('place-order', () => {
-        if (document.prerendering) {
+        if (!isConsentGranted() || document.prerendering) {
           return;
         }
         const shoppingCartContext = dl.getState('shoppingCartContext');
@@ -771,7 +787,7 @@ function trackHistory() {
         const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
         purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
         window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
-      });
+      }, { scope: 'future' });
     });
   }
 }
