@@ -765,10 +765,15 @@ function trackHistory() {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;
-        let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-        viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
-        viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-        window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+        try {
+          let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+          if (!Array.isArray(viewHistory)) viewHistory = [];
+          viewHistory = viewHistory.filter((item) => item?.sku !== event.productContext.sku);
+          viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
+          window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+        } catch (error) {
+          console.error('Error recording productViewHistory', error);
+        }
       };
       dl.addEventListener('adobeDataLayer:change', recordProductView, {
         path: 'productContext',
@@ -783,10 +788,15 @@ function trackHistory() {
           return;
         }
         const key = `${storeIdentifier}:purchaseHistory`;
-        const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-        const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-        purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
-        window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
+        try {
+          const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+          let purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
+          if (!Array.isArray(purchaseHistory)) purchaseHistory = [];
+          purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+          window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
+        } catch (error) {
+          console.error('Error recording purchaseHistory', error);
+        }
       }, { scope: 'future' });
     });
   }
