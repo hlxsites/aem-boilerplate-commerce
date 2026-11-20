@@ -18,6 +18,7 @@ import { Initializer, Model } from '@dropins/tools/lib';
 import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
 import { OrderHistoryModel } from '../../data/models';
 import { CustomerDataModelShort } from '../../data/models/customer';
+import { CustomerReviewModel, CustomerReviewsModel } from '../../data/models/customer-reviews';
 type ConfigProps = {
     langDefinitions?: Lang;
     authHeaderConfig?: {
@@ -27,6 +28,8 @@ type ConfigProps = {
     models?: {
         OrderHistoryModel?: Model<OrderHistoryModel>;
         CustomerDataModelShort?: Model<CustomerDataModelShort>;
+        CustomerReviewModel?: Model<Partial<CustomerReviewModel>>;
+        CustomerReviewsModel?: Model<CustomerReviewsModel>;
     };
 };
 export declare const initialize: Initializer<ConfigProps>;

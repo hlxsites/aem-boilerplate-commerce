@@ -155,5 +155,26 @@ const e=`
       }
     }
   }
-`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as COMPANY_ADDRESS_FRAGMENT,n as CUSTOMER_ORDER_FRAGMENT,r as ORDER_SUMMARY_FRAGMENT};
+`,_=`
+  fragment CUSTOMER_REVIEW_FRAGMENT on ProductReview {
+    nickname
+    summary
+    text
+    average_rating
+    created_at
+    product {
+      sku
+      name
+      url_key
+      thumbnail {
+        url
+        label
+      }
+    }
+    ratings_breakdown {
+      name
+      value
+    }
+  }
+`;export{t as ADDRESS_FRAGMENT,e as BASIC_CUSTOMER_INFO_FRAGMENT,a as COMPANY_ADDRESS_FRAGMENT,n as CUSTOMER_ORDER_FRAGMENT,_ as CUSTOMER_REVIEW_FRAGMENT,r as ORDER_SUMMARY_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

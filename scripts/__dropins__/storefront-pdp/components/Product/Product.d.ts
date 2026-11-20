@@ -15,7 +15,7 @@
  */
 import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { CarouselConfig } from '../../containers/index.js';
+import type { CarouselConfig } from '../../containers/ProductDetails.js';
 interface ProductCarouselConfig extends CarouselConfig {
     thumbnails: VNode[];
 }

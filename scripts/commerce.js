@@ -86,6 +86,7 @@ export const CUSTOMER_RETURNS_PATH = `${CUSTOMER_PATH}/returns`;
 export const CUSTOMER_ADDRESS_PATH = `${CUSTOMER_PATH}/address`;
 export const CUSTOMER_LOGIN_PATH = `${CUSTOMER_PATH}/login`;
 export const CUSTOMER_ACCOUNT_PATH = `${CUSTOMER_PATH}/account`;
+export const CUSTOMER_REVIEWS_PATH = `${CUSTOMER_PATH}/reviews`;
 export const CUSTOMER_FORGOTPASSWORD_PATH = `${CUSTOMER_PATH}/forgotpassword`;
 export const SALES_ORDER_VIEW_PATH = '/sales/order/view/';
 
@@ -911,4 +912,15 @@ export function buildPDPBlock(main) {
     section.append(block);
     main.prepend(section);
   }
+}
+
+/**
+ * Appends a product-reviews section unless reviews are already authored.
+ * @param {Element} main The main element
+ */
+export function buildProductRatingsAndReviews(main) {
+  if (main.querySelector('.product-reviews')) return;
+  const section = document.createElement('div');
+  section.append(buildBlock('product-reviews', { elems: [] }));
+  main.append(section);
 }

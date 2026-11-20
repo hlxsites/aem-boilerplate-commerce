@@ -1,1 +1,1 @@
-export * from './api/fragments'
+export * from './api/fragments';
