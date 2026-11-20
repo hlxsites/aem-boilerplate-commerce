@@ -255,6 +255,57 @@ describe('Commerce consent load gate', () => {
     expectNoCollectors();
   });
 
+  it('logs invalid history without overwriting it or interrupting ACDL', () => {
+    cy.visit('/?consent=accept');
+    waitForConsentGate(true);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const histories = ['productViewHistory', 'purchaseHistory'];
+      const errors = cy.stub(win.console, 'error');
+
+      ['{', '{}', ''].forEach((value, index) => {
+        histories.forEach((history) => win.localStorage.setItem(`${identifier}:${history}`, value));
+        expect(() => pushHistoryActivity(win, `INVALID-${index}`)).not.to.throw();
+        histories.forEach((history) => {
+          expect(win.localStorage.getItem(`${identifier}:${history}`)).to.equal(value);
+        });
+      });
+
+      histories.forEach((history) => {
+        const calls = errors.getCalls().filter(({ args }) => args[0] === `Error recording ${history}`);
+        expect(calls.map(({ args }) => args[1].name))
+          .to.deep.equal(['SyntaxError', 'TypeError', 'SyntaxError']);
+      });
+    });
+  });
+
+  it('logs blocked history reads and writes without interrupting ACDL', () => {
+    cy.visit('/?consent=accept');
+    waitForConsentGate(true);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const viewKey = `${identifier}:productViewHistory`;
+      const purchaseKey = `${identifier}:purchaseHistory`;
+      const storage = win.localStorage;
+      const { getItem, setItem } = win.Storage.prototype;
+      const errors = cy.stub(win.console, 'error');
+      cy.stub(win.Storage.prototype, 'getItem').callsFake(function read(key) {
+        if (this === storage && key === viewKey) throw new win.DOMException('Blocked', 'SecurityError');
+        return getItem.call(this, key);
+      });
+      cy.stub(win.Storage.prototype, 'setItem').callsFake(function write(key, value) {
+        if (this === storage && key === purchaseKey) throw new win.DOMException('Blocked', 'SecurityError');
+        return setItem.call(this, key, value);
+      });
+
+      expect(() => pushHistoryActivity(win, 'STORAGE-BLOCKED')).not.to.throw();
+      ['productViewHistory', 'purchaseHistory'].forEach((history) => {
+        const calls = errors.getCalls().filter(({ args }) => args[0] === `Error recording ${history}`);
+        expect(calls.map(({ args }) => args[1].name)).to.deep.equal(['SecurityError']);
+      });
+    });
+  });
+
   it('does not persist retained activity when consent is granted before history tracking initializes', () => {
     const acdl = holdModule('**/scripts/acdl/adobe-client-data-layer.min.js', 'acdl');
     cy.intercept('**/config.json', (request) => {

@@ -766,8 +766,10 @@ function trackHistory() {
         }
         const key = `${storeIdentifier}:productViewHistory`;
         try {
-          let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-          if (!Array.isArray(viewHistory)) viewHistory = [];
+          let viewHistory = JSON.parse(window.localStorage.getItem(key) ?? '[]');
+          if (!Array.isArray(viewHistory)) {
+            throw new TypeError('Expected productViewHistory to be an array');
+          }
           viewHistory = viewHistory.filter((item) => item?.sku !== event.productContext.sku);
           viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
           window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
@@ -790,8 +792,10 @@ function trackHistory() {
         const key = `${storeIdentifier}:purchaseHistory`;
         try {
           const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-          let purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-          if (!Array.isArray(purchaseHistory)) purchaseHistory = [];
+          const purchaseHistory = JSON.parse(window.localStorage.getItem(key) ?? '[]');
+          if (!Array.isArray(purchaseHistory)) {
+            throw new TypeError('Expected purchaseHistory to be an array');
+          }
           purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
           window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
         } catch (error) {

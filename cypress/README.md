@@ -158,9 +158,9 @@ checkout, plus query retention across clicked navigation and reload.
 `consentTestSupport` reapplies `consent=accept` before every document's scripts,
 preserving queries/hashes, and waits for the executed SDK and Commerce forwarding
 state rather than a resource entry or notification. The dedicated gate spec
-intentionally does not use this helper. Product-history hydration and cart-cache
-cases require no consent parameter: recording local data is independent of
-permission to transmit it. The context matrix and display specs additionally
+intentionally does not use this helper. Product-history hydration uses it to
+record new activity after consent; the cart-cache case verifies the drop-in's
+session storage separately. The context matrix and display specs additionally
 exercise real recommendation responses and public current-product anchors.
 
 Shared image-list assertions re-query the current image by selector and index
