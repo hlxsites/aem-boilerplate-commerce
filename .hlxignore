@@ -7,7 +7,6 @@ LICENSE
 package.json
 package-lock.json
 test/*
-tests/
 postinstall.js
 build.mjs
 cypress/

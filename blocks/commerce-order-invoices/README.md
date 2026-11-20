@@ -88,12 +88,12 @@ compatibility before interpreting that state as an order without invoices.
 
 ## Testing
 
-Run `npm test` from the repository root for invoice host-routing tests and PDF
-branding adapter tests. Host coverage includes encoded references, storefront
-root prefixes, trailing slashes, sign-in destinations, and guest-token order
-navigation.
+Invoice coverage runs through the existing Cypress runner and Auth/account E2E
+shards. Host coverage includes encoded references, storefront root prefixes,
+trailing slashes, sign-in destinations, guest-token order navigation, and PDF
+branding configuration and failures.
 
-The dedicated invoice browser smoke test loads the real blocks and pinned Order
+The invoice browser smoke test loads the real blocks and pinned Order
 assets with deterministic order and invoice responses, follows an invoice link,
 downloads a PDF, and navigates back. See
 [Invoice integration coverage](../../cypress/README.md#invoice-integration-coverage)

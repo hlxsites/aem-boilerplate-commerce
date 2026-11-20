@@ -100,11 +100,18 @@ configuration does not replace an existing session override: remove that key and
 reload to fetch the published configuration. For a local trial, keep the override
 above instead; clearing the key would remove the trial branding.
 
-The smoke-test PDF uses fictional branding supplied by the test. Downloading an
-invoice on the site does not use those values unless branding is configured there.
+The smoke-test PDF is unbranded. Separate adapter tests use fictional branding;
+these values are never applied to the storefront configuration.
 
-## Adapter tests
+## Tests
+
+The branding adapter, host routing, sign-in destinations, guest-token navigation,
+and real PDF download are covered by the existing Cypress runner. With a local
+server running, execute from `cypress/`:
 
 ```sh
-node --experimental-default-type=module --test tests/invoice-pdf-branding.test.mjs
+npx cypress run --config-file cypress.saas.config.js --spec src/tests/b2c/invoices.spec.js
 ```
+
+See [Invoice integration coverage](../../cypress/README.md#invoice-integration-coverage)
+for the fixture-only server setup, CI integration, and remaining deployment checks.
