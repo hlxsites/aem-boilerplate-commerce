@@ -1,9 +1,13 @@
 # @dropins/storefront-pdp
 
-## 3.4.0
+## 3.4.0-alpha-20261109151740
 
 ### Minor Changes
 
+- 8ad0710: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
 - 4b7a9aa: Add a typed data model for the `ac_customizable_options` product
   attribute (Magento Customizable Options: priced selectable choices and
   shopper-input fields). Adds `getCustomizableOptionsAttribute()` in
@@ -24,63 +28,16 @@
   customizable options in both PDP rendering paths. Preserve entered option UIDs
   and values alongside selectable options and bundle quantities, and display a
   disabled placeholder for file options.
+- 8add2e5: Add the `ProductRating` container, which renders the product average
+  rating and review count with the SDK `StarRating` component. Values come from
+  the `ac_rating_summary` (0–100) and `ac_review_count` product attributes; the
+  container renders nothing when they are missing (for example, when reviews are
+  disabled or the product has no approved reviews). Configurable products keep
+  the parent product's rating when a variant is selected.
 
-### Patch Changes
-
-- b489882: Fix accessibility issues in the product image preview modal: keyboard
-  focus is now trapped inside the dialog while open and restored to the trigger
-  on close, and the carousel slide indicators now expose their selected state to
-  assistive technology and meet minimum color contrast requirements.
-- 8307ce4: Upgrade `@adobe-commerce/elsie` from `~1.9.0` to
-  `3.0.0-alpha-20261007160511` and migrate the repository from Yarn to pnpm
-  11.17.0. This combines the v1→v2 and v2→v3 elsie toolchain migrations:
-  `.elsie.js` moves to `elsie.config.js`, `.eslintrc.js` is replaced by a flat
-  `eslint.config.js` composed from Elsie's named layers, `jest.config.js` uses
-  the `defineConfig({ preset: 'preact' })` factory, and
-  `prettier.config.js`/Husky are replaced by the `"prettier"` package.json key,
-  Elsie's `format`/`format:check` scripts, and a native `.githooks/pre-commit`
-  hook. Tests import `render`/`fireEvent`/etc. from
-  `@adobe-commerce/elsie/tests/preact` instead of the removed
-  `@adobe-commerce/elsie/lib/tests`. The pnpm migration adds a seven-day
-  dependency release-age gate (`minimumReleaseAge`) and explicit build-script
-  permissions (`allowBuilds`) in `pnpm-workspace.yaml`, for both the package
-  root and the `cypress/` sub-project. Storybook resolves its framework, addons,
-  and a11y test-runner hooks through Elsie's `storybook/config` and
-  `storybook/test-runner` entry points.
-
-  Because Elsie now supplies `axe-playwright`, the Storybook accessibility
-  checks run for the first time and surfaced a contrast issue in the regular
-  price shown next to a special price. `.pdp-price__amount--grey` and
-  `.pdp-product__price--grey` used `--color-neutral-500`, documented in the
-  design system as "Disabled text" and measuring 1.95:1 against white. Both now
-  use `--color-neutral-700` ("Secondary text"), measuring 5.7:1 and meeting the
-  WCAG 2 AA 4.5:1 minimum. The affected element is meaningful content labelled
-  `Regular Price` for assistive technology, not a disabled control.
-
-## 3.4.0-beta.0
-
-### Minor Changes
-
-- 4b7a9aa: Add a typed data model for the `ac_customizable_options` product
-  attribute (Magento Customizable Options: priced selectable choices and
-  shopper-input fields). Adds `getCustomizableOptionsAttribute()` in
-  `useProductData` for typed, JSON-string-or-object-safe access, coercing string
-  `price` fields to numbers, and exports `isCustomOptionUID` from
-  `getRefinedProduct` for reuse.
-- bd4f3a7: Render priced selectable customizable options
-  (drop_down/radio/checkbox/multiple) from the `ac_customizable_options` product
-  attribute. Adds a `CustomizableOptions` component and
-  `ProductCustomizableOptions` container, and wires an equivalent
-  `renderCustomizableOptions()` into the deprecated `ProductDetails`/`Product`
-  components. Selecting a value toggles its `custom-option/<optionId>/<valueId>`
-  UID in `values.optionsUIDs`; required options are shown with a "Required"
-  label. Products with no `ac_customizable_options` attribute render nothing
-  extra. Required-option enforcement/Add-to-Cart gating and a live price-delta
-  preview are out of scope for this change and tracked separately.
-- a5e4a7e: Support text, multiline text, date, local date-time, and time
-  customizable options in both PDP rendering paths. Preserve entered option UIDs
-  and values alongside selectable options and bundle quantities, and display a
-  disabled placeholder for file options.
+  Requires `StarRating`, currently only available in the `@dropins/tools` 3.0
+  alpha (`3.0.0-alpha-20261021202251`). Do not include in a stable release until
+  `StarRating` ships in a stable `@dropins/tools`.
 
 ### Patch Changes
 

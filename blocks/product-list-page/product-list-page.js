@@ -4,8 +4,12 @@ import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
 import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
 import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
-import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
+import {
+  Button, Icon, provider as UI,
+} from '@dropins/tools/components.js';
 import { search } from '@dropins/storefront-product-discovery/api.js';
+// Ratings & Reviews Dropin
+import { config as reviewsConfig } from '@dropins/storefront-ratings-reviews/api.js';
 // Wishlist Dropin
 import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
@@ -22,6 +26,7 @@ import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
 // Initializers
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
+import '../../scripts/initializers/ratings-reviews.js';
 
 export default async function decorate(block) {
   const labels = await fetchPlaceholders();
@@ -155,6 +160,7 @@ export default async function decorate(block) {
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => getProductLink(product.urlKey, product.sku),
+      showRating: reviewsConfig.getConfig()?.isProductReviewsEnabled === true,
       slots: {
         ProductImage: (ctx) => {
           const { product, defaultImageProps } = ctx;
