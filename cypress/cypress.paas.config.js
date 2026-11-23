@@ -23,6 +23,10 @@ module.exports = defineConfig({
     productImageName: "/ADB150.jpg",
     productImageNameConfigurable: "/adb124.jpg",
     productWithOptionImageNameConfigurable: "/adb192.jpg",
+    productReviewsProduct: {
+      urlPath: "/products/gift-packaging/adb102",
+      sku: "ADB102",
+    },
 
     // Tenant-specific da.live draft paths — see prexPages.config.js
     prexPages: buildPrexPages('paas'),

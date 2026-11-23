@@ -28,6 +28,15 @@ You can run tests against the ACO (Adobe Commerce Optimizer) environment with `c
 
 All commands use a base config defined in `cypress.base.config.js`, extended by the corresponding config: `cypress.paas.config.js`, `cypress.saas.config.js`, or `cypress.aco.config.js`. This allows us to use variables for things which differ in the environments, such as product option UIDs, state IDs, etc.
 
+The product review spec uses `env.productReviewsProduct` from these configs for
+its product page and expected review SKU. PaaS uses `/products/gift-packaging/adb102`
+with SKU `ADB102`; SaaS and ACO use `/products/adobe-pattern-hoodie/adb102` with
+SKU `adb102`. Start the local AEM server with the matching backend content URL
+before running the corresponding Cypress command. Review responses are mocked,
+but PDP product loading still uses that backend.
+Standalone review fixtures remove the source page's SKU metadata so they cannot
+auto-build a PDP or override the authored review SKU.
+
 ## Invoice integration coverage
 
 Invoice coverage uses the existing Cypress runner in

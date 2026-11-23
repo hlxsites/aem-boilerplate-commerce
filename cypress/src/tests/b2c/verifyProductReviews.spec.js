@@ -1,4 +1,4 @@
-const productUrl = '/products/adobe-pattern-hoodie/adb102';
+const { urlPath: productUrl, sku: productSku } = Cypress.env('productReviewsProduct');
 const region = '.product-reviews';
 const pagination = `${region} .ratingsreviews-pagination`;
 const review = {
@@ -35,7 +35,7 @@ function visitProduct({
   responseGate,
   pageResponseGate,
   metadataGate,
-  requestedSku = 'adb102',
+  requestedSku = productSku,
   authored = false,
   secondInstance = false,
   authoredPdp = false,
@@ -126,9 +126,12 @@ function visitProduct({
   });
   cy.request(productUrl).then(({ body }) => {
     let html = body;
-    if (!authoredPdp && !standalone) {
+    if (!authoredPdp || standalone) {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       doc.querySelectorAll('.product-details').forEach((block) => block.remove());
+      if (standalone) {
+        doc.querySelectorAll('meta[name="sku"]').forEach((meta) => meta.remove());
+      }
       html = `<!DOCTYPE html>${doc.documentElement.outerHTML}`;
     }
     if (metadataSku) {
@@ -416,7 +419,7 @@ describe('SPEC-ratings-reviews-storefront', () => {
       cy.contains('pending moderation').should('be.visible');
     });
     cy.wait('@createReview').its('request.body.variables.input').should('deep.equal', {
-      sku: 'adb102',
+      sku: productSku,
       nickname: 'Mandy',
       summary: 'Great set',
       text: 'Fits well and washes easily.',
