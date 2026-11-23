@@ -1,0 +1,13 @@
+.commerce-product-alert-unsubscribe {
+  max-width: 700px;
+  margin: auto;
+}
+
+.commerce-product-alert-unsubscribe .commerce-product-alert-unsubscribe__status:not(:empty) {
+  margin: var(--spacing-medium) 0;
+}
+
+.commerce-product-alert-unsubscribe .commerce-product-alert-unsubscribe__actions {
+  margin-top: var(--spacing-medium);
+}
+
