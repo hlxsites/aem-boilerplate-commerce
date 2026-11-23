@@ -16,6 +16,40 @@ import {
 import initializeDropins from './initializers/index.js';
 
 let consentGranted;
+let applyingRemoteDenial = false;
+let consentChannel;
+let denialPendingActivation = false;
+
+// Only denials are synchronised across tabs. A grant must come from the CMP in each document,
+// which also loads consented scripts; broadcasting it could enable collection in a tab that
+// never received the CMP decision. A missed grant only delays history until the next page load.
+function broadcastConsentDenial() {
+  if (!consentChannel) return;
+  try {
+    consentChannel.postMessage({ type: 'DECLINED' });
+  } catch (error) {
+    console.error('Error broadcasting consent withdrawal', error);
+  }
+}
+
+try {
+  if (typeof window.BroadcastChannel === 'function') {
+    consentChannel = new window.BroadcastChannel('storefront:consent');
+    consentChannel.addEventListener('message', ({ data }) => {
+      if (data?.type !== 'DECLINED') return;
+      applyingRemoteDenial = true;
+      try {
+        window.dispatchEvent(new CustomEvent('consent.update', { detail: { consented: false } }));
+      } finally {
+        applyingRemoteDenial = false;
+      }
+    });
+  } else {
+    console.warn('BroadcastChannel is unavailable; the CMP must notify each open tab of consent changes');
+  }
+} catch (error) {
+  console.error('Error initializing cross-tab consent notifications', error);
+}
 
 /** Returns the latest upstream consent notification for this document. */
 export function isConsentGranted() {
@@ -24,7 +58,19 @@ export function isConsentGranted() {
 
 window.addEventListener('consent.update', ({ detail }) => {
   consentGranted = detail?.consented === true;
+  if (consentGranted) denialPendingActivation = false;
+  if (detail?.consented === false && !applyingRemoteDenial) {
+    if (document.prerendering) denialPendingActivation = true;
+    else broadcastConsentDenial();
+  }
 });
+
+if (document.prerendering) {
+  document.addEventListener('prerenderingchange', () => {
+    if (denialPendingActivation && !consentGranted) broadcastConsentDenial();
+    denialPendingActivation = false;
+  }, { once: true });
+}
 
 /**
  * Sanitizes the given string by:
