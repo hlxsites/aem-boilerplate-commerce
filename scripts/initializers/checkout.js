@@ -15,6 +15,25 @@ await initializeDropin(async () => {
     },
   };
 
-  // Initialize checkout
-  return initializers.mountImmediately(initialize, { langDefinitions });
+  return initializers.mountImmediately(initialize, {
+    langDefinitions,
+    models: {
+      CartModel: {
+        // The dropin spreads additionalData into setPaymentMethodOnCart, which rejects
+        // oope_payment_method_config, so blank it there and expose it per method code instead.
+        // The model is deep-merged, so the key has to be overwritten rather than omitted.
+        transformer: (data) => {
+          const methods = data?.available_payment_methods?.filter(Boolean) ?? [];
+          return {
+            availablePaymentMethods: methods.map(() => ({
+              additionalData: { oope_payment_method_config: undefined },
+            })),
+            oopePaymentMethodConfigs: Object.fromEntries(
+              methods.map(({ code, oope_payment_method_config: config }) => [code, config]),
+            ),
+          };
+        },
+      },
+    },
+  });
 })();
