@@ -6,7 +6,7 @@ import { fetchPlaceholders } from '../commerce.js';
 
 await initializeDropin(async () => {
   const headers = getHeaders('payment-services');
-  const labels = await fetchPlaceholders('placeholders/payment-services.json');
+  const labels = await fetchPlaceholders('placeholders.json', 'payment-services');
   const langDefinitions = {
     default: {
       ...labels,

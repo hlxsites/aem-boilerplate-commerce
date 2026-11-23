@@ -8,7 +8,7 @@ await initializeDropin(async () => {
   setEndpoint(CS_FETCH_GRAPHQL);
 
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/search.json');
+  const labels = await fetchPlaceholders('placeholders.json', 'search');
   const langDefinitions = {
     default: {
       ...labels,

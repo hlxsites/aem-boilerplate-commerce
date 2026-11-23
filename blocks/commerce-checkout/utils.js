@@ -15,7 +15,7 @@ export const displayOverlaySpinner = async (loaderRef, $loader, $loaderStatus) =
   // announcement isn't missed when the spinner mounts and unmounts
   // together with the live region attached to it.
   if ($loaderStatus) {
-    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+    const placeholders = await fetchPlaceholders('placeholders.json', 'checkout');
     $loaderStatus.textContent = placeholders?.Checkout?.Loader?.placingOrder ?? 'Placing your order…';
   }
 

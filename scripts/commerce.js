@@ -392,10 +392,12 @@ export function applyTemplates(doc) {
  * This function retrieves placeholder data from a path-specific file and optional fallback file,
  * then merges them together. It implements request deduplication to prevent multiple simultaneous
  * requests for the same resources and caches results for optimal performance.
+ * Named sheets share a cached document; individual files remain supported without a sheet name.
  *
  * @param {string} [path] - Optional path to a specific placeholders file to include in the merge.
  *                         If provided, this file's data will be merged with fallback data.
  *                         If not provided, returns all currently cached placeholders.
+ * @param {string} [sheet] - Named sheet in a consolidated file; omit for individual files.
  * @returns {Promise<Object>} A promise that resolves the merged placeholders object.
  * @example
  * // Get all currently cached placeholders (no fetching)
@@ -404,10 +406,13 @@ export function applyTemplates(doc) {
  * // Fetch placeholders with specific path
  * const placeholders = await fetchPlaceholders('placeholders/auth.json');
  *
+ * // Fetch a named sheet from the consolidated file
+ * const cartLabels = await fetchPlaceholders('placeholders.json', 'cart');
+ *
  * // Get all placeholders including newly fetched ones
  * const updatedPlaceholders = await fetchPlaceholders();
  */
-export async function fetchPlaceholders(path) {
+export async function fetchPlaceholders(path, sheet) {
   const rootPath = getRootPath();
   const fallback = getMetadata('placeholders');
   window.placeholders = window.placeholders || {};
@@ -424,7 +429,7 @@ export async function fetchPlaceholders(path) {
   }
 
   // Create cache key for this specific combination
-  const cacheKey = [path, fallback].filter(Boolean).join('|');
+  const cacheKey = [path, sheet, fallback].filter(Boolean).join('|');
 
   // Prevent empty cache keys
   if (!cacheKey) {
@@ -441,7 +446,7 @@ export async function fetchPlaceholders(path) {
     const promises = [];
 
     // Helper function to get or create fetch promise for a single resource
-    const getOrCreateFetch = (url, resourceCacheKey) => {
+    const getOrCreateFetch = (url, resourceCacheKey, query = 'sheet=data') => {
       // Check if already cached
       if (window.placeholders[resourceCacheKey]) {
         return Promise.resolve(window.placeholders[resourceCacheKey]);
@@ -455,7 +460,7 @@ export async function fetchPlaceholders(path) {
       // Create new fetch promise
       // Use force-cache to serve any available cache entry without revalidation,
       // reducing CDN traffic for static localization assets past their max-age.
-      const resourceFetchPromise = fetch(`${url}?sheet=data`, { cache: 'force-cache' }).then(async (response) => {
+      const resourceFetchPromise = fetch(`${url}?${query}`, { cache: 'force-cache' }).then(async (response) => {
         if (response.ok) {
           const data = await response.json();
           // Cache the response
@@ -480,7 +485,8 @@ export async function fetchPlaceholders(path) {
     // path
     if (path) {
       const pathUrl = rootPath.replace(/\/$/, `/${path}`);
-      promises.push(getOrCreateFetch(pathUrl, path));
+      const query = sheet ? 'limit=9999' : 'sheet=data';
+      promises.push(getOrCreateFetch(pathUrl, sheet ? `${path}?${query}` : path, query));
     }
 
     // fallback - only if it exists from overrides
@@ -491,6 +497,17 @@ export async function fetchPlaceholders(path) {
     Promise.all(promises)
       // process json from sources and combine them
       .then((jsons) => {
+        if (sheet) {
+          const selectedSheet = jsons[0][sheet];
+          if (!Array.isArray(selectedSheet?.data)) {
+            throw new Error(`Missing or invalid placeholder sheet: ${sheet}`);
+          }
+          if (selectedSheet.total > selectedSheet.data.length) {
+            throw new Error(`Incomplete placeholder sheet: ${sheet}`);
+          }
+          jsons[0] = selectedSheet;
+        }
+
         // Early return if no data
         const hasData = jsons.some((json) => json.data?.length > 0);
         if (!hasData) {

@@ -10,7 +10,7 @@ await initializeDropin(async () => {
 
   const headers = getHeaders('wishlist');
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/wishlist.json');
+  const labels = await fetchPlaceholders('placeholders.json', 'wishlist');
   const langDefinitions = {
     default: {
       ...labels,

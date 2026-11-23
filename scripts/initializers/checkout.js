@@ -8,7 +8,7 @@ await initializeDropin(async () => {
   setEndpoint(CORE_FETCH_GRAPHQL);
 
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/checkout.json');
+  const labels = await fetchPlaceholders('placeholders.json', 'checkout');
   const langDefinitions = {
     default: {
       ...labels,
