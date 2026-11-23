@@ -51,7 +51,6 @@ import {
   renderShippingAddressFormSkeleton,
   renderShippingMethods,
   renderTermsAndConditions,
-  resyncBillingAddress,
 } from './containers.js';
 
 // Constants
@@ -314,21 +313,12 @@ export default async function decorate(block) {
     window.location.reload();
   }
 
-  let wasStoredPaymentMethodSelected = false;
-
   function handleCheckoutValues(payload) {
     const { isBillToShipping, selectedPaymentMethod } = payload;
     const isStoredPaymentMethodSelected = !!selectedPaymentMethod?.additionalData?.publicHash;
 
     $billToShipping.style.display = isStoredPaymentMethodSelected ? 'none' : 'block';
     $billingForm.style.display = (isBillToShipping || isStoredPaymentMethodSelected) ? 'none' : 'block';
-    $paymentMethods.classList.toggle('checkout__payment-methods--stored-selected', isStoredPaymentMethodSelected);
-
-    if (wasStoredPaymentMethodSelected && !isStoredPaymentMethodSelected) {
-      resyncBillingAddress(isBillToShipping);
-    }
-
-    wasStoredPaymentMethodSelected = isStoredPaymentMethodSelected;
   }
 
   async function handleOrderPlaced(orderData) {
