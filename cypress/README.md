@@ -28,6 +28,49 @@ You can run tests against the ACO (Adobe Commerce Optimizer) environment with `c
 
 All commands use a base config defined in `cypress.base.config.js`, extended by the corresponding config: `cypress.paas.config.js`, `cypress.saas.config.js`, or `cypress.aco.config.js`. This allows us to use variables for things which differ in the environments, such as product option UIDs, state IDs, etc.
 
+## Invoice integration coverage
+
+Invoice coverage uses the existing Cypress runner in
+`src/tests/b2c/invoices.spec.js`; no separate unit-test runner is needed.
+For these fixture-based tests, no remote AEM site is needed. With Python 3
+installed, start a loopback-only static server from the repository root:
+
+```sh
+python3 -m http.server 3000 --bind 127.0.0.1
+```
+
+In another terminal, run this command from `cypress/`:
+
+```sh
+npx cypress run --config-file cypress.saas.config.js --config baseUrl=http://127.0.0.1:3000 --spec src/tests/b2c/invoices.spec.js
+```
+
+The Auth/account shard in each existing PaaS, SaaS, and ACO E2E workflow runs
+these tests using its existing local AEM server, Cypress setup, and failure
+screenshots. It follows those workflows' existing triggers and repository/fork
+restrictions; there is no dedicated invoice CI job. Moving the spec under
+`src/tests/b2c/` also includes it in the existing shard-coverage check.
+
+The suite covers:
+- Real invoice blocks and checked-in Order assets: list-to-details navigation,
+  a downloaded PDF, and back navigation, with fixture markup, order initialization,
+  and invoice GraphQL responses.
+- Host routing and initialization: encoded references, storefront root prefixes,
+  trailing slashes, sign-in destination preservation, authenticated invoice
+  initialization, guest-token navigation, and branding callback error propagation.
+  These tests use real host modules and commerce helpers, with drop-in rendering
+  and initialization replaced by test doubles.
+- The real PDF branding adapter: optional and invalid configuration, independent
+  calls, real image loading/resizing/PNG conversion, and image/canvas failures.
+
+The tests do not create customers or orders or require backend credentials.
+The sign-in test exercises redirect decisions and the login return callback, not
+credential submission. The full PDF smoke uses no branding configuration;
+branding is exercised separately in the same Cypress spec.
+
+Before deployment, still verify real sign-in, partial-invoice amounts, and
+branded/unbranded PDFs against a backend exposing the required invoice fields.
+
 ### Skipping Tests
 
 For various reasons, certain tests fail against certain environments. Eventually these issues will be fixed. But for now, if a test is _expected_ to fail on a specific environment, you can assign a tag to it.

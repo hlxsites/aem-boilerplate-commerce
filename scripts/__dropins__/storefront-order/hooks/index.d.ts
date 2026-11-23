@@ -15,9 +15,11 @@
  *******************************************************************/
 export * from './containers/useCreateReturn.js';
 export * from './containers/useCustomerDetails.js';
+export * from './containers/useInvoiceDetails.js';
 export * from './containers/useOrderCostSummary.js';
 export * from './containers/useOrderHeader.js';
 export * from './containers/useOrderComments.js';
+export * from './containers/useOrderInvoices.js';
 export * from './containers/useOrderProductList.js';
 export * from './containers/useOrderSearch.js';
 export * from './containers/useOrderStatus.js';

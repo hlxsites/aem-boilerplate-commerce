@@ -7358,6 +7358,8 @@ export type Invoice = {
     items?: Maybe<Array<Maybe<InvoiceItemInterface>>>;
     /** Sequential invoice number. */
     number: Scalars['String']['output'];
+    /** The status of the invoice. */
+    status: Scalars['String']['output'];
     /** Invoice total amount details. */
     total?: Maybe<InvoiceTotal>;
 };
@@ -7365,6 +7367,10 @@ export type InvoiceItem = InvoiceItemInterface & {
     __typename?: 'InvoiceItem';
     /** Information about the final discount amount for the base product, including discounts on options. */
     discounts?: Maybe<Array<Maybe<Discount>>>;
+    /** The tax amount for the invoiced product. */
+    tax_amount?: Maybe<Money>;
+    /** The stored row subtotal excluding tax and before discount. */
+    row_total?: Maybe<Money>;
     /** The unique ID for an `InvoiceItemInterface` object. */
     id: Scalars['ID']['output'];
     /** Details about an individual order item. */
@@ -7382,6 +7388,10 @@ export type InvoiceItem = InvoiceItemInterface & {
 export type InvoiceItemInterface = {
     /** Information about the final discount amount for the base product, including discounts on options. */
     discounts?: Maybe<Array<Maybe<Discount>>>;
+    /** The tax amount for the invoiced product. */
+    tax_amount?: Maybe<Money>;
+    /** The stored row subtotal excluding tax and before discount. */
+    row_total?: Maybe<Money>;
     /** The unique ID for an `InvoiceItemInterface` object. */
     id: Scalars['ID']['output'];
     /** Details about an individual order item. */
