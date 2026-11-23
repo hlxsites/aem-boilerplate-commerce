@@ -41,6 +41,17 @@ No events are emitted by this block yet. -->
 - **Auth/feature checks**: If unauthenticated, redirect to login. If feature disabled, return early (no UI).
 - **Data loading**: Grid and detail views render loading states provided by the drop-ins; no additional handling is required in the wrapper.
 
+## Print integration
+
+During requisition-list printing, the drop-in adds `requisition-list-printing`
+to the body and mounts a separate print root as a direct body child, outside
+`main`. This block's print stylesheet hides the site's direct-body `header`,
+`main` and `footer`, keeping navigation and other page content out of the PDF
+without hiding the print root.
+
+The rule applies only to print media while that body class is present. Normal
+screen rendering and ordinary browser printing are unchanged.
+
 ## Catalog adapters
 
 The requisition-list initializer uses PDP's existing raw-response APIs without
