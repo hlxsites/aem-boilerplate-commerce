@@ -35,7 +35,7 @@ export default function createNumberFacetProps() {
     if (!bounds || (!facet && !range)) return payload.result;
 
     const from = range?.from ?? bounds.min;
-    const to = range?.to ?? bounds.max;
+    const to = range ? range.to ?? null : bounds.max;
     // The native container must see a matching bucket to preserve arbitrary ranges
     // when another facet changes, and to support its remove/clear-all buttons.
     const numericFacet = {
@@ -43,7 +43,7 @@ export default function createNumberFacetProps() {
       attribute,
       buckets: [{
         __typename: 'RangeBucket',
-        title: `${from}-${to}`,
+        title: `${from}-${to ?? bounds.max}`,
         from,
         to,
         count: payload.result.totalCount,
@@ -98,7 +98,7 @@ export default function createNumberFacetProps() {
           const output = document.createElement('output');
           const input = document.createElement('input');
           input.type = 'range';
-          input.step = 'any';
+          input.step = '0.5';
           input.id = `${id}-${name}`;
           label.htmlFor = input.id;
           output.htmlFor = input.id;
@@ -145,8 +145,8 @@ export default function createNumberFacetProps() {
           inputs.forEach(({ input, output }, index) => {
             input.name = `${attribute}-${index === 0 ? 'minimum' : 'maximum'}`;
             input.min = Math.min(bounds.min, bucket.from);
-            input.max = Math.max(bounds.max, bucket.to);
-            input.value = index === 0 ? bucket.from : bucket.to;
+            input.max = Math.max(bounds.max, bucket.to ?? bounds.max);
+            input.value = index === 0 ? bucket.from : bucket.to ?? bounds.max;
             input.disabled = input.min === input.max;
             output.value = input.value;
           });
@@ -175,7 +175,10 @@ export default function createNumberFacetProps() {
           input.addEventListener('change', () => {
             const from = Number(inputs[0].input.value);
             const to = Number(inputs[1].input.value);
-            apply(from === bounds.min && to === bounds.max ? undefined : { from, to });
+            // SearchRangeInput.to is exclusive. Leave the top endpoint unbounded
+            // so a product whose value equals StatsBucket.max is not excluded.
+            const range = { from, to: to === bounds.max ? null : to };
+            apply(from === bounds.min && to === bounds.max ? undefined : range);
           });
         });
         reset.addEventListener('click', () => apply());

@@ -24,7 +24,7 @@ Search state is read from and written to the URL by this project (see `search-ur
 | `q`       | Search phrase (search page only). |
 | `page`    | Current page number (1-based). |
 | `sort`    | Sort spec: comma-separated `attribute_DIRECTION` (e.g. `price_ASC,name_DESC`). |
-| `filter`  | Filters: pipe-separated segments. Each segment is `attribute:value`; multiple values for the same attribute use multiple segments (e.g. `categories:val1\|categories:val2`). Supports `in` (single/multi-value) and numeric `range` (e.g. `price:0-100`). |
+| `filter`  | Filters: pipe-separated segments. Each segment is `attribute:value`; multiple values for the same attribute use multiple segments (e.g. `categories:val1\|categories:val2`). Supports `in` (single/multi-value) and numeric `range` (e.g. `price:0-100`). `*` represents an open upper bound (e.g. `number_attribute:20-*`). |
 
 On load, the block normalizes the URL (e.g. filter format) with `replaceState`. After each search result, it updates the URL with `pushState` so the address bar reflects the current request.
 
@@ -70,11 +70,20 @@ leave the default facet rendering unchanged.
 Moving either handle updates its displayed value and the highlighted interval.
 Releasing it or committing a keyboard change submits
 `{ attribute: 'number_attribute', range: { from, to } }` and resets
-pagination to page 1. Decimal values are supported, and the handles cannot cross.
+pagination to page 1. Both handles move in **0.5 increments** (10, 10.5, 11, …),
+and the handles cannot cross.
 Reset range, selecting the full range, removing the selected-filter chip, or Clear
 all removes the numeric filter. Category, visibility, and unrelated filters are
 preserved. The selected range is restored from the URL, for example
 `/search?filter=number_attribute:20-150`.
+
+The search API treats `range.to` as exclusive. At the slider's top endpoint, the
+request uses `to: null` (no upper bound), so products equal to the statistical
+maximum are included. For example, selecting **20–200** sends
+`{ from: 20, to: null }` and stores `number_attribute:20-*` in the URL while the
+handle and selected-filter chip still display **200**. Below the top endpoint,
+finite upper bounds retain the API's exclusive behavior. See the
+[productSearch filtering documentation](https://developer.adobe.com/commerce/webapi/graphql/schema/live-search/queries/product-search#filtering-by-attributes).
 
 `number-facet.js` supplies a `Facet` slot and a scoped event adapter. Only the Facets
 container sees a synthetic bucket matching the requested interval; other consumers

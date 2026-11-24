@@ -21,16 +21,20 @@ function parseSort(sortParam) {
 
 /**
  * Parses the filter query param into the search API format.
- * Supports: single value (attr:val), multiple values (attr:a,b,c), ranges (attr:0-100).
+ * Supports single/multiple values, ranges (attr:0-100), and open upper bounds (attr:0-*).
  * @param {string} [filterParam] - Pipe-separated filters, e.g. "color:blue|price:0-100"
- * @returns {Array<{ attribute: string, in?: string[], range?: { from: number, to: number } }>}
+ * @returns {Array<{ attribute: string, in?: string[], range?: { from: number, to: number|null } }>}
  */
 function parseFilter(filterParam) {
   if (!filterParam) return [];
 
   const decodedParam = decodeURIComponent(filterParam);
   const rawFilters = decodedParam.split('|');
-  /** @type {Array<{ attribute: string, in?: string[], range?: { from: number, to: number } }>} */
+  const numeric = '[+-]?(?:\\d+\\.?\\d*|\\.\\d+)(?:e[+-]?\\d+)?';
+  const rangePattern = new RegExp(`^(${numeric})-(${numeric}|\\*)$`, 'i');
+  /** @type {Array<{
+   * attribute: string, in?: string[], range?: { from: number, to: number|null }
+   * }>} */
   const results = [];
 
   rawFilters.forEach((segment) => {
@@ -40,11 +44,12 @@ function parseFilter(filterParam) {
     const value = segment.slice(colonIdx + 1).trim();
     if (!attribute || !value) return;
 
-    if (value.includes('-')) {
-      const [from, to] = value.split('-');
+    const rangeMatch = value.match(rangePattern);
+    if (rangeMatch) {
+      const [, from, to] = rangeMatch;
       const fromNum = Number(from);
-      const toNum = Number(to);
-      if (Number.isFinite(fromNum) && Number.isFinite(toNum)) {
+      const toNum = to === '*' ? null : Number(to);
+      if (Number.isFinite(fromNum) && (toNum === null || Number.isFinite(toNum))) {
         results.push({
           attribute,
           range: { from: fromNum, to: toNum },
@@ -80,7 +85,9 @@ function serializeSort(sort) {
 
 /**
  * Serializes a filter array into the URL query string format.
- * @param {Array<{ attribute: string, in?: string[], range?: { from: number, to: number } }>} filter
+ * @param {Array<{
+ * attribute: string, in?: string[], range?: { from: number, to: number|null }
+ * }>} filter
  * @returns {string} Pipe-separated filter spec, or empty string if no filters
  */
 function serializeFilter(filter) {
@@ -91,7 +98,7 @@ function serializeFilter(filter) {
       return inValues.map((v) => `${attribute}:${v}`).join('|');
     }
     if (range) {
-      return `${attribute}:${range.from}-${range.to}`;
+      return `${attribute}:${range.from}-${range.to ?? '*'}`;
     }
     return null;
   }).filter(Boolean).join('|');
