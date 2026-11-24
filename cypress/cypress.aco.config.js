@@ -29,6 +29,10 @@ module.exports = defineConfig({
     productImageName: 'ADB150_1.jpg',
     productImageNameConfigurable: 'adb124.jpg',
     productWithOptionImageNameConfigurable: 'adb192.jpg',
+    productReviewsProduct: {
+      urlPath: '/products/adobe-pattern-hoodie/adb102',
+      sku: 'adb102',
+    },
 
     // Tenant-specific da.live draft paths — see prexPages.config.js
     prexPages: buildPrexPages('aco'),

@@ -27,6 +27,10 @@ module.exports = defineConfig({
     productImageName: "/adb150.jpg",
     productImageNameConfigurable: "/adb124_1.jpg",
     productWithOptionImageNameConfigurable: "/adb192_1.jpg",
+    productReviewsProduct: {
+      urlPath: "/products/adobe-pattern-hoodie/adb102",
+      sku: "adb102",
+    },
 
     // Tenant-specific da.live draft paths — see prexPages.config.js
     // Prod releases run against a different SaaS ACCS tenant, whose rec units live

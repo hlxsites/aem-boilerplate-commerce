@@ -1,5 +1,43 @@
 # @dropins/storefront-account
 
+## 4.3.0-alpha-20261112144502
+
+### Minor Changes
+
+- 78f24e8: Add authenticated customer review history and an accessible
+  ProductReviews container with presentational list and complete
+  ProductReviewDetails components, a data hook, SDK controls/stars, and an
+  optional detail slot. Customer history and details work without the
+  Ratings/Reviews drop-in. Temporarily use the supported deprecated product
+  reference for product context and host-owned product routing. Use the
+  StarRating-capable SDK alpha.
+
+  Expose normalized product review merchant enablement through the existing
+  getStoreConfig API so hosts can gate account reviews without a separate
+  GraphQL query or a Ratings/Reviews dependency.
+
+  Align review list and detail typography, headers, dividers, and cards with the
+  other Account views. Add a minified Recent reviews summary with configurable
+  page size and host-owned View all reviews routing for the Account landing
+  page. Label the review's calculated average and the customer's individual
+  criterion ratings inline with their stars, with localized personal-rating
+  labels.
+
+  Always request merchant-approved customer reviews with the server-side status
+  filter, preserving approved-only pagination for full and minified views.
+  Require backend support for the filter rather than falling back to unfiltered
+  history.
+
+  Prepare review dates during model transformation with the shared formatter's
+  default locale, preserving the raw timestamp and UTC calendar-day validation.
+  Keep unavailable-date text in UI translations rather than using translations
+  to configure the date locale. Derive default display dates after resolving
+  custom timestamp overrides, while preserving explicit display-date overrides,
+  including null.
+
+  Expose customer review fields through the shared GraphQL fragment barrel for
+  customization, and keep review model exports in the model barrel.
+
 ## 4.2.1
 
 ### Patch Changes
