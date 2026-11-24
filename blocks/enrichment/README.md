@@ -8,7 +8,7 @@ The Enrichment block loads and inlines content fragments that are targeted at th
 
 ### Block Configuration
 
-- `type` (required): The targeting type, either `product` or `category`. Determines how the current page's context is resolved.
+- `type` (required): The targeting type, either `product` or `category` (case-insensitive, with surrounding whitespace ignored). Determines how the current page's context is resolved. Unsupported types render no fragments.
 - `position`: An optional value used to further filter which fragments match, passed through as a `positions` filter alongside `products`/`categories`.
 
 ### URL Parameters
@@ -36,6 +36,9 @@ No events are emitted by this block.
 - **Product context** (`type="product"`): Resolves the current product SKU via `getProductSku()` and filters the `enrichment/enrichment` index by `products`.
 - **Category context** (`type="category"`): Looks up the nearest `.product-list-page` block on the page and filters the index by its `urlpath` under `categories`.
 - **Position filter**: When configured, further narrows matches by `positions`.
+- **Fragment metadata**: `enrichment-products`, `enrichment-categories`, and `enrichment-positions` accept comma-separated values; surrounding whitespace on each indexed token is ignored. Index fields can be arrays or JSON-encoded arrays.
+- **Unrestricted positions**: Empty or omitted fragment positions match any configured block position, but the product/category must still match. Such a fragment can appear in multiple matching slots on the same page.
+- **Invalid metadata**: Malformed filter fields exclude that fragment without preventing valid fragments from rendering. Empty or omitted product/category targets never match.
 
 ### User Interaction Flows
 
