@@ -36,7 +36,7 @@ No events are emitted by this block.
 - **Product context** (`type="product"`): Resolves the current product SKU via `getProductSku()` and filters the `enrichment/enrichment` index by `products`.
 - **Category context** (`type="category"`): Looks up the nearest `.product-list-page` block on the page and filters the index by its `urlpath` under `categories`.
 - **Position filter**: When configured, further narrows matches by `positions`.
-- **Fragment metadata**: `enrichment-products`, `enrichment-categories`, and `enrichment-positions` accept comma-separated values; surrounding whitespace on each indexed token is ignored. Index fields can be arrays or JSON-encoded arrays.
+- **Fragment metadata**: `enrichment-products`, `enrichment-categories`, and `enrichment-positions` accept comma-separated values; surrounding whitespace on each indexed token is ignored. Index fields must be arrays of strings.
 - **Unrestricted positions**: Empty or omitted fragment positions match any configured block position, but the product/category must still match. Such a fragment can appear in multiple matching slots on the same page.
 - **Invalid metadata**: Malformed filter fields exclude that fragment without preventing valid fragments from rendering. Empty or omitted product/category targets never match.
 

@@ -44,17 +44,7 @@ export default async function decorate(block) {
     const index = await fetchIndex('enrichment/enrichment');
     const matchingFragments = index.data
       .filter((fragment) => Object.keys(filters).every((filterKey) => {
-        // Depending on the index, multi-value properties arrive either as JSON strings
-        // (e.g. '["24-MB03"]') or already parsed as arrays.
-        const raw = fragment?.[filterKey];
-        let values = raw ?? [];
-        if (typeof raw === 'string') {
-          try {
-            values = raw.trim() ? JSON.parse(raw) : [];
-          } catch {
-            return false;
-          }
-        }
+        const values = fragment?.[filterKey] ?? [];
         if (!Array.isArray(values) || !values.every((value) => typeof value === 'string')) {
           return false;
         }
