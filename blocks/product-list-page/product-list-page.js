@@ -18,6 +18,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
+import createNumberFacetProps from './number-facet.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -151,7 +152,7 @@ export default async function decorate(block) {
     })($viewFacets),
 
     // Facets
-    provider.render(Facets, {})($facets),
+    provider.render(Facets, createNumberFacetProps())($facets),
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => getProductLink(product.urlKey, product.sku),
@@ -198,6 +199,10 @@ export default async function decorate(block) {
     const totalCount = payload.result?.totalCount || 0;
 
     block.classList.toggle('product-list-page--empty', totalCount === 0);
+    block.classList.toggle(
+      'product-list-page--numeric-filter',
+      payload.request.filter.some((filter) => filter.attribute === 'number_attribute'),
+    );
 
     // Results Info
     $resultInfo.innerHTML = payload.request?.phrase

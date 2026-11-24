@@ -58,6 +58,36 @@ A visibility filter `{ attribute: 'visibility', in: ['Search', 'Catalog, Search'
 4. **Pagination**: User changes page; dropin calls `search()` with new page; block scrolls to top and URL is updated.
 5. **Add to cart / wishlist**: Product cards include add-to-cart and wishlist actions; cart and wishlist behavior are handled by their respective dropins. For simple products, the add-to-cart button is disabled when `product.inStock` is falsy. Complex products always link to the PDP where stock is validated by the PDP drop-in.
 
+### Number Attribute Range Slider Sample
+
+The `number_attribute` facet uses one shared track with two labeled handles (minimum
+and maximum), backed by overlapping native range inputs for keyboard accessibility,
+when its response contains a valid `StatsBucket`. For `{ min: 10, max: 200 }`, the
+slider bounds are **10–200**, not the aggregation bucket boundaries **0–225**.
+Other attributes retain the default dropin controls. Missing or invalid statistics
+leave the default facet rendering unchanged.
+
+Moving either handle updates its displayed value and the highlighted interval.
+Releasing it or committing a keyboard change submits
+`{ attribute: 'number_attribute', range: { from, to } }` and resets
+pagination to page 1. Decimal values are supported, and the handles cannot cross.
+Reset range, selecting the full range, removing the selected-filter chip, or Clear
+all removes the numeric filter. Category, visibility, and unrelated filters are
+preserved. The selected range is restored from the URL, for example
+`/search?filter=number_attribute:20-150`.
+
+`number-facet.js` supplies a `Facet` slot and a scoped event adapter. Only the Facets
+container sees a synthetic bucket matching the requested interval; other consumers
+continue to receive the original search response. This lets the native container
+retain arbitrary ranges when other facets change and use its normal selected-filter
+and clear-all controls, without modifying generated dropin files.
+
+Bounds remain stable while changing only the numeric range. A different search
+phrase or other filters refresh the bounds. An active numeric filter keeps the
+facet controls available even when no products match. Optional search dictionary
+keys `Search.Facet.minimum`, `maximum`, `resetRange`, and `rangeError` override the
+sample's English labels.
+
 ### Error Handling
 
 - **Search API errors**: Initial `search()` calls are wrapped in `.catch()`; errors are logged with `console.error('Error searching for products', e)`. The block does not show an inline error UI; the dropin may show its own state.
