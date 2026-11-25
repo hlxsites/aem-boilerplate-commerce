@@ -150,6 +150,23 @@ export default async function decorate(block) {
   let reloadPending = false;
   let consented = isConsentGranted();
 
+  // Get data from the event bus to set publish events
+  let recommendationUnitData = null;
+  events.on(
+    'recommendations/data',
+    (data) => {
+      // Check if the incoming recommendation data matches the current block's label or recid
+      if (data?.[0]?.items?.length) {
+        // Match by configured label when present; otherwise, use the unit ID.
+        const matches = label ? data[0].label === label : data[0].unitId === recid;
+        if (matches) {
+          [recommendationUnitData] = data;
+        }
+      }
+    },
+    { eager: true },
+  );
+
   async function loadRecommendation(
     context,
     isVisible,
@@ -174,20 +191,6 @@ export default async function decorate(block) {
     isLoading = true;
 
     const createProductLink = (item) => getProductLink(item.urlKey, item.sku);
-
-    let recommendationsData = null;
-
-    // Get data from the event bus to set publish events
-    events.on(
-      'recommendations/data',
-      (data) => {
-        recommendationsData = data;
-        if (data?.items?.length) {
-          recommendationsData = data;
-        }
-      },
-      { eager: true },
-    );
 
     try {
       const skuFromConfig = !!currentsku;
@@ -248,13 +251,8 @@ export default async function decorate(block) {
                       // to avoid triggering the recs-item-click event
                       event.stopPropagation();
                       // Publish ACDL event for add to cart click
-                      const recommendationUnit = recommendationsData?.find(
-                        (unit) => unit.items?.some(
-                          (unitItem) => unitItem.sku === ctx.item.sku,
-                        ),
-                      );
                       publishRecsItemAddToCartClick({
-                        recommendationUnit,
+                        recommendationUnit: recommendationUnitData,
                         pagePlacement: 'product-list',
                         yOffsetTop: addToCart.getBoundingClientRect().top ?? 0,
                         yOffsetBottom:
