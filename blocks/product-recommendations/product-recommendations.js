@@ -10,7 +10,7 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as cartApi from '@dropins/storefront-cart/api.js';
 
 // Recommendations Dropin
-import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
+import { ProductList } from '@dropins/storefront-recommendations/containers.js';
 import { render as provider } from '@dropins/storefront-recommendations/render.js';
 import { publishRecsItemAddToCartClick } from '@dropins/storefront-recommendations/api.js';
 

@@ -1,8 +1,10 @@
 // Product Discovery Dropins
-import SearchResults from '@dropins/storefront-product-discovery/containers/SearchResults.js';
-import Facets from '@dropins/storefront-product-discovery/containers/Facets.js';
-import SortBy from '@dropins/storefront-product-discovery/containers/SortBy.js';
-import Pagination from '@dropins/storefront-product-discovery/containers/Pagination.js';
+import {
+  SearchResults,
+  Facets,
+  SortBy,
+  Pagination,
+} from '@dropins/storefront-product-discovery/containers.js';
 import { render as provider } from '@dropins/storefront-product-discovery/render.js';
 import { Button, Icon, provider as UI } from '@dropins/tools/components.js';
 import { search } from '@dropins/storefront-product-discovery/api.js';
