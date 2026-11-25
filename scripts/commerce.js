@@ -15,16 +15,62 @@ import {
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
 
-let consentGranted = false;
+let consentGranted;
+let applyingRemoteDenial = false;
+let consentChannel;
+let denialPendingActivation = false;
+
+// Only denials are synchronised across tabs. A grant must come from the CMP in each document,
+// which also loads consented scripts; broadcasting it could enable collection in a tab that
+// never received the CMP decision. A missed grant only delays history until the next page load.
+function broadcastConsentDenial() {
+  if (!consentChannel) return;
+  try {
+    consentChannel.postMessage({ type: 'DECLINED' });
+  } catch (error) {
+    console.error('Error broadcasting consent withdrawal', error);
+  }
+}
+
+try {
+  if (typeof window.BroadcastChannel === 'function') {
+    consentChannel = new window.BroadcastChannel('storefront:consent');
+    consentChannel.addEventListener('message', ({ data }) => {
+      if (data?.type !== 'DECLINED') return;
+      applyingRemoteDenial = true;
+      try {
+        window.dispatchEvent(new CustomEvent('consent.update', { detail: { consented: false } }));
+      } finally {
+        applyingRemoteDenial = false;
+      }
+    });
+  } else {
+    console.warn('BroadcastChannel is unavailable; the CMP must notify each open tab of consent changes');
+  }
+} catch (error) {
+  console.error('Error initializing cross-tab consent notifications', error);
+}
 
 /** Returns the latest upstream consent notification for this document. */
 export function isConsentGranted() {
-  return consentGranted;
+  return consentGranted === true;
 }
 
 window.addEventListener('consent.update', ({ detail }) => {
   consentGranted = detail?.consented === true;
+  if (consentGranted) denialPendingActivation = false;
+  if (detail?.consented === false && !applyingRemoteDenial) {
+    if (document.prerendering) denialPendingActivation = true;
+    else broadcastConsentDenial();
+  }
 });
+
+if (document.prerendering) {
+  document.addEventListener('prerenderingchange', () => {
+    if (denialPendingActivation && !consentGranted) broadcastConsentDenial();
+    denialPendingActivation = false;
+  }, { once: true });
+}
 
 /**
  * Sanitizes the given string by:
@@ -742,25 +788,48 @@ function trackHistory() {
   const storeIdentifier = getStoreIdentifier();
   if (storeIdentifier) {
     historyTrackingInitialized = true;
+    const clearHistory = () => {
+      ['productViewHistory', 'purchaseHistory'].forEach((history) => {
+        try {
+          window.localStorage.removeItem(`${storeIdentifier}:${history}`);
+        } catch (error) {
+          console.error(`Error clearing ${history}`, error);
+        }
+      });
+    };
+    window.addEventListener('consent.update', ({ detail }) => {
+      if (detail?.consented === false) clearHistory();
+    });
+    // Wait for a decision before deleting history from an earlier consented visit.
+    if (consentGranted === false) clearHistory();
     window.adobeDataLayer.push((dl) => {
       const recordProductView = (event) => {
         // Speculation Rules prerendering pushes productContext once immediately and
         // again on activation. Ignore the prerender-only push so hovering a link
         // doesn't record a view that never actually happened.
-        if (document.prerendering || !event.productContext || !event.productContext.sku) {
+        if (!isConsentGranted() || document.prerendering
+          || !event.productContext || !event.productContext.sku) {
           return;
         }
         const key = `${storeIdentifier}:productViewHistory`;
-        let viewHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-        viewHistory = viewHistory.filter((item) => item.sku !== event.productContext.sku);
-        viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
-        window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+        try {
+          let viewHistory = JSON.parse(window.localStorage.getItem(key) ?? '[]');
+          if (!Array.isArray(viewHistory)) {
+            throw new TypeError('Expected productViewHistory to be an array');
+          }
+          viewHistory = viewHistory.filter((item) => item?.sku !== event.productContext.sku);
+          viewHistory.push({ date: new Date().toISOString(), sku: event.productContext.sku });
+          window.localStorage.setItem(key, JSON.stringify(viewHistory.slice(-20)));
+        } catch (error) {
+          console.error('Error recording productViewHistory', error);
+        }
       };
       dl.addEventListener('adobeDataLayer:change', recordProductView, {
         path: 'productContext',
+        scope: 'future',
       });
       dl.addEventListener('place-order', () => {
-        if (document.prerendering) {
+        if (!isConsentGranted() || document.prerendering) {
           return;
         }
         const shoppingCartContext = dl.getState('shoppingCartContext');
@@ -768,11 +837,18 @@ function trackHistory() {
           return;
         }
         const key = `${storeIdentifier}:purchaseHistory`;
-        const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
-        const purchaseHistory = JSON.parse(window.localStorage.getItem(key) || '[]');
-        purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
-        window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
-      });
+        try {
+          const purchasedProducts = shoppingCartContext.items.map((item) => item.product.sku);
+          const purchaseHistory = JSON.parse(window.localStorage.getItem(key) ?? '[]');
+          if (!Array.isArray(purchaseHistory)) {
+            throw new TypeError('Expected purchaseHistory to be an array');
+          }
+          purchaseHistory.push({ date: new Date().toISOString(), items: purchasedProducts });
+          window.localStorage.setItem(key, JSON.stringify(purchaseHistory.slice(-20)));
+        } catch (error) {
+          console.error('Error recording purchaseHistory', error);
+        }
+      }, { scope: 'future' });
     });
   }
 }

@@ -1,3 +1,5 @@
+import { enableAnalyticsConsent } from './events/consentTestSupport';
+
 // Real (non-draft) catalog PDPs — same SKUs resolve on both the ACCS and ACO
 // demo catalogs, unlike the env-specific /drafts/tests/products/{env}/adb125
 // pages used by the rec-carousel tests in verifyRecsDisplay.spec.js.
@@ -34,6 +36,12 @@ function waitForProductContextSku(sku) {
   cy.window().should((win) => {
     const ctx = win.adobeDataLayer?.getState?.('productContext');
     expect(ctx?.sku, 'productContext.sku').to.equal(sku);
+    expect(win.magentoStorefrontEvents?.publish?.pageView, 'consent granted').to.be.a('function');
+  }).then((win) => {
+    // Initial PDP context can precede consent; exercise a new view after acceptance.
+    win.adobeDataLayer.push({ productContext: { ...win.adobeDataLayer.getState('productContext') } });
+  });
+  cy.window().should((win) => {
     const identifier = getStoreViewIdentifier(win);
     const history = JSON.parse(win.localStorage.getItem(`${identifier}:productViewHistory`) || '[]');
     expect(history.map((entry) => entry.sku), 'product history recorded').to.include(sku);
@@ -42,7 +50,9 @@ function waitForProductContextSku(sku) {
 
 // SaaS (ACCS) and ACO only — recommendations aren't enabled on the PaaS demo.
 describe('Verify recs-related client storage hydration', { tags: '@skipPaas' }, () => {
-  it('records viewed PDPs in productViewHistory keyed by store view code / ac-view-id', () => {
+  enableAnalyticsConsent();
+
+  it('records post-consent product activity in productViewHistory keyed by store view code / ac-view-id', () => {
     PRODUCT_VIEW_HISTORY_PRODUCTS.forEach(({ sku, path }) => {
       cy.visit(path);
       waitForProductContextSku(sku);

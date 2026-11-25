@@ -141,7 +141,11 @@ describe('Commerce consent load gate', () => {
     });
   });
 
-  function visitWithStoredHistory(consented, path = Cypress.env('prexPages').pdpAcdlOnly) {
+  function visitWithStoredHistory(
+    consented,
+    path = Cypress.env('prexPages').pdpAcdlOnly,
+    onBeforeLoad = () => {},
+  ) {
     cy.request('/config.json').then(({ body }) => {
       const config = body.public.default;
       const headers = { ...config.headers?.all, ...config.headers?.cs };
@@ -160,10 +164,283 @@ describe('Commerce consent load gate', () => {
           win.localStorage.setItem(`${identifier}:purchaseHistory`, JSON.stringify([
             { items: ['ADB174'], date },
           ]));
+          onBeforeLoad(win);
         },
       });
     });
   }
+
+  function pushHistoryActivity(win, sku) {
+    win.adobeDataLayer.push(
+      { productContext: { sku } },
+      { shoppingCartContext: { items: [{ product: { sku } }] } },
+      { event: 'place-order' },
+    );
+  }
+
+  it('retains existing history while consent is unknown, then deletes it on denial without reading it', () => {
+    const gate = holdModule('**/scripts/consent-check.js', 'consentGate');
+    visitWithStoredHistory(false, '/', (win) => {
+      cy.spy(win.Storage.prototype, 'getItem').as('historyReads');
+      cy.spy(win.Storage.prototype, 'setItem').as('historyWrites');
+    });
+    gate.waitForStart();
+    cy.window().should((win) => {
+      expect(win.adobeDataLayer?.getState).to.be.a('function');
+      expect(win.__consentDecisions).to.deep.equal([]);
+    }).then((win) => {
+      const identifier = getStoreIdentifier(win);
+      // Property access checks preservation without calling the spied getItem.
+      expect(win.localStorage[`${identifier}:productViewHistory`]).to.contain('ADB156');
+      expect(win.localStorage[`${identifier}:purchaseHistory`]).to.contain('ADB174');
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+    });
+    gate.release();
+    waitForConsentGate(false);
+    cy.window().then((win) => { pushHistoryActivity(win, 'DENIED'); });
+    ['historyReads', 'historyWrites'].forEach((alias) => {
+      cy.get(`@${alias}`).should((spy) => {
+        const historyCalls = spy.getCalls().filter(
+          ({ args }) => /:(productViewHistory|purchaseHistory)$/.test(args[0]),
+        );
+        expect(historyCalls, `${alias} without consent`).to.have.length(0);
+      });
+    });
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+    });
+    expectNoCollectors();
+  });
+
+  it('records only consented activity and clears history on withdrawal without replay on reacceptance', () => {
+    visitWithStoredHistory(false, '/');
+    waitForConsentGate(false);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const viewKey = `${identifier}:productViewHistory`;
+      const purchaseKey = `${identifier}:purchaseHistory`;
+      win.localStorage.setItem('other-store:productViewHistory', '[]');
+      win.localStorage.setItem('essential-test-data', 'keep');
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+
+      pushHistoryActivity(win, 'CONSENTED');
+      expect(JSON.parse(win.localStorage.getItem(viewKey)).map(({ sku }) => sku))
+        .to.deep.equal(['CONSENTED']);
+      expect(JSON.parse(win.localStorage.getItem(purchaseKey)).map(({ items }) => items))
+        .to.deep.equal([['CONSENTED']]);
+
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: false } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+      expect(win.localStorage.getItem('other-store:productViewHistory')).to.equal('[]');
+      expect(win.localStorage.getItem('essential-test-data')).to.equal('keep');
+      pushHistoryActivity(win, 'AFTER-WITHDRAWAL');
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+      expect(win.localStorage.getItem(viewKey)).to.equal(null);
+      expect(win.localStorage.getItem(purchaseKey)).to.equal(null);
+      pushHistoryActivity(win, 'NEW-CONSENT');
+      expect(JSON.parse(win.localStorage.getItem(viewKey)).map(({ sku }) => sku))
+        .to.deep.equal(['NEW-CONSENT']);
+      expect(JSON.parse(win.localStorage.getItem(purchaseKey)).map(({ items }) => items))
+        .to.deep.equal([['NEW-CONSENT']]);
+    });
+    expectNoCollectors();
+  });
+
+  it('applies a denial from another document without rebroadcasting it', () => {
+    visitWithStoredHistory(true, '/');
+    waitForConsentGate(true);
+    let peer;
+    let messages;
+    cy.window().then((win) => {
+      peer = new win.BroadcastChannel('storefront:consent');
+      messages = cy.spy(win.BroadcastChannel.prototype, 'postMessage');
+      peer.postMessage({ type: 'GRANTED' });
+      peer.postMessage({ type: 'DECLINED' });
+    });
+    cy.window().should((win) => {
+      expect(win.__consentDecisions).to.deep.equal([{ consented: true }, { consented: false }]);
+    }).then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const echoedMessages = messages.getCalls().filter(
+        ({ thisValue }) => thisValue.name === 'storefront:consent' && thisValue !== peer,
+      );
+      expect(echoedMessages, 'remote denial is not rebroadcast').to.have.length(0);
+      pushHistoryActivity(win, 'AFTER-REMOTE-DENIAL');
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+      peer.close();
+    });
+  });
+
+  it('broadcasts a local denial to other documents', () => {
+    cy.visit('/?consent=accept');
+    waitForConsentGate(true);
+    cy.window().then((win) => new Cypress.Promise((resolve, reject) => {
+      const peer = new win.BroadcastChannel('storefront:consent');
+      const timeout = win.setTimeout(() => {
+        peer.close();
+        reject(new Error('Cross-tab consent notification was not received'));
+      }, 5000);
+      peer.onmessage = ({ data }) => {
+        win.clearTimeout(timeout);
+        peer.close();
+        resolve(data);
+      };
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: false } }));
+    })).should('deep.equal', { type: 'DECLINED' });
+  });
+
+  it('broadcasts the initial denial to other documents', () => {
+    let peer;
+    const received = [];
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        peer = new win.BroadcastChannel('storefront:consent');
+        peer.onmessage = ({ data }) => received.push(data);
+      },
+    });
+    waitForConsentGate(false);
+    cy.wrap(null).should(() => {
+      expect(received).to.deep.equal([{ type: 'DECLINED' }]);
+    }).then(() => { peer.close(); });
+  });
+
+  [false, true].forEach((reaccepted) => {
+    it(`${reaccepted ? 'cancels' : 'defers'} a prerendered denial before activation`, () => {
+      let prerendering = true;
+      let messages;
+      cy.visit('/', {
+        onBeforeLoad(win) {
+          Object.defineProperty(win.document, 'prerendering', {
+            configurable: true, get: () => prerendering,
+          });
+          messages = cy.spy(win.BroadcastChannel.prototype, 'postMessage');
+        },
+      });
+      waitForConsentGate(false);
+      cy.window().then((win) => {
+        const consentMessages = () => messages.getCalls().filter(
+          ({ thisValue }) => thisValue.name === 'storefront:consent',
+        );
+        expect(consentMessages(), 'no denial before activation').to.have.length(0);
+        if (reaccepted) {
+          win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+        }
+        prerendering = false;
+        win.document.dispatchEvent(new win.Event('prerenderingchange'));
+        expect(consentMessages(), 'denial after activation').to.have.length(reaccepted ? 0 : 1);
+      });
+    });
+  });
+
+  it('honors local denial and logs when cross-tab notifications are unavailable', () => {
+    cy.visit('/?consent=accept', {
+      onBeforeLoad(win) {
+        cy.stub(win, 'BroadcastChannel').value(undefined);
+        cy.stub(win.console, 'warn').as('consentWarning');
+      },
+    });
+    waitForConsentGate(true);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      pushHistoryActivity(win, 'BEFORE-LOCAL-DENIAL');
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).not.to.equal(null);
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: false } }));
+      pushHistoryActivity(win, 'AFTER-LOCAL-DENIAL');
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+    });
+    cy.get('@consentWarning').should('have.been.calledWithMatch', 'BroadcastChannel is unavailable');
+  });
+
+  it('logs invalid history without overwriting it or interrupting ACDL', () => {
+    cy.visit('/?consent=accept');
+    waitForConsentGate(true);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const histories = ['productViewHistory', 'purchaseHistory'];
+      const errors = cy.stub(win.console, 'error');
+
+      ['{', '{}', ''].forEach((value, index) => {
+        histories.forEach((history) => win.localStorage.setItem(`${identifier}:${history}`, value));
+        expect(() => pushHistoryActivity(win, `INVALID-${index}`)).not.to.throw();
+        histories.forEach((history) => {
+          expect(win.localStorage.getItem(`${identifier}:${history}`)).to.equal(value);
+        });
+      });
+
+      histories.forEach((history) => {
+        const calls = errors.getCalls().filter(({ args }) => args[0] === `Error recording ${history}`);
+        expect(calls.map(({ args }) => args[1].name))
+          .to.deep.equal(['SyntaxError', 'TypeError', 'SyntaxError']);
+      });
+    });
+  });
+
+  it('logs blocked history reads and writes without interrupting ACDL', () => {
+    cy.visit('/?consent=accept');
+    waitForConsentGate(true);
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      const viewKey = `${identifier}:productViewHistory`;
+      const purchaseKey = `${identifier}:purchaseHistory`;
+      const storage = win.localStorage;
+      const { getItem, setItem } = win.Storage.prototype;
+      const errors = cy.stub(win.console, 'error');
+      cy.stub(win.Storage.prototype, 'getItem').callsFake(function read(key) {
+        if (this === storage && key === viewKey) throw new win.DOMException('Blocked', 'SecurityError');
+        return getItem.call(this, key);
+      });
+      cy.stub(win.Storage.prototype, 'setItem').callsFake(function write(key, value) {
+        if (this === storage && key === purchaseKey) throw new win.DOMException('Blocked', 'SecurityError');
+        return setItem.call(this, key, value);
+      });
+
+      expect(() => pushHistoryActivity(win, 'STORAGE-BLOCKED')).not.to.throw();
+      ['productViewHistory', 'purchaseHistory'].forEach((history) => {
+        const calls = errors.getCalls().filter(({ args }) => args[0] === `Error recording ${history}`);
+        expect(calls.map(({ args }) => args[1].name)).to.deep.equal(['SecurityError']);
+      });
+    });
+  });
+
+  it('does not persist retained activity when consent is granted before history tracking initializes', () => {
+    const acdl = holdModule('**/scripts/acdl/adobe-client-data-layer.min.js', 'acdl');
+    cy.intercept('**/config.json', (request) => {
+      request.continue((response) => { delete response.body.public.default.analytics; });
+    });
+    cy.visit('/?consent=accept');
+    acdl.waitForStart();
+    cy.window().then((win) => {
+      pushHistoryActivity(win, 'BEFORE-CONSENT');
+      win.dispatchEvent(new win.CustomEvent('consent.update', { detail: { consented: true } }));
+    });
+    acdl.release();
+    cy.wait('@consentGate');
+    cy.window().should((win) => {
+      expect(win.__consentDecisions).to.deep.equal([{ consented: true }, { consented: true }]);
+    });
+    cy.window().then((win) => {
+      const identifier = getStoreIdentifier(win);
+      expect(win.localStorage.getItem(`${identifier}:productViewHistory`)).to.equal(null);
+      expect(win.localStorage.getItem(`${identifier}:purchaseHistory`)).to.equal(null);
+      pushHistoryActivity(win, 'NEW-ACTIVITY');
+      expect(JSON.parse(win.localStorage.getItem(`${identifier}:productViewHistory`))
+        .map(({ sku }) => sku)).to.deep.equal(['NEW-ACTIVITY']);
+      expect(JSON.parse(win.localStorage.getItem(`${identifier}:purchaseHistory`))
+        .map(({ items }) => items)).to.deep.equal([['NEW-ACTIVITY']]);
+    });
+    expectNoCollectors();
+  });
 
   function interceptRecommendations() {
     cy.intercept({ method: 'GET', url: /recommendationsByUnitIds/ }, (request) => {
@@ -184,6 +461,28 @@ describe('Commerce consent load gate', () => {
       request.reply({ data: { recommendationsByUnitIds: { results: [], totalResults: 0 } } });
     }).as('privateRecommendations');
   }
+
+  it('removes personal recommendation inputs after a denial from another document', () => {
+    interceptRecommendations();
+    visitWithStoredHistory(true);
+    waitForConsentGate(true);
+    cy.wait('@privateRecommendations');
+    let beforeDenial;
+    let peer;
+    cy.get('@privateRecommendations.all').then((requests) => { beforeDenial = requests.length; });
+    cy.window().then((win) => {
+      peer = new win.BroadcastChannel('storefront:consent');
+      peer.postMessage({ type: 'DECLINED' });
+    });
+    cy.get('@privateRecommendations.all').should((requests) => {
+      expect(requests.length, 'recommendations reload after remote denial').to.be.greaterThan(beforeDenial);
+      const variables = JSON.parse(new URL(requests[requests.length - 1].request.url)
+        .searchParams.get('variables'));
+      ['userViewHistory', 'userPurchaseHistory', 'cartSkus'].forEach((key) => {
+        expect(variables).not.to.have.property(key);
+      });
+    }).then(() => { peer.close(); });
+  });
 
   [false, true].forEach((consented) => {
     it(`${consented ? 'includes' : 'withholds'} personal recommendation inputs across cart interaction and reload`, () => {
