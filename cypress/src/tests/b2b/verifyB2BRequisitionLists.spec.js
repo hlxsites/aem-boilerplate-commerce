@@ -68,7 +68,100 @@ function assertRequisitionListExists(selector, listName, index = null) {
   cy.wait(2000);
 }
 
+function assertExportAndPrint(listName) {
+  const tableRows = '[data-testid="product-list-table"] .dropin-table__body__row';
+  const printButton = '[data-testid="print-list-btn"]';
+  const exportButton = '[data-testid="export-list-btn"]';
+  const prices = '.requisition-list-view-product-list-table__discount-container';
+  let displayedRows;
+  let failListLoad = false;
+
+  cy.get(tableRows).should('have.length', 4).then(($rows) => {
+    displayedRows = Array.from($rows, (row) => ({
+      sku: row.querySelector('.requisition-list-view-product-list-table__sku').textContent,
+      quantity: row.querySelector('input[name="quantity"]').value,
+      amounts: Array.from(row.querySelectorAll(prices), (price) => price.textContent),
+    }));
+    expect(displayedRows.some((row) => /[1-9]/.test(row.amounts[0]))).to.equal(true);
+  });
+  cy.window().then((win) => {
+    cy.stub(win, 'print').as('printRequisitionList');
+    cy.spy(win.URL, 'createObjectURL').as('csvDownload');
+  });
+  cy.intercept('**/graphql*', (req) => {
+    const query = req.body?.query || new URL(req.url).searchParams.get('query') || '';
+    if (!query.includes('GET_REQUISITION_LIST_QUERY')) return;
+    req.alias = 'fullRequisitionList';
+    if (failListLoad) req.reply({ body: { errors: [{ message: 'List page unavailable' }] } });
+  });
+
+  cy.get(exportButton).should('have.text', 'Export').click();
+  cy.wait('@fullRequisitionList').then(({ response }) => {
+    const items = response.body.data.customer.requisition_lists.items[0].items.items;
+    expect(items).to.have.length(displayedRows.length);
+    const expected = `sku,qty\r\n${items.map((item) => `${item.product.sku},${item.quantity}\r\n`).join('')}`;
+    cy.readFile(`${Cypress.config('downloadsFolder')}/${listName}.csv`).should('equal', expected);
+  });
+  cy.get('@csvDownload').should('have.been.calledOnce');
+  cy.get(exportButton).should('have.attr', 'aria-busy', 'false');
+
+  cy.get(printButton).should('have.text', 'Print').click();
+  cy.get(printButton).click();
+  cy.get('@printRequisitionList').should('have.been.calledOnce');
+  cy.get('.requisition-list-print tbody tr').should('have.length', 4).each(($row, index) => {
+    const displayed = displayedRows[index];
+    expect($row.find('td').eq(1).text()).to.include(`SKU: ${displayed.sku}`);
+    expect($row.find('td').eq(3).text()).to.equal(displayed.quantity);
+    expect(Array.from($row.find(prices), (price) => price.textContent)).to.deep.equal(displayed.amounts);
+  });
+  cy.get('.requisition-list-print').find('input, button, a').should('not.exist');
+  cy.get(printButton).should('have.attr', 'aria-busy', 'true');
+  if (Cypress.browser.family === 'chromium') {
+    cy.then(() => Cypress.automation('remote:debugger:protocol', {
+      command: 'Emulation.setEmulatedMedia',
+      params: { media: 'print' },
+    }));
+    cy.get('body > header').should('not.be.visible');
+    cy.get('body > main').should('not.be.visible');
+    cy.get('body > footer').should('not.be.visible');
+    cy.get('body > .requisition-list-print-root').should('be.visible');
+    cy.then(() => Cypress.automation('remote:debugger:protocol', {
+      command: 'Emulation.setEmulatedMedia',
+      params: { media: 'screen' },
+    }));
+  }
+  cy.window().then((win) => win.dispatchEvent(new win.Event('afterprint')));
+  cy.get('.requisition-list-print-root').should('not.exist');
+  cy.get('body').should('not.have.class', 'requisition-list-printing');
+  cy.get(printButton).should('have.attr', 'aria-busy', 'false');
+  cy.get(tableRows).should('have.length', 4).each(($row, index) => {
+    expect($row.find('input[name="quantity"]').val()).to.equal(displayedRows[index].quantity);
+    expect(Array.from($row.find(prices), (price) => price.textContent)).to.deep.equal(displayedRows[index].amounts);
+  });
+
+  cy.then(() => { failListLoad = true; });
+  cy.get(printButton).click();
+  cy.contains('[role="alert"]', 'Unable to prepare the requisition list for printing.').should('be.visible');
+  cy.get('@printRequisitionList').should('have.been.calledOnce');
+  cy.get('.requisition-list-print-root').should('not.exist');
+  cy.get(printButton).should('have.attr', 'aria-busy', 'false');
+  cy.get(exportButton).click();
+  cy.contains('[role="alert"]', 'Unable to export requisition list.').should('be.visible');
+  cy.get('@csvDownload').should('have.been.calledOnce');
+  cy.get(exportButton).should('have.attr', 'aria-busy', 'false');
+  cy.then(() => { failListLoad = false; });
+}
+
 describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco'] }, () => {
+  afterEach(() => {
+    if (Cypress.browser.family === 'chromium') {
+      return Cypress.automation('remote:debugger:protocol', {
+        command: 'Emulation.setEmulatedMedia',
+        params: { media: 'screen' },
+      });
+    }
+  });
+
   it("Verify B2B Requisition is not available for guest users", () => {
     // Navigate to PDP
     cy.visit(products.simple.urlPath);
@@ -353,6 +446,8 @@ describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco']
         .eq(0)
         .should("have.value", "10");
 
+      assertExportAndPrint("Now updating from RL view page");
+
       // 3. Add all items to cart
       cy.get(fields.requisitionListViewBatchActionsToggle).click();
       cy.get(fields.requisitionListViewBatchActionsCountBadge).should(
@@ -393,6 +488,8 @@ describe("Verify B2B Requisition Lists feature", { tags: ['@B2BSaas', '@B2BAco']
       cy.get(fields.requisitionListModalConfirmButton).click();
       cy.contains("Item(s) deleted successfully.").should("be.visible");
       cy.get(fields.requisitionListItemRow).should("have.length", 0);
+      cy.get('[data-testid="print-list-btn"]').should('not.exist');
+      cy.get('[data-testid="export-list-btn"]').should('not.exist');
 
       // 5. Delete the whole Requisition List
       cy.get(fields.requisitionListViewDeleteButton).click();
