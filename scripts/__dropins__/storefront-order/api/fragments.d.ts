@@ -18,6 +18,7 @@ export { ADDRESS_FRAGMENT } from './graphql/CustomerAddressFragment.graphql.js';
 export { PRODUCT_DETAILS_FRAGMENT, PRICE_DETAILS_FRAGMENT, GIFT_CARD_DETAILS_FRAGMENT, ORDER_ITEM_FRAGMENT, ORDER_ITEM_DETAILS_FRAGMENT, BUNDLE_ORDER_ITEM_DETAILS_FRAGMENT, DOWNLOADABLE_ORDER_ITEMS_FRAGMENT, } from './graphql/OrderItemsFragment.graphql.js';
 export { ORDER_SUMMARY_FRAGMENT } from './graphql/OrderSummaryFragment.graphql.js';
 export { RETURNS_FRAGMENT } from './graphql/ReturnsFragment.graphql.js';
+export { INVOICE_FRAGMENT } from './graphql/InvoiceFragment.graphql.js';
 export { APPLIED_GIFT_CARDS_FRAGMENT, GIFT_WRAPPING_FRAGMENT, GIFT_MESSAGE_FRAGMENT, } from './graphql/GiftFragment.graphql.js';
 export { GUEST_ORDER_FRAGMENT } from './graphql/GuestOrderFragment.graphql.js';
 export { CUSTOMER_ORDER_FRAGMENT } from './graphql/CustomerOrderFragment.graphql.js';

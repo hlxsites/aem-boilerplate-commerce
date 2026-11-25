@@ -20,6 +20,7 @@ export * from './transform-customer-address-input';
 export * from './transform-customer-orders-returns';
 export * from './transform-guest-order';
 export * from './transform-order-details';
+export * from './transform-order-invoices';
 export * from './transform-place-order';
 export * from './transform-place-negotiable-quote-order';
 export * from './transform-store-config';

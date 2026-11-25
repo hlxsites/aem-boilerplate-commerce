@@ -1,5 +1,14 @@
 # @dropins/storefront-company-switcher
 
+## 1.4.0-alpha-20261124121018-d7038bf
+
+### Minor Changes
+
+- f8e44af: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+
 ## 1.3.1
 
 ### Patch Changes

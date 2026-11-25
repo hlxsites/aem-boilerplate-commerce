@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 export * from './customer-address';
+export * from './customer-reviews';
 export * from './attributes-form';
 export * from './country';
 export * from './region';

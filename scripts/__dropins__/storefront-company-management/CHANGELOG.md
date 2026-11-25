@@ -1,5 +1,14 @@
 # @dropins/storefront-company-management
 
+## 1.6.0-alpha-20261125090922-282a181
+
+### Minor Changes
+
+- d800c68: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+
 ## 1.5.1
 
 ### Patch Changes
