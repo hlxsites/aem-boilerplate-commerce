@@ -55,7 +55,7 @@
     "@dropins/storefront-quote-management": "1.4.0-alpha-20261124142334-6b3f3aa",
     "@dropins/storefront-recommendations": "4.2.0-alpha-20261125101525",
     "@dropins/storefront-requisition-list": "2.1.0-alpha-20261124100145-d564136",
-    "@dropins/storefront-wishlist": "3.6.0-alpha-20261120103624-6fd4246",
+    "@dropins/storefront-wishlist": "3.6.0-preview-20261125145429-67a97d1",
     "@dropins/tools": "3.1.0-alpha-20261118092512"
   },
   "overrides": {

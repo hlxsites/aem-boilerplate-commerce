@@ -32,6 +32,7 @@ export interface Product {
     metaTitle?: string;
     description?: string;
     images?: Image[];
+    gallery?: GalleryItem[];
     prices: Prices;
     attributes?: Attribute[];
     options?: Option[];
@@ -49,6 +50,22 @@ export interface Image {
     width?: number;
     height?: number;
 }
+export type GalleryItem = {
+    type: 'image';
+    url: string;
+    label?: string;
+    roles?: string[];
+} | {
+    type: 'video';
+    url: string;
+    title?: string;
+    description?: string;
+    preview?: {
+        url: string;
+        label?: string;
+        roles?: string[];
+    };
+};
 interface Price {
     amount?: number;
     currency?: string;
