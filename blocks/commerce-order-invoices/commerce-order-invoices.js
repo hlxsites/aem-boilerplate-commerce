@@ -1,7 +1,7 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 // Requires an Order drop-in release exporting the invoice containers.
 // eslint-disable-next-line import/no-unresolved
-import { OrderInvoices } from '@dropins/storefront-order/containers/OrderInvoices.js';
+import { OrderInvoices } from '@dropins/storefront-order/containers.js';
 import { rootLink } from '../../scripts/commerce.js';
 
 // Initialize
