@@ -6,7 +6,6 @@ type DefaultSlotContext = {
     data: ProductModel | null;
 };
 type VideosProp = boolean | {
-    /** @deprecated Gallery order is determined by Catalog Service. */
     position: 'first' | 'last';
 };
 export interface ProductGalleryProps extends Omit<HTMLAttributes<HTMLDivElement>, 'controls'> {

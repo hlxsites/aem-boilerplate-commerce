@@ -17,12 +17,7 @@ import { FunctionComponent, VNode } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
 import type { CarouselConfig } from '../../containers/ProductDetails.js';
 interface ProductCarouselConfig extends CarouselConfig {
-    thumbnails?: VNode[];
-}
-export interface ProductGalleryMedia {
-    type: 'image' | 'video';
-    node: VNode;
-    thumbnail?: VNode;
+    thumbnails: VNode[];
 }
 export interface ProductProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
     title?: VNode;
@@ -33,8 +28,7 @@ export interface ProductProps extends Omit<HTMLAttributes<HTMLDivElement>, 'titl
     shortDescription?: VNode;
     description?: VNode;
     attributes?: VNode;
-    images?: VNode[];
-    media?: ProductGalleryMedia[];
+    images: VNode[];
     options?: VNode;
     giftCardOptions?: VNode;
     downloadableOptions?: VNode;

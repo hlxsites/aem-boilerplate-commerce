@@ -1,4 +1,0 @@
-/*! Copyright 2026 Adobe
-All Rights Reserved. */
-const i=[".mp4",".webm",".ogg",".mov",".avi",".mkv"],m={".mp4":"video/mp4",".webm":"video/webm",".ogg":"video/ogg",".mov":"video/quicktime",".avi":"video/x-msvideo",".mkv":"video/x-matroska"};function a(e){if(!e)return"video/mp4";const t=e.toLowerCase(),o=i.find(n=>t.endsWith(n));return o?m[o]:"video/mp4"}function c(e){if(!e)return!1;const t=e.toLowerCase();return i.some(o=>t.endsWith(o))}function s(e,t){if(t)return t;if(e!=null&&e.includes("adobeaemcloud.com")&&e.endsWith("/play"))return e.replace(/\/play$/,"/as/thumbnail.png")}function r(e){if(!e)return"";const t=e.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]+)/);if(t)return`https://www.youtube.com/embed/${t[1]}?rel=0`;const o=e.match(/vimeo\.com\/(?:video\/)?(\d+)/);return o?`https://player.vimeo.com/video/${o[1]}`:e}export{a,r as b,s as g,c as i};
-//# sourceMappingURL=videoUtils.js.map

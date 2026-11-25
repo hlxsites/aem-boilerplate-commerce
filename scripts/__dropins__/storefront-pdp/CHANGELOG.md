@@ -1,21 +1,10 @@
 # @dropins/storefront-pdp
 
-## 4.0.0-alpha-20261124095416
-
-### Major Changes
-
-- 6e667f1: Render ProductGallery from Catalog Service's unified products.gallery
-  field, preserving the returned image/video order in the carousel, thumbnails
-  and preview overlay. Videos remain opt-in; the legacy videos.position option
-  no longer overrides Catalog Service order. Custom product transformers and
-  initialData must provide gallery items with type: 'image' or type: 'video'.
-  ProductDetails now renders media and thumbnails from gallery as well, and the
-  legacy ProductModel images and videos fields are removed. Direct videos in
-  ProductDetails reload when their gallery URL changes.
+## 3.4.0-alpha-20261109151740
 
 ### Minor Changes
 
-- 99d9a0d: Load containers through the consolidated `containers.js` bundle
+- 8ad0710: Load containers through the consolidated `containers.js` bundle
   instead of each container's individual entry point. This replaces one request
   per container with a single request, which reduces request pressure on EDS.
   The per-container entry points remain available for backwards compatibility.
