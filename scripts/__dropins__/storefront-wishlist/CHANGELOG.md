@@ -1,6 +1,6 @@
 # @dropins/storefront-wishlist
 
-## 3.6.0-alpha-20261120103624-6fd4246
+## 3.6.0-preview-20261125145429-67a97d1
 
 ### Minor Changes
 
@@ -8,6 +8,12 @@
   instead of each container's individual entry point. This replaces one request
   per container with a single request, which reduces request pressure on EDS.
   The per-container entry points remain available for backwards compatibility.
+
+### Patch Changes
+
+- 53bca93: Fix wishlist items not showing the product image when the product has
+  a `gallery`. Gallery images are shown, and videos are shown through their
+  preview image.
 
 ## 3.5.1
 
