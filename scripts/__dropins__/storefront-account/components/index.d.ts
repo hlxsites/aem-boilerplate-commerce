@@ -35,3 +35,5 @@ export * from './SellerAssistedBuyingActivityTable';
 export * from './PaymentCard';
 export * from './PaymentMethodsWrapper';
 export * from './PaymentModal';
+export * from './ProductReviewsWrapper';
+export * from './ProductReviewDetails';

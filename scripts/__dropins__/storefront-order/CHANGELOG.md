@@ -1,6 +1,6 @@
 # @dropins/storefront-order
 
-## 5.0.0-alpha-20261117102052
+## 5.0.0-alpha-20261125095223-ce2a481
 
 ### Major Changes
 
@@ -44,6 +44,10 @@
 
 ### Minor Changes
 
+- ce2a481: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
 - 6abac56: Adds a new `getOrderInvoices` API function to retrieve a customer
   order's invoices (invoice id, number, comments, invoiced items, and totals) by
   order number. The response is transformed into a new `OrderInvoicesModel`,

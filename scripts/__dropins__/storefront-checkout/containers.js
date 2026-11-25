@@ -1,6 +1,788 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-(function(n,a){try{if(typeof document<"u"){const o=a.styleId;if(document.querySelector(`style[data-dropin="${o}"]`))return;const t=document.createElement("style");for(const e in a.attributes)t.setAttribute(e,a.attributes[e]);t.setAttribute("data-dropin",o),t.appendChild(document.createTextNode(n));const r=document.querySelector('style[data-dropin="sdk"]');if(r)r.after(t);else{const e=document.querySelector('link[rel="stylesheet"], style');e?e.before(t):document.head.append(t)}}}catch(o){console.error("dropin-styles (injectCodeFunction)",o)}})(`.checkout-address-validation{display:grid;gap:var(--spacing-medium)}.checkout-address-validation__options--busy{opacity:.4;pointer-events:none}.checkout-address-validation__title{margin-bottom:var(--spacing-small)}.checkout-address-validation__subtitle{color:var(--color-neutral-700);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-address-validation__options{display:grid;gap:var(--spacing-xbig);grid-template-columns:1fr 1fr}.checkout-address-validation__option{margin:0}.checkout-address-validation__option-title{margin-bottom:var(--spacing-xsmall)}.checkout-bill-to-shipping-address label{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);gap:0}.checkout-bill-to-shipping-address__error{margin-top:var(--spacing-medium)}.checkout-estimate-shipping{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-xxsmall);align-items:center;color:var(--color-neutral-800)}.checkout-estimate-shipping__label,.checkout-estimate-shipping__price{font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing)}.checkout-estimate-shipping__label--muted{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);color:var(--color-neutral-700)}.checkout-estimate-shipping__price--muted{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-estimate-shipping__price{text-align:right}.checkout-estimate-shipping__label--bold,.checkout-estimate-shipping__price--bold{font:var(--type-body-1-emphasized-font);letter-spacing:var(--type-body-1-emphasized-letter-spacing)}.checkout-estimate-shipping__caption{font:var(--type-details-caption-2-font);letter-spacing:var(--type-details-caption-2-letter-spacing);color:var(--color-neutral-700)}.cart-order-summary__shipping .dropin-skeleton{grid-template-columns:1fr}.checkout-login-form__heading{display:grid;grid-template-columns:1fr max-content;grid-auto-rows:max-content;margin:0 0 var(--spacing-medium) 0;align-items:center}.checkout-login-form__heading:empty{display:none}.checkout-login-form__content{grid-auto-rows:max-content}.checkout-login-form__content .dropin-field__hint a{font-weight:400}.checkout-login-form__customer-details{display:grid;grid-auto-flow:row;gap:var(--spacing-xxsmall)}.checkout-login-form__customer-name{font:var(--type-body-1-strong-font);letter-spacing:var(--type-body-1-default-letter-spacing)}.checkout-login-form__customer-email{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);color:var(--color-neutral-700)}.checkout-login-form__title,.checkout-login-form__title h2{grid-column-start:1;color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0}.checkout-login-form__heading-label,.checkout-login-form__sign-in,.checkout-login-form__sign-out{grid-column-start:2;color:var(--color-neutral-800);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);justify-self:flex-end}.checkout-login-form__heading-label a,a.checkout-login-form__link{font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing);margin-left:var(--spacing-xxsmall)}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-login-form__heading{grid-template-columns:1fr;grid-template-rows:1fr}.checkout-login-form__heading-label{grid-column-start:1;align-self:flex-start;justify-self:flex-start;margin-top:var(--spacing-medium)}}.checkout-out-of-stock.dropin-card{border-color:var(--color-warning-500)}.checkout-out-of-stock .dropin-card__content{gap:var(--spacing-small);padding:var(--spacing-small)}.checkout-out-of-stock__title{color:var(--color-neutral-900);font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing);margin:0;display:flex;gap:var(--spacing-xxsmall);align-items:center;justify-content:left;text-align:center}.checkout-out-of-stock__message{color:var(--color-neutral-800);font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing);margin:0}.checkout-out-of-stock__items{display:grid;grid-template-columns:repeat(5,100px);grid-gap:var(--spacing-small);list-style:none;padding:0;margin:0}.checkout-out-of-stock__item img{width:100%;height:auto}.checkout-out-of-stock__actions{display:flex;gap:var(--spacing-small);justify-content:flex-end}a.checkout-out-of-stock__action{color:var(--color-brand-500);font:var(--type-details-caption-1-font);letter-spacing:var(--type-details-caption-1-letter-spacing)}.checkout-out-of-stock__action{color:var(--color-brand-500);font:var(--type-details-caption-1-font);letter-spacing:var(--type-details-caption-1-letter-spacing);background:none;border:none;padding:0;cursor:pointer}.checkout-out-of-stock__action:hover{--textColor: var(--color-brand-700);text-decoration:solid underline var(--textColor);text-underline-offset:6px}@media only screen and (width >= 320px) and (width <= 768px){.checkout-out-of-stock__items{grid-template-columns:repeat(3,100px)}}.checkout-payment-methods__title,.checkout-payment-methods__title h2{color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-payment-methods__wrapper{position:relative;display:grid}.checkout-payment-methods__wrapper--busy{opacity:.4;pointer-events:none}.checkout-payment-methods__methods{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-medium)}.checkout-payment-methods__content{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);margin-top:var(--spacing-xbig)}.checkout-payment-methods__content>div[data-slot=PaymentMethodSlot]:not(:empty){margin-top:var(--spacing-medium)}.checkout-payment-methods--full-width{grid-template-columns:1fr}.checkout-payment-methods__spinner{margin:0 auto;position:absolute;z-index:999;left:0;right:0;top:calc(50% - (var(--size) / 2));bottom:0}.checkout__content [data-slot=PaymentMethods]:empty{display:none}.checkout-payment-methods__error{margin-top:var(--spacing-medium)}.checkout-payment-methods__stored-methods{display:flex;flex-direction:column;align-items:stretch;min-width:0;margin-bottom:var(--spacing-medium)}.checkout-payment-methods__stored-method-wrapper{position:relative}.checkout-payment-methods__stored-method-input{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden}.checkout-payment-methods__stored-method-input:focus+.checkout-payment-methods__stored-method{border:var(--shape-border-width-1) solid var(--color-neutral-900);outline:var(--spacing-xxsmall) solid var(--color-button-focus);position:relative;z-index:1}.checkout-payment-methods__stored-method{display:block;box-sizing:border-box;width:100%;min-width:0;overflow:hidden;border:var(--shape-border-width-2) solid var(--color-neutral-400);padding:var(--spacing-medium);cursor:pointer;background-color:var(--color-neutral-200);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);word-break:break-word}.checkout-payment-methods__stored-method--selected{border:var(--shape-border-width-1) solid var(--color-neutral-900);background-color:var(--color-neutral-50)}.checkout-payment-methods__methods-box{box-sizing:border-box;border:var(--shape-border-width-1) solid var(--color-neutral-900);background-color:var(--color-neutral-50);padding:var(--spacing-medium)}.checkout-payment-methods__methods-box-title{color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-payment-methods__pay-another-way{width:100%;height:88px;display:flex;align-items:center;justify-content:space-between;border:var(--shape-border-width-2) solid var(--color-neutral-400);background-color:var(--color-neutral-200);padding:var(--spacing-xsmall) var(--spacing-medium);cursor:pointer}.checkout-payment-methods__pay-another-way-title{font:var(--type-button-2-font);letter-spacing:var(--type-button-2-letter-spacing);color:var(--color-neutral-800)}.checkout-payment-methods__pay-another-way svg{stroke:var(--shape-icon-stroke-4);color:var(--color-neutral-800)}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-payment-methods__methods{grid-template-columns:1fr}}.checkout-payment-on-account{margin-bottom:var(--spacing-medium)}.checkout-payment-on-account__form{width:100%}.checkout-payment-on-account__credit{display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-small);margin-bottom:var(--spacing-medium);background-color:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:4px;font-size:14px;line-height:1.4}.checkout-payment-on-account__credit-label{font-weight:500;color:var(--color-neutral-700)}.checkout-payment-on-account__credit-amount{font-weight:600;color:var(--color-success-600)}.checkout-payment-on-account__exceed-message{margin-top:var(--spacing-medium);margin-bottom:var(--spacing-medium)}.checkout-payment-on-account .dropin-field{margin-bottom:0}.checkout-place-order{display:grid;padding-bottom:var(--spacing-big)}.checkout-place-order__button{align-self:flex-end;justify-self:flex-end}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-place-order{background-color:var(--color-neutral-200);padding:var(--spacing-medium) var(--spacing-medium) var(--spacing-big) var(--spacing-medium)}.checkout-place-order__button{align-self:center;justify-self:stretch}}.checkout-purchase-order{margin-bottom:var(--spacing-medium)}.checkout-purchase-order__form{width:100%}.checkout-purchase-order .dropin-field{margin-bottom:0}.checkout-server-error{position:relative;text-align:center}.checkout-server-error__icon .error-icon{color:var(--color-alert-500)}.checkout-server-error a{font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing)}.checkout-shipping-methods__title,.checkout-shipping-methods__title h3{color:var(--color-neutral-800);font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-shipping-methods__content{position:relative;display:block}.checkout-shipping-methods__method{width:fit-content;cursor:pointer;font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-shipping-methods__options>[data-slot^=checkout-shipping-method-item]{margin-bottom:var(--spacing-medium)}.checkout-shipping-methods__options>[data-slot^=checkout-shipping-method-item]:last-child{margin-bottom:0}.dropin-radio-button__label .dropin-price{color:var(--color-neutral-800);font-weight:400}.checkout-shipping-methods__price--original{margin-right:var(--spacing-xxsmall)}.checkout-shipping-methods__price-wrapper{display:flex;gap:var(--spacing-xxsmall);align-items:center}.checkout-shipping-methods__options--busy{opacity:.4;pointer-events:none}.checkout-shipping-methods__spinner{margin:0 auto;position:absolute;z-index:999;left:0;right:0;top:calc(50% - (var(--size) / 2));bottom:0}.checkout-shipping-methods__options--toggleButton{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-medium)}.checkout-shipping-methods__options--toggleButton .dropin-toggle-button__content{justify-content:start;display:grid;grid-template-columns:1fr min-content}.checkout-shipping-methods__options--toggleButton .checkout-shipping-methods__method{width:auto}.checkout-shipping-methods__options--toggleButton>[data-slot^=checkout-shipping-method-item]{margin-bottom:0}.checkout-shipping-methods__error{margin-top:var(--spacing-medium)}.checkout-shipping-methods__sr-only{border:0;clip:rect(0 0 0 0);clip-path:inset(50%);height:1px;margin:0 -1px -1px 0;overflow:hidden;padding:0;position:absolute;width:1px}.checkout-terms-and-conditions{display:grid}.checkout-terms-and-conditions__error{font:var(--type-details-caption-2-font);letter-spacing:var(--type-details-caption-2-letter-spacing);color:var(--color-alert-800);text-align:left;margin-top:var(--spacing-xsmall)}.checkout-terms-and-conditions__error:empty{display:none}
-.checkout__banner{margin-bottom:var(--spacing-xbig)}`,{styleId:"checkout"});
-import{jsx as S,jsxs as Ge,Fragment as We}from"@dropins/tools/preact-bundle.js";import{useState as O,useMemo as q,useCallback as E,useEffect as x,useRef as he}from"@dropins/tools/preact-bundle.js";import{AddressValidation as Xe,BillToShippingAddress as Ke,EstimateShipping as Je,SignOut as Ye,SignIn as Ze,LoginForm as et,classes as tt,SvgInfoFilled as nt,OutOfStock as rt,PaymentOnAccount as it,PurchaseOrder as st,PaymentMethods as ot,PlaceOrder as at,scrollToElement as ct,ServerError as ut,ShippingMethods as lt,TermsAndConditions as dt,Markup as ft}from"./chunks/components.js";import{Price as ke,AlertBanner as mt,Icon as ht,Checkbox as pt}from"@dropins/tools/components.js";import{Slot as oe,deepmerge as gt}from"@dropins/tools/lib.js";import{useState as fe,useCallback as se,useEffect as ve}from"@dropins/tools/preact-bundle.js";import{transformAddressToCartAddressInput as yt,getLatestCheckoutUpdate as ue,hasPendingUpdates as Ie,hasShippingAddress as ye,setBillingAddress as De,config as Oe,notifyValues as me,getValue as Q,state as J,TaxDisplay as Ne,validateEmail as Ce,getCartEmail as Et,isEmailAvailable as St,setGuestEmailOnCart as Ct,getCustomer as bt,getCompanyCredit as It,validateNotEmpty as Le,setPaymentMethod as Fe,getStoredPaymentMethods as Mt,mapErrorToCode as kt,ErrorCodes as vt,transformShippingEstimateShippingMethod as Tt,hasPendingShippingEstimate as At,setShippingMethodsOnCart as Ot,isQuoteCheckout as Be,AgreementMode as xt}from"./api.js";import{events as P}from"@dropins/tools/event-bus.js";import{isSetAddressRequestPending as Ue,isVirtualCart as Pt}from"./chunks/events.js";import{useText as ae,Text as Dt,MarkupText as Nt}from"@dropins/tools/i18n.js";import{render as Bt}from"./chunks/render.js";import"./fragments.js";import"@dropins/tools/signals.js";import"@dropins/tools/fetch-graphql.js";const zt=({suggestedAddress:t,handleSelectedAddress:e})=>{const[i,m]=O(null),[o,d]=O(void 0),[g,h]=O(!1),c=q(()=>!t||!o?null:{...o,regionId:void 0,...t},[o,t]),n=E(u=>{var a;const k=(a=u==null?void 0:u.shippingAddresses)==null?void 0:a[0],C=yt(k);d(C)},[]);x(()=>{const u=P.on("checkout/initialized",k=>{n(k)},{eager:!0});return()=>{u==null||u.off()}},[n]),x(()=>{const u=ue();u&&n(u);const k=P.on("checkout/updated",C=>{n(C)},{eager:!1});return()=>{k==null||k.off()}},[n]);const M=E(async u=>{m(u);const k=u==="suggested"?c:o;h(!0);try{await(e==null?void 0:e({selection:u,address:k}))}finally{h(!1)}},[c,o,e]);return S(Xe,{busy:g,currentAddress:o,selection:i,suggestedAddress:c,onSelectionChange:M})};zt.displayName="AddressValidation";const Ht=({active:t=!0,autoSync:e=!0,onCartSyncError:i,onChange:m})=>{const[o,d]=O(null),[g,h]=O(!1),[c,n]=O(),M=he(!1),u=Ie.value||Ue.value,{cartSyncError:k}=ae({cartSyncError:"Checkout.BillToShippingAddress.cartSyncError"}),C=E(()=>{d(null)},[]),a=E(s=>{d(null),n(s),m==null||m(s),!(!e||!s||!ye())&&De({sameAsShipping:!0}).catch(b=>{n(!1),i==null||i({error:b}),i||d(k)})},[e,k,i,m]),l=E(s=>{var U;const b=!s||s.isEmpty,B=!!(s!=null&&s.isVirtual);if(b||B){h(B),n(!1),M.current=!1;return}if(M.current)return;const I=s,D=(U=I.shippingAddresses)==null?void 0:U[0],z=!!I.billingAddress;let $;if(D)$=D.sameAsBilling??!z;else{const{defaults:Y}=Oe.getConfig();$=Y.isBillToShipping}n($),M.current=!0,e&&$&&D&&!z&&De({sameAsShipping:!0}).catch(()=>{})},[]);return x(()=>{!t||c===void 0||me({isBillToShipping:c})},[t,c]),x(()=>{if(!t)return;const s=ue();if(s){const B=Q("isBillToShipping");B!=null&&n(B),l(s);return}const b=P.on("checkout/initialized",l,{eager:!0});return()=>{b==null||b.off()}},[t,l]),x(()=>{if(!t)return;const s=P.on("checkout/updated",l,{eager:!1});return()=>{s==null||s.off()}},[t,l]),S(Ke,{checked:c,disabled:u,error:o,initialized:c!==void 0,visible:t&&!g,onChange:a,onDismissError:C})};Ht.displayName="BillToShippingAddress";const $t=({active:t=!0})=>{var C;const[e,i]=O(),m=(e==null?void 0:e.amount.value)===0,o=(C=J.config)==null?void 0:C.shoppingCartDisplaySetting.shipping,d=o===Ne.INCLUDING_EXCLUDING_TAX,g=o===Ne.INCLUDING_TAX,h=ae({freeShipping:"Checkout.EstimateShipping.freeShipping",taxToBeDetermined:"Checkout.EstimateShipping.taxToBeDetermined",label:"Checkout.EstimateShipping.label",estimated:"Checkout.EstimateShipping.estimated"}),c=E(a=>{var $;const l=!a||a.isEmpty,s=!!(a!=null&&a.isVirtual);if(l||s){i(null);return}const b=($=a.shippingAddresses)==null?void 0:$[0];if(!b)return;const B=b==null?void 0:b.selectedShippingMethod;if(!B){i(null);return}const{amount:I,amountExclTax:D,amountInclTax:z}=B;i({estimated:!1,amount:I,amountExclTax:D,amountInclTax:z})},[]),n=E(a=>{let l=null;if(a.shippingMethod){const s=a.shippingMethod;l={estimated:!0,amount:s.amount,amountExclTax:s.amountExclTax,amountInclTax:s.amountInclTax}}i(l)},[]);x(()=>{if(!t)return;const a=P.on("shipping/estimate",n,{eager:!0});return()=>{a==null||a.off()}},[t,n]),x(()=>{if(!t)return;const a=ue();if(a){c(a);return}const l=P.on("checkout/initialized",c,{eager:!0});return()=>{l==null||l.off()}},[t,c]),x(()=>{if(!t)return;const a=P.on("checkout/updated",c,{eager:!1});return()=>{a==null||a.off()}},[t,c]);const M=()=>m?S("span",{"data-testid":"free-shipping",children:h.freeShipping}):g&&(e!=null&&e.amountInclTax)?S(ke,{amount:e.amountInclTax.value,currency:e.amountInclTax.currency,"data-testid":"shipping"}):S(ke,{amount:e==null?void 0:e.amount.value,currency:e==null?void 0:e.amount.currency,"data-testid":"shipping"}),u=()=>e!=null&&e.amountExclTax?S(ke,{amount:e.amountExclTax.value,currency:e.amountExclTax.currency,"data-testid":"shipping-excluding-tax"}):S("span",{children:h.taxToBeDetermined});return S(Je,{initialized:e!==void 0,label:(()=>{const a=e!=null&&e.estimated?h.estimated:h.label;return S("span",{"data-testid":"estimate-shipping-label",children:a})})(),price:M(),priceExclTax:u(),taxExcluded:d&&!m,taxIncluded:g&&!m,visible:t&&e!==null})};$t.displayName="EstimateShipping";const Lt=1e3,Ft=({active:t=!0,autoSync:e=!0,displayHeadingContent:i=!0,displayTitle:m=!0,initialData:o,onCartSyncError:d,onSignInClick:g,onSignOutClick:h,onValidationError:c,slots:n,...M})=>{const[u,k]=O(null),[C,a]=O(""),[l,s]=O(""),[b,B]=O(!1),[I,D]=O(!0),[z,$]=O(!1),U=he(null),{alreadyHaveAccountHint:Y,cartSyncError:R,defaultTitle:L,fasterCheckoutHint:_,invalidEmailError:Z,missingEmailError:F,signInLabel:ce}=ae({alreadyHaveAccountHint:"Checkout.LoginForm.emailExists.alreadyHaveAccount",cartSyncError:"Checkout.LoginForm.cartSyncError",defaultTitle:"Checkout.LoginForm.title",fasterCheckoutHint:"Checkout.LoginForm.emailExists.forFasterCheckout",invalidEmailError:"Checkout.LoginForm.invalidEmailError",missingEmailError:"Checkout.LoginForm.missingEmailError",signInLabel:"Checkout.LoginForm.emailExists.signInButton"}),ee=E(y=>{!Ce(y)||y===Et()||(St(y).then(T=>{D(T)}).catch(T=>{console.error(T),D(!0)}),e&&Ct(y).catch(T=>{d==null||d({email:y,error:T}),d||s(R)}))},[e,d,R]),f=E(y=>{const A=y.target.value;a(A),D(!0),s(""),U.current&&clearTimeout(U.current),U.current=setTimeout(()=>{ee(A),me({email:A}),U.current=null},Lt)},[ee]),v=E(y=>{const T=y.target,A=T.value.trim();if(Ce(A)){if(s(""),T.setCustomValidity(""),!U.current)return;clearTimeout(U.current),U.current=null,ee(A),me({email:A});return}const Se=A===""?"missing":"invalid",ge=Se==="missing"?F:Z;if(c){c({email:A,message:ge,type:Se});return}s(ge),T.setCustomValidity(ge)},[Z,F,c,ee]),H=E(y=>{const T=y.target,A=T.validity,te=A.valueMissing?F:Z;if(!c){s(te);return}c({email:T.value,message:te,type:A.valueMissing?"missing":"invalid"})},[F,Z,c]),V=E(()=>{const y=Q("email")??"",T=Ce(y);g==null||g(T?y:"")},[g]),j=E(()=>{h==null||h()},[h]),G=E(y=>{const T=Q("email")??"",A=(y==null?void 0:y.email)??"";A!==T&&(a(A),s(""),D(!0),me({email:A}))},[]);x(()=>{if(!t)return;const y=P.on("authenticated",T=>{B(T),bt().then(A=>{k(A)}).catch(console.error)},{eager:!0});return()=>{y==null||y.off()}},[t]),x(()=>{if(!t)return;const y=ue();if(y){$(!0);const A=y.email??"";A&&a(A),G(y);return}const T=P.on("checkout/initialized",A=>{$(!0),G(A)},{eager:!0});return()=>{T==null||T.off()}},[t,G]),x(()=>{if(!t)return;const y=P.on("checkout/updated",G,{eager:!1});return()=>{y==null||y.off()}},[t,G]);const K=q(()=>{if(m)return S(oe,{name:"checkout-login-form-title",slot:n==null?void 0:n.Title,children:S("h2",{children:L})})},[m,n,L]),W=q(()=>{if(i)return S(oe,{context:{authenticated:b},name:"checkout-login-form-heading-label",slot:n==null?void 0:n.Heading,children:b?S(Ye,{onClick:j}):S(Ze,{onClick:V})})},[i,b,n,V,j]),X=q(()=>I?"":Ge(We,{children:[Y," ",S("a",{href:"#",onClick:V,children:ce})," ",_]}),[I,Y,ce,_,V]),le=q(()=>S(oe,{context:{email:C,isEmailValid:Ce(C),isAuthenticated:b},name:"checkout-login-form-preferences",slot:n==null?void 0:n.Preferences}),[C,b,n]);return S(et,{...M,customer:u,email:C,error:l,headingContent:W,hint:X,initialized:z,preferences:le,title:K,visible:t,onEmailBlur:v,onEmailChange:f,onEmailInvalid:H})};Ft.displayName="LoginForm";const Ut=({className:t,initialData:e,active:i=!0,...m})=>{const[o,d]=O(0),g=ae({mergedCartBannerItems:S(Dt,{fields:{count:o},id:"Checkout.MergedCartBanner.items",plural:o})}),h=()=>{d(0)},c=E(n=>{var u;const M=(u=n==null?void 0:n.oldCartItems)==null?void 0:u.reduce((k,C)=>k+C.quantity,0);M>0&&d(M)},[]);return x(()=>{if(!i)return;const n=P.on("cart/merged",c,{eager:!0});return()=>{n==null||n.off()}},[i,c]),x(()=>{if(!i)return;const n=P.on("cart/reset",()=>{d(0)},{eager:!1});return()=>{n==null||n.off()}},[i]),!i||!o?null:S(mt,{...m,"aria-label":g.mergedCartBannerItems,className:tt(["checkout__banner",t]),"data-testid":"merged-cart-banner",icon:S(ht,{source:nt}),message:S("span",{children:g.mergedCartBannerItems}),variant:"neutral",onDismiss:h})};Ut.displayName="MergedCartBanner";const Vt=({onCartProductsUpdate:t,routeCart:e,active:i=!0})=>{const[m,o]=O([]),d=E(()=>{if(!t)return;const h=m.filter(c=>c.outOfStock).map(c=>({uid:c.uid,quantity:0}));t(h)},[m,t]);if(x(()=>{if(!i)return;const h=P.on("cart/data",c=>{const n=(c==null?void 0:c.items)||[];o(n.filter(M=>M.outOfStock||M.insufficientQuantity))},{eager:!0});return()=>{h==null||h.off()}},[i]),!i||m.length===0)return null;const g=!m.some(h=>h.insufficientQuantity);return S(rt,{items:m,routeCart:e==null?void 0:e(),onRemoveOutOfStock:g?d:void 0})};Vt.displayName="OutOfStock";const Ve=({initialReferenceNumber:t="",onReferenceNumberChange:e,onReferenceNumberBlur:i,...m})=>{const[o,d]=fe(!1),[g,h]=fe(null),[c,n]=fe(null),[M,u]=fe(t),k=J.authenticated,C=!!J.cartId,a=!!J.quoteId,l=se(I=>{var D;n(((D=I==null?void 0:I.total)==null?void 0:D.includingTax)||null)},[]),s=se(I=>{var D,z;n(((z=(D=I==null?void 0:I.quote)==null?void 0:D.prices)==null?void 0:z.grandTotal)||null)},[]),b=se(I=>{const z=I.target.value;u(z),e==null||e(z)},[e]),B=se(I=>{const z=I.target.value;i==null||i(z)},[i]);return ve(()=>{if(!C)return;const I=P.on("cart/data",l,{eager:!0});return()=>{I==null||I.off()}},[C,l]),ve(()=>{if(!a)return;const I=P.on("quote-management/quote-data",s,{eager:!0});return()=>{I==null||I.off()}},[a,s]),ve(()=>{k&&It().then(I=>{h(I)}).catch(I=>{console.error("Failed to fetch company credit:",I),h(null)}).finally(()=>{d(!0)})},[k]),S("div",{...m,children:S(it,{companyCredit:g,initialized:o,referenceNumber:M,totalAmount:c,onReferenceNumberBlur:B,onReferenceNumberChange:b})})};Ve.displayName="PaymentOnAccount";const we=({initialReferenceNumber:t="",onReferenceNumberChange:e,onReferenceNumberBlur:i,...m})=>{const[o,d]=fe(""),[g,h]=fe(t),{missingRefNumberError:c}=ae({missingRefNumberError:"Checkout.PurchaseOrder.missingReferenceNumberError"}),n=se(a=>{const l=Le(a);d(l?"":c)},[c]),M=se(a=>{d(a.valid?"":c)},[c]),u=se(a=>{const s=a.target.value;h(s),n(s),e==null||e(s)},[e,n]),k=se(a=>{const s=a.target.value;n(s),i==null||i(s)},[i,n]),C=se(a=>{const l=a.target;M(l.validity)},[M]);return S(st,{...m,error:o,referenceNumber:g,onInvalidReferenceNumber:C,onReferenceNumberBlur:k,onReferenceNumberChange:u})};we.displayName="PurchaseOrder";const wt=(t,e)=>{let i;const m=function(...o){clearTimeout(i),i=setTimeout(()=>t.apply(this,o),e)};return m.cancel=()=>{clearTimeout(i)},m};var _t=(t=>(t.PaymentOnAccount="companycredit",t.PurchaseOrder="purchaseorder",t))(_t||{});const ze={companycredit:{Container:Ve,autoSync:!0,formName:"payment-on-account",validateRefNumber:!1},purchaseorder:{Container:we,autoSync:!1,formName:"purchase-order",validateRefNumber:!0}},be=new Map,Rt=(t,e)=>{const i=`${t}-${e}`;if(!be.has(i)){const m=wt(async o=>{if(!e||Le(o))try{await Fe({code:t,purchase_order_number:o})}catch(d){console.error(`Failed to set payment method for ${t}:`,d)}},1e3);be.set(i,m)}return be.get(i)},Ee={},mn=()=>{Object.keys(Ee).forEach(t=>{delete Ee[t]}),be.clear()},He=t=>{if(!(t in ze))throw new Error(`Invalid handler code: ${t}`);if(Ee[t])return Ee[t];const e=ze[t],{autoSync:i,Container:m,formName:o,validateRefNumber:d}=e,g={enabled:!0,autoSync:i,render:h=>{var M;const c=String(((M=h.additionalData)==null?void 0:M.purchase_order_number)??""),n=document.createElement("div");Bt.render(m,{name:o,initialReferenceNumber:c,onReferenceNumberChange:Rt(t,d)})(n),h.replaceHTML(n)}};return Ee[t]=g,g},qt={companycredit:He("companycredit"),purchaseorder:He("purchaseorder")};function pe(t){var e;return(e=t.additionalData)==null?void 0:e.publicHash}function de(t){return t?pe(t)!==void 0:!1}function Te(t,e){return t?e.some(i=>_e(i,t)):!1}function _e(t,e){return!t||!e?!1:t.code===e.code&&pe(t)===pe(e)}function Qt(t){return t?!!t.code&&!!t.title:!1}function $e(t){return`${t.code}:${pe(t)??""}`}const jt=({UIComponentType:t="ToggleButton",active:e=!0,autoSync:i=!0,displayTitle:m=!0,slots:o,onCartSyncError:d,onSelectionChange:g})=>{const[h,c]=O(null),[n,M]=O(!1),[u,k]=O(null),[C,a]=O([]),[l,s]=O([]),[b,B]=O(!1),[I,D]=O(new Set),z=J.authenticated,$=Ie.value,{cartSyncError:U,defaultTitle:Y}=ae({cartSyncError:"Checkout.PaymentMethods.cartSyncError",defaultTitle:"Checkout.PaymentMethods.title"}),R=q(()=>{const r=(o==null?void 0:o.Methods)??{};return gt(qt,r)},[o==null?void 0:o.Methods]),L=E(r=>{var p;return(p=R[r.code])==null?void 0:p.render},[R]),_=q(()=>(o==null?void 0:o.StoredMethods)??{},[o==null?void 0:o.StoredMethods]),Z=Object.keys(_).length>0,F=E(r=>Object.entries(_).find(([p,N])=>(N.tokenCode??p)===r.code),[_]),ce=E(r=>{var p,N;return(N=(p=F(r))==null?void 0:p[1])==null?void 0:N.render},[F]),ee=E(r=>{const p=F(r);if(!p)return!1;const[N,w]=p;return w.enabled!==void 0?w.enabled:I.has(N)},[F,I]),f=E(r=>{var p;return de(r)?((p=F(r))==null?void 0:p[0])??r.code:r.code},[F]),v=q(()=>l.filter(ee),[l,ee]),H=he(new Set),V=he(null);V.current=u;const j=E((r,p)=>[...r,...p].find(w=>!H.current.has($e(w)))??null,[]),G=E(r=>{const p=R[r.code];return p?p.autoSync!==!1:i},[i,R]),K=E(r=>{var N;return _[r.code]?!1:((N=R[r.code])==null?void 0:N.enabled)!==!1},[R,_]),W=E(r=>r.map(p=>{const N=R[p.code];return N?{...p,icon:N.icon}:p}),[R]),X=E(r=>{k(p=>p&&{...p,additionalData:r})},[]),le=E(()=>{c(null)},[]),y=E(r=>{c(null),V.current=r,k(r)},[]),T=E(async(r,p)=>{if(!(Pt()||ye())||!G(r))return;const w=pe(r),ne=w?(()=>{const re=f(r);return{code:re,[re]:{public_hash:w}}})():{code:r.code,...r.additionalData};Fe(ne).then(()=>{H.current.clear()}).catch(re=>{p===void 0&&H.current.add($e(r)),y(p??null),c(d?null:U),d==null||d({method:r,error:re})})},[U,f,G,d,y]),A=E(async r=>{const p=Q("selectedPaymentMethod");y(r),g==null||g(r),await T(r,p)},[g,y,T]),te=E(r=>{if(!r||r.isEmpty){y(null),a([]),D(new Set);return}const N=r.availablePaymentMethods??[],w=N.filter(K);if(a(w),D(new Set(N.map(je=>je.code))),w.length===0){de(Q("selectedPaymentMethod"))||y(null);return}const ne=r.selectedPaymentMethod??null,re=Qt(ne),ie=Q("selectedPaymentMethod"),Pe=de(ie)||Te(ie,w),Qe=!!ie&&!!ne&&ne.code===f(ie);if(ie&&Pe&&!Qe){T(ie,ne);return}(!ie||!Pe)&&re&&Te(ne,w)&&y(ne)},[K,f,y,T]);x(()=>{if(!z||!Z){B(!0);return}B(!1),Mt().then(s).catch(r=>{console.error("Failed to fetch stored payment methods:",r),s([])}).finally(()=>{B(!0)})},[z,Z]),x(()=>{if(!n||!b)return;const r=V.current;if(r&&(de(r)||Te(r,C)))return;const p=j(v,C);p&&(y(p),T(p))},[n,j,b,C,u,v,T,y]),x(()=>{if(!e)return;const r=ue();if(r){M(!0);const N=Q("selectedPaymentMethod");N&&k(N),te(r);return}const p=P.on("checkout/initialized",N=>{M(!0),te(N)},{eager:!0});return()=>{p==null||p.off()}},[e,te]),x(()=>{if(!e)return;const r=P.on("checkout/updated",te,{eager:!1});return()=>{r==null||r.off()}},[e,te]),x(()=>{me({selectedPaymentMethod:u,selectedPaymentMethodCartCode:u?f(u):null})},[u,f]);const Se=q(()=>{if(m)return S(oe,{name:"checkout-payment-methods-title",slot:o==null?void 0:o.Title,children:S("h2",{children:Y})})},[m,o==null?void 0:o.Title,Y]),ge=q(()=>{if(!u||de(u))return;const r=L(u);if(r)return S(oe,{context:{additionalData:u.additionalData,cartId:J.cartId??"",replaceHTML(p){this.replaceWith(p)},setAdditionalData:X},name:"PaymentMethodContent",slot:r},u.code)},[L,u,X]),Re=q(()=>v.map(r=>{var re;const p=ce(r),N=pe(r),w=_e(u,r);return{content:p?S(oe,{context:{cartId:J.cartId??"",details:(re=r.additionalData)==null?void 0:re.details,publicHash:N,selected:w,replaceHTML(ie){this.replaceWith(ie)}},name:"StoredPaymentMethodOption",slot:p},N):null,method:r,selected:w}}),[ce,u,v]),Me=v.length===0||!de(u),qe=E(()=>{Me||C[0]&&A(C[0])},[Me,C,A]);return S(ot,{UIComponentType:t,busy:$,error:h,initialized:n,isExpanded:Me,options:W(C),paymentMethodContent:ge,selection:u,storedOptions:Re,title:Se,visible:e,onDismissError:le,onPayAnotherWay:qe,onSelectionChange:A})};jt.displayName="PaymentMethods";const Gt=({disabled:t=!1,active:e=!0,handleValidation:i,handlePlaceOrder:m,slots:o,...d})=>{const[g,h]=O(!1),[c,n]=O(!1),M=Ie.value,u=ae({CheckoutUnexpectedError:"Checkout.ServerError.unexpected",placeOrderButton:"Checkout.PlaceOrder.button"}),k=E(l=>{const s=kt(l),b=s===vt.UNKNOWN_ERROR?u.CheckoutUnexpectedError:l.message;P.emit("checkout/error",{message:b,code:s})},[u]),C=E(async()=>{try{if(i&&!await i())return;await m({cartId:J.cartId,quoteId:J.quoteId,code:Q("selectedPaymentMethodCartCode")??""})}catch(l){k(l)}},[i,m,k]),a=E(l=>{(!l||"isEmpty"in l&&l.isEmpty)&&n(!1)},[]);return x(()=>{if(e===!1)return;const l=P.on("cart/initialized",s=>{const b=(s==null?void 0:s.items)||[];n(b.some(B=>B.outOfStock||B.insufficientQuantity))},{eager:!0});return()=>{l==null||l.off()}},[e]),x(()=>{if(!e)return;const l=ue();if(l){h(!0),a(l);return}const s=P.on("checkout/initialized",b=>{h(!0),a(b)},{eager:!0});return()=>{s==null||s.off()}},[e,a]),x(()=>{if(!e)return;const l=P.on("checkout/updated",s=>{a(s)},{eager:!1});return()=>{l==null||l.off()}},[e,a]),S(at,{...d,disabled:t||c||M||Ue.value,initialized:g,visible:e,onClick:C,children:S(oe,{context:{code:Q("selectedPaymentMethodCartCode")??""},name:"Content",slot:o==null?void 0:o.Content,children:u.placeOrderButton})})};Gt.displayName="PlaceOrder";const Wt=({active:t=!0,onRetry:e,onServerError:i,autoScroll:m=!1})=>{const[o,d]=O(null),g=he(null),h=async()=>{e==null||e(o),d(null)};return x(()=>{const c=P.on("checkout/error",n=>{d(n||null),n&&i&&i(n.message)},{eager:!0});return()=>{c==null||c.off()}},[i]),x(()=>{!m||!o||!g.current||ct(g.current)},[o,m]),!t||!o?null:S(ut,{errorMessage:o.message,errorMessageRef:g,onClick:h})};Wt.displayName="ServerError";function Ae(t,e){return t?e.some(i=>xe(i,t)):!1}function xe(t,e){return!t||!e||t.amount.value!==e.amount.value?!1:t.code===e.code&&t.carrier.code===e.carrier.code}function Xt(t){const e=P.lastPayload("shipping/estimate");e&&P.emit("shipping/estimate",{...e,shippingMethod:Tt(t)})}const Kt=({UIComponentType:t="RadioButton",active:e=!0,autoSync:i=!0,displayTitle:m=!0,initialData:o,slots:d,onCartSyncError:g,onSelectionChange:h,...c})=>{const[n,M]=O(null),[u,k]=O(!1),[C,a]=O(),[l,s]=O(null),b=he(null),B=Ie.value,I=At.value,{cartSyncError:D,defaultTitle:z}=ae({cartSyncError:"Checkout.ShippingMethods.cartSyncError",defaultTitle:"Checkout.ShippingMethods.title"}),$=E(f=>{if(!f||f.length===0)return[];const{shipping:v}=Oe.getConfig();return v!=null&&v.filterOptions?f.filter(v.filterOptions):f},[]),U=E(f=>{if(f.length===0)return null;const{defaults:v}=Oe.getConfig();return v.selectedShippingMethod(f)},[]),Y=q(()=>$(C),[C,$]),R=E(()=>{M(null)},[]),L=E(f=>{M(null),s(v=>xe(v,f)?v:(me({selectedShippingMethod:f}),f))},[]),_=E(async(f,v)=>{if(!i||!ye())return;const H={carrierCode:f.carrier.code,methodCode:f.code};Ot([H]).catch(V=>{L(v??null),g==null||g({method:f,error:V}),g||M(D)})},[i,L,g,D]),Z=E(async f=>{const v=Q("selectedShippingMethod");L(f),h==null||h(f),ye()||Xt(f),await _(f,v)},[h,L,_]),F=E(f=>{var T;const v=!f||f.isEmpty,H=!!(f!=null&&f.isVirtual);if(v||H){k(H),L(null),a([]);return}const V=(T=f.shippingAddresses)==null?void 0:T[0];if(!V)return;const j=V.availableShippingMethods??[];Be()&&!b.current&&(b.current=j);const G=Be()&&b.current?b.current:j;a(G);const K=$(G);if(K.length===0){L(null);return}const W=V.selectedShippingMethod??null,X=Q("selectedShippingMethod"),le=Ae(X,K),y=xe(X,W);if(X&&le&&!y){_(X,W);return}if((!X||!le)&&W&&Ae(W,K)){L(W);return}if((!X||!le)&&(!W||!Ae(W,K))){const A=U(K);L(A),A&&_(A)}},[$,U,L,_]),ce=E(f=>{if(f===void 0)return;const{shippingMethod:v,availableShippingMethods:H}=f,V=(H==null?void 0:H.find(j=>j.code===(v==null?void 0:v.methodCode)&&j.carrier.code===(v==null?void 0:v.carrierCode)))??null;a(H),L(V)},[L]);x(()=>{if(!e)return;const f=ue();if(f){const H=Q("selectedShippingMethod");H&&s(H),F(f);return}const v=P.on("checkout/initialized",F,{eager:!0});return()=>{v==null||v.off()}},[e,F]),x(()=>{if(!e)return;const f=P.on("checkout/updated",F,{eager:!1});return()=>{f==null||f.off()}},[e,F]),x(()=>{if(!e||ye())return;const f=P.on("shipping/estimate",ce,{eager:!0});return()=>{f==null||f.off()}},[e,ce]);const ee=q(()=>{if(m)return S(oe,{name:"checkout-shipping-methods-title",slot:d==null?void 0:d.Title,children:S("h3",{children:z})})},[m,d==null?void 0:d.Title,z]);return S(lt,{...c,UIComponentType:t,busy:B||I,error:n,initialized:C!==void 0,options:Y,selection:l,shippingMethodItemSlot:d==null?void 0:d.ShippingMethodItem,title:ee,visible:e&&!u,onDismissError:R,onSelectionChange:Z})};Kt.displayName="ShippingMethods";const Jt=({active:t=!0,slots:e,...i})=>{var u;const[m,o]=O(!1),[d,g]=O(""),{errorMessage:h}=ae({errorMessage:"Checkout.TermsAndConditions.error"}),c=((u=J.config)==null?void 0:u.agreementsEnabled)===!1,n=()=>{g("")},M=()=>{g(h)};return x(()=>{if(!t||c)return;if(ue()){o(!0);return}const C=P.on("checkout/initialized",()=>{o(!0)},{eager:!0});return()=>{C==null||C.off()}},[t,c]),S(dt,{...i,agreements:S(oe,{context:{appendAgreement(k){this._registerMethod((...C)=>{const a=k(...C);if(!a)return;const{mode:l,name:s,text:b,translationId:B}=a;if(!b&&!B){console.warn(`The agreement ${s} is misconfigured. Please provide a text or a translationId.`);return}const I=b?S(ft,{html:b}):S(Nt,{id:B}),D=S(pt,{checked:l===xt.AUTO,label:I,name:s,required:!0,onChange:n,onInvalid:M});this._setProps(z=>({children:[...z.children||[],D]}))})}},name:"Agreements",slot:e==null?void 0:e.Agreements}),error:d,initialized:m,visible:t&&!c})};Jt.displayName="TermsAndConditions";export{zt as AddressValidation,Ht as BillToShippingAddress,$t as EstimateShipping,_t as HandlerCode,Ft as LoginForm,Ut as MergedCartBanner,Vt as OutOfStock,jt as PaymentMethods,Ve as PaymentOnAccount,Gt as PlaceOrder,we as PurchaseOrder,Wt as ServerError,Kt as ShippingMethods,Jt as TermsAndConditions,He as createHandler,qt as defaultHandlers,Xt as emitShippingEstimateEvent,Rt as handleRefNumberChange,mn as resetHandlersCache};
+import { useState as C, useMemo as q, useCallback as d, useEffect as M, jsx as k, useRef as de, jsxs as qe, Fragment as $e } from "@dropins/tools/preact-bundle.js";
+import { A as Ve, B as Ge, E as We, d as Qe, e as Xe, L as Ke, f as Je, g as Ye, O as Ze, c as et, b as tt, h as nt, P as ot, s as rt, a as at, S as it, T as lt, M as ct } from "./chunks/components.js";
+import { Price as _e, AlertBanner as st, Icon as ut, Checkbox as dt } from "@dropins/tools/components.js";
+import { Slot as re, deepmerge as pt } from "@dropins/tools/lib.js";
+import { k as mt, a as le, b as ye, d as he, setBillingAddress as Te, config as Ce, n as ue, e as W, s as J, T as we, f as fe, j as ht, isEmailAvailable as gt, setGuestEmailOnCart as ft, getCustomer as vt, getCompanyCredit as yt, v as Pe, setPaymentMethod as Oe, getStoredPaymentMethods as kt, m as _t, E as bt, c as xt, setShippingMethodsOnCart as Ct, i as Me, t as St, A as Et } from "./api.js";
+import { events as A } from "@dropins/tools/event-bus.js";
+import { useText as ae, Text as Tt, MarkupText as wt } from "@dropins/tools/i18n.js";
+import "./fragments.js";
+import "@dropins/tools/signals.js";
+import "@dropins/tools/fetch-graphql.js";
+import { i as Be } from "./chunks/ui.js";
+import { r as Mt } from "./chunks/render.js";
+import { i as It } from "./chunks/events.js";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const At = ({ suggestedAddress: e, handleSelectedAddress: t }) => {
+  const [n, i] = C(null), [a, l] = C(void 0), [_, v] = C(!1), c = q(() => !e || !a ? null : { ...a, regionId: void 0, ...e }, [a, e]), r = d((p) => {
+    var b;
+    const s = (b = p == null ? void 0 : p.shippingAddresses) == null ? void 0 : b[0], f = mt(s);
+    l(f);
+  }, []);
+  M(() => {
+    const p = A.on("checkout/initialized", (b) => {
+      r(b);
+    }, { eager: !0 });
+    return () => {
+      p == null || p.off();
+    };
+  }, [r]), M(() => {
+    const p = le();
+    p && r(p);
+    const b = A.on("checkout/updated", (s) => {
+      r(s);
+    }, { eager: !1 });
+    return () => {
+      b == null || b.off();
+    };
+  }, [r]);
+  const S = d(async (p) => {
+    i(p);
+    const b = p === "suggested" ? c : a;
+    v(!0);
+    try {
+      await (t == null ? void 0 : t({ selection: p, address: b }));
+    } finally {
+      v(!1);
+    }
+  }, [c, a, t]);
+  return k(Ve, { busy: _, currentAddress: a, selection: n, suggestedAddress: c, onSelectionChange: S });
+};
+At.displayName = "AddressValidation";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Nt = ({ active: e = !0, autoSync: t = !0, onCartSyncError: n, onChange: i }) => {
+  const [a, l] = C(null), [_, v] = C(!1), [c, r] = C(), S = de(!1), p = ye.value || Be.value, { cartSyncError: b } = ae({ cartSyncError: "Checkout.BillToShippingAddress.cartSyncError" }), s = d(() => {
+    l(null);
+  }, []), f = d((h) => {
+    l(null), r(h), i == null || i(h), !(!t || !h || !he()) && Te({ sameAsShipping: !0 }).catch((x) => {
+      r(!1), n == null || n({ error: x }), n || l(b);
+    });
+  }, [t, b, n, i]), u = d((h) => {
+    var x;
+    const O = !h || h.isEmpty, E = !!(h != null && h.isVirtual);
+    if (O || E) {
+      v(E), r(!1), S.current = !1;
+      return;
+    }
+    if (S.current) return;
+    const I = h, B = (x = I.shippingAddresses) == null ? void 0 : x[0], $ = !!I.billingAddress;
+    let z;
+    if (B) z = B.sameAsBilling ?? !$;
+    else {
+      const { defaults: Y } = Ce.getConfig();
+      z = Y.isBillToShipping;
+    }
+    r(z), S.current = !0, t && z && B && !$ && Te({ sameAsShipping: !0 }).catch(() => {
+    });
+  }, []);
+  return M(() => {
+    !e || c === void 0 || ue({ isBillToShipping: c });
+  }, [e, c]), M(() => {
+    if (!e) return;
+    const h = le();
+    if (h) {
+      const O = W("isBillToShipping");
+      O != null && r(O), u(h);
+      return;
+    }
+    const x = A.on("checkout/initialized", u, { eager: !0 });
+    return () => {
+      x == null || x.off();
+    };
+  }, [e, u]), M(() => {
+    if (!e) return;
+    const h = A.on("checkout/updated", u, { eager: !1 });
+    return () => {
+      h == null || h.off();
+    };
+  }, [e, u]), k(Ge, { checked: c, disabled: p, error: a, initialized: c !== void 0, visible: e && !_, onChange: f, onDismissError: s });
+};
+Nt.displayName = "BillToShippingAddress";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Pt = ({ active: e = !0 }) => {
+  var t;
+  const [n, i] = C(), a = (n == null ? void 0 : n.amount.value) === 0, l = (t = J.config) == null ? void 0 : t.shoppingCartDisplaySetting.shipping, _ = l === we.INCLUDING_EXCLUDING_TAX, v = l === we.INCLUDING_TAX, c = ae({ freeShipping: "Checkout.EstimateShipping.freeShipping", taxToBeDetermined: "Checkout.EstimateShipping.taxToBeDetermined", label: "Checkout.EstimateShipping.label", estimated: "Checkout.EstimateShipping.estimated" }), r = d((s) => {
+    var f;
+    const u = !s || s.isEmpty, h = !!(s != null && s.isVirtual);
+    if (u || h) {
+      i(null);
+      return;
+    }
+    const x = (f = s.shippingAddresses) == null ? void 0 : f[0];
+    if (!x) return;
+    const O = x == null ? void 0 : x.selectedShippingMethod;
+    if (!O) {
+      i(null);
+      return;
+    }
+    const { amount: E, amountExclTax: I, amountInclTax: B } = O;
+    i({ estimated: !1, amount: E, amountExclTax: I, amountInclTax: B });
+  }, []), S = d((s) => {
+    let f = null;
+    if (s.shippingMethod) {
+      const u = s.shippingMethod;
+      f = { estimated: !0, amount: u.amount, amountExclTax: u.amountExclTax, amountInclTax: u.amountInclTax };
+    }
+    i(f);
+  }, []);
+  M(() => {
+    if (!e) return;
+    const s = A.on("shipping/estimate", S, { eager: !0 });
+    return () => {
+      s == null || s.off();
+    };
+  }, [e, S]), M(() => {
+    if (!e) return;
+    const s = le();
+    if (s) {
+      r(s);
+      return;
+    }
+    const f = A.on("checkout/initialized", r, { eager: !0 });
+    return () => {
+      f == null || f.off();
+    };
+  }, [e, r]), M(() => {
+    if (!e) return;
+    const s = A.on("checkout/updated", r, { eager: !1 });
+    return () => {
+      s == null || s.off();
+    };
+  }, [e, r]);
+  const p = () => a ? k("span", { "data-testid": "free-shipping", children: c.freeShipping }) : v && n != null && n.amountInclTax ? k(_e, { amount: n.amountInclTax.value, currency: n.amountInclTax.currency, "data-testid": "shipping" }) : k(_e, { amount: n == null ? void 0 : n.amount.value, currency: n == null ? void 0 : n.amount.currency, "data-testid": "shipping" }), b = () => n != null && n.amountExclTax ? k(_e, { amount: n.amountExclTax.value, currency: n.amountExclTax.currency, "data-testid": "shipping-excluding-tax" }) : k("span", { children: c.taxToBeDetermined });
+  return k(We, { initialized: n !== void 0, label: (() => {
+    const s = n != null && n.estimated ? c.estimated : c.label;
+    return k("span", { "data-testid": "estimate-shipping-label", children: s });
+  })(), price: p(), priceExclTax: b(), taxExcluded: _ && !a, taxIncluded: v && !a, visible: e && n !== null });
+};
+Pt.displayName = "EstimateShipping";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Ot = 1e3, Bt = ({ active: e = !0, autoSync: t = !0, displayHeadingContent: n = !0, displayTitle: i = !0, initialData: a, onCartSyncError: l, onSignInClick: _, onSignOutClick: v, onValidationError: c, slots: r, ...S }) => {
+  const [p, b] = C(null), [s, f] = C(""), [u, h] = C(""), [x, O] = C(!1), [E, I] = C(!0), [B, $] = C(!1), z = de(null), { alreadyHaveAccountHint: Y, cartSyncError: U, defaultTitle: R, fasterCheckoutHint: j, invalidEmailError: Z, missingEmailError: D, signInLabel: ie } = ae({ alreadyHaveAccountHint: "Checkout.LoginForm.emailExists.alreadyHaveAccount", cartSyncError: "Checkout.LoginForm.cartSyncError", defaultTitle: "Checkout.LoginForm.title", fasterCheckoutHint: "Checkout.LoginForm.emailExists.forFasterCheckout", invalidEmailError: "Checkout.LoginForm.invalidEmailError", missingEmailError: "Checkout.LoginForm.missingEmailError", signInLabel: "Checkout.LoginForm.emailExists.signInButton" }), ee = d((y) => {
+    !fe(y) || y === ht() || (gt(y).then((T) => {
+      I(T);
+    }).catch((T) => {
+      console.error(T), I(!0);
+    }), t && ft(y).catch((T) => {
+      l == null || l({ email: y, error: T }), l || h(U);
+    }));
+  }, [t, l, U]), g = d((y) => {
+    const T = y.target.value;
+    f(T), I(!0), h(""), z.current && clearTimeout(z.current), z.current = setTimeout(() => {
+      ee(T), ue({ email: T }), z.current = null;
+    }, Ot);
+  }, [ee]), w = d((y) => {
+    const T = y.target, N = T.value.trim();
+    if (fe(N)) {
+      if (h(""), T.setCustomValidity(""), !z.current) return;
+      clearTimeout(z.current), z.current = null, ee(N), ue({ email: N });
+      return;
+    }
+    const X = N === "" ? "missing" : "invalid", me = X === "missing" ? D : Z;
+    if (c) {
+      c({ email: N, message: me, type: X });
+      return;
+    }
+    h(me), T.setCustomValidity(me);
+  }, [Z, D, c, ee]), H = d((y) => {
+    const T = y.target, N = T.validity, X = N.valueMissing ? D : Z;
+    if (!c) {
+      h(X);
+      return;
+    }
+    c({ email: T.value, message: X, type: N.valueMissing ? "missing" : "invalid" });
+  }, [D, Z, c]), L = d(() => {
+    const y = W("email") ?? "", T = fe(y);
+    _ == null || _(T ? y : "");
+  }, [_]), V = d(() => {
+    v == null || v();
+  }, [v]), Q = d((y) => {
+    const T = W("email") ?? "", N = (y == null ? void 0 : y.email) ?? "";
+    N !== T && (f(N), h(""), I(!0), ue({ email: N }));
+  }, []);
+  M(() => {
+    if (!e) return;
+    const y = A.on("authenticated", (T) => {
+      O(T), vt().then((N) => {
+        b(N);
+      }).catch(console.error);
+    }, { eager: !0 });
+    return () => {
+      y == null || y.off();
+    };
+  }, [e]), M(() => {
+    if (!e) return;
+    const y = le();
+    if (y) {
+      $(!0);
+      const N = y.email ?? "";
+      N && f(N), Q(y);
+      return;
+    }
+    const T = A.on("checkout/initialized", (N) => {
+      $(!0), Q(N);
+    }, { eager: !0 });
+    return () => {
+      T == null || T.off();
+    };
+  }, [e, Q]), M(() => {
+    if (!e) return;
+    const y = A.on("checkout/updated", Q, { eager: !1 });
+    return () => {
+      y == null || y.off();
+    };
+  }, [e, Q]);
+  const ce = q(() => {
+    if (i) return k(re, { name: "checkout-login-form-title", slot: r == null ? void 0 : r.Title, children: k("h2", { children: R }) });
+  }, [i, r, R]), te = q(() => {
+    if (n) return k(re, { context: { authenticated: x }, name: "checkout-login-form-heading-label", slot: r == null ? void 0 : r.Heading, children: x ? k(Qe, { onClick: V }) : k(Xe, { onClick: L }) });
+  }, [n, x, r, L, V]), G = q(() => E ? "" : qe($e, { children: [Y, " ", k("a", { href: "#", onClick: L, children: ie }), " ", j] }), [E, Y, ie, j, L]), K = q(() => k(re, { context: { email: s, isEmailValid: fe(s), isAuthenticated: x }, name: "checkout-login-form-preferences", slot: r == null ? void 0 : r.Preferences }), [s, x, r]);
+  return k(Ke, { ...S, customer: p, email: s, error: u, headingContent: te, hint: G, initialized: B, preferences: K, title: ce, visible: e, onEmailBlur: w, onEmailChange: g, onEmailInvalid: H });
+};
+Bt.displayName = "LoginForm";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const zt = ({ className: e, initialData: t, active: n = !0, ...i }) => {
+  const [a, l] = C(0), _ = ae({ mergedCartBannerItems: k(Tt, { fields: { count: a }, id: "Checkout.MergedCartBanner.items", plural: a }) }), v = () => {
+    l(0);
+  }, c = d((r) => {
+    var S;
+    const p = (S = r == null ? void 0 : r.oldCartItems) == null ? void 0 : S.reduce((b, s) => b + s.quantity, 0);
+    p > 0 && l(p);
+  }, []);
+  return M(() => {
+    if (!n) return;
+    const r = A.on("cart/merged", c, { eager: !0 });
+    return () => {
+      r == null || r.off();
+    };
+  }, [n, c]), M(() => {
+    if (!n) return;
+    const r = A.on("cart/reset", () => {
+      l(0);
+    }, { eager: !1 });
+    return () => {
+      r == null || r.off();
+    };
+  }, [n]), !n || !a ? null : k(st, { ...i, "aria-label": _.mergedCartBannerItems, className: Je(["checkout__banner", e]), "data-testid": "merged-cart-banner", icon: k(ut, { source: Ye }), message: k("span", { children: _.mergedCartBannerItems }), variant: "neutral", onDismiss: v });
+};
+zt.displayName = "MergedCartBanner";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Rt = ({ onCartProductsUpdate: e, routeCart: t, active: n = !0 }) => {
+  const [i, a] = C([]), l = d(() => {
+    if (!e) return;
+    const v = i.filter((c) => c.outOfStock).map((c) => ({ uid: c.uid, quantity: 0 }));
+    e(v);
+  }, [i, e]);
+  if (M(() => {
+    if (!n) return;
+    const v = A.on("cart/data", (c) => {
+      const r = (c == null ? void 0 : c.items) || [];
+      a(r.filter((S) => S.outOfStock || S.insufficientQuantity));
+    }, { eager: !0 });
+    return () => {
+      v == null || v.off();
+    };
+  }, [n]), !n || i.length === 0) return null;
+  const _ = !i.some((v) => v.insufficientQuantity);
+  return k(Ze, { items: i, routeCart: t == null ? void 0 : t(), onRemoveOutOfStock: _ ? l : void 0 });
+};
+Rt.displayName = "OutOfStock";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const ze = ({ initialReferenceNumber: e = "", onReferenceNumberChange: t, onReferenceNumberBlur: n, ...i }) => {
+  const [a, l] = C(!1), [_, v] = C(null), [c, r] = C(null), [S, p] = C(e), b = J.authenticated, s = !!J.cartId, f = !!J.quoteId, u = d((E) => {
+    var I;
+    r(((I = E == null ? void 0 : E.total) == null ? void 0 : I.includingTax) || null);
+  }, []), h = d((E) => {
+    var I, B;
+    r(((B = (I = E == null ? void 0 : E.quote) == null ? void 0 : I.prices) == null ? void 0 : B.grandTotal) || null);
+  }, []), x = d((E) => {
+    const I = E.target.value;
+    p(I), t == null || t(I);
+  }, [t]), O = d((E) => {
+    const I = E.target.value;
+    n == null || n(I);
+  }, [n]);
+  return M(() => {
+    if (!s) return;
+    const E = A.on("cart/data", u, { eager: !0 });
+    return () => {
+      E == null || E.off();
+    };
+  }, [s, u]), M(() => {
+    if (!f) return;
+    const E = A.on("quote-management/quote-data", h, { eager: !0 });
+    return () => {
+      E == null || E.off();
+    };
+  }, [f, h]), M(() => {
+    b && yt().then((E) => {
+      v(E);
+    }).catch((E) => {
+      console.error("Failed to fetch company credit:", E), v(null);
+    }).finally(() => {
+      l(!0);
+    });
+  }, [b]), k("div", { ...i, children: k(et, { companyCredit: _, initialized: a, referenceNumber: S, totalAmount: c, onReferenceNumberBlur: O, onReferenceNumberChange: x }) });
+};
+ze.displayName = "PaymentOnAccount";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Re = ({ initialReferenceNumber: e = "", onReferenceNumberChange: t, onReferenceNumberBlur: n, ...i }) => {
+  const [a, l] = C(""), [_, v] = C(e), { missingRefNumberError: c } = ae({ missingRefNumberError: "Checkout.PurchaseOrder.missingReferenceNumberError" }), r = d((f) => {
+    const u = Pe(f);
+    l(u ? "" : c);
+  }, [c]), S = d((f) => {
+    l(f.valid ? "" : c);
+  }, [c]), p = d((f) => {
+    const u = f.target.value;
+    v(u), r(u), t == null || t(u);
+  }, [t, r]), b = d((f) => {
+    const u = f.target.value;
+    r(u), n == null || n(u);
+  }, [n, r]), s = d((f) => {
+    const u = f.target;
+    S(u.validity);
+  }, [S]);
+  return k(tt, { ...i, error: a, referenceNumber: _, onInvalidReferenceNumber: s, onReferenceNumberBlur: b, onReferenceNumberChange: p });
+};
+Re.displayName = "PurchaseOrder";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Dt = (e, t) => {
+  let n;
+  const i = function(...a) {
+    clearTimeout(n), n = setTimeout(() => e.apply(this, a), t);
+  };
+  return i.cancel = () => {
+    clearTimeout(n);
+  }, i;
+};
+var Ht = ((e) => (e.PaymentOnAccount = "companycredit", e.PurchaseOrder = "purchaseorder", e))(Ht || {});
+const Ie = { companycredit: { Container: ze, autoSync: !0, formName: "payment-on-account", validateRefNumber: !1 }, purchaseorder: { Container: Re, autoSync: !1, formName: "purchase-order", validateRefNumber: !0 } }, ve = /* @__PURE__ */ new Map(), Lt = (e, t) => {
+  const n = `${e}-${t}`;
+  if (!ve.has(n)) {
+    const i = Dt(async (a) => {
+      if (!t || Pe(a)) try {
+        await Oe({ code: e, purchase_order_number: a });
+      } catch (l) {
+        console.error(`Failed to set payment method for ${e}:`, l);
+      }
+    }, 1e3);
+    ve.set(n, i);
+  }
+  return ve.get(n);
+}, ge = {}, cn = () => {
+  Object.keys(ge).forEach((e) => {
+    delete ge[e];
+  }), ve.clear();
+}, Ae = (e) => {
+  if (!(e in Ie)) throw new Error(`Invalid handler code: ${e}`);
+  if (ge[e]) return ge[e];
+  const t = Ie[e], { autoSync: n, Container: i, formName: a, validateRefNumber: l } = t, _ = { enabled: !0, autoSync: n, render: (v) => {
+    var c;
+    const r = String(((c = v.additionalData) == null ? void 0 : c.purchase_order_number) ?? ""), S = document.createElement("div");
+    Mt.render(i, { name: a, initialReferenceNumber: r, onReferenceNumberChange: Lt(e, l) })(S), v.replaceHTML(S);
+  } };
+  return ge[e] = _, _;
+}, jt = { companycredit: Ae("companycredit"), purchaseorder: Ae("purchaseorder") };
+function pe(e) {
+  var t;
+  return (t = e.additionalData) == null ? void 0 : t.publicHash;
+}
+function se(e) {
+  return e ? pe(e) !== void 0 : !1;
+}
+function be(e, t) {
+  return e ? t.some((n) => De(n, e)) : !1;
+}
+function De(e, t) {
+  return !e || !t ? !1 : e.code === t.code && pe(e) === pe(t);
+}
+function Ft(e) {
+  return e ? !!e.code && !!e.title : !1;
+}
+function Ne(e) {
+  return `${e.code}:${pe(e) ?? ""}`;
+}
+const Ut = ({ UIComponentType: e = "ToggleButton", active: t = !0, autoSync: n = !0, displayTitle: i = !0, slots: a, onCartSyncError: l, onSelectionChange: _ }) => {
+  const [v, c] = C(null), [r, S] = C(!1), [p, b] = C(null), [s, f] = C([]), [u, h] = C([]), [x, O] = C(!1), [E, I] = C(/* @__PURE__ */ new Set()), B = J.authenticated, $ = ye.value, { cartSyncError: z, defaultTitle: Y } = ae({ cartSyncError: "Checkout.PaymentMethods.cartSyncError", defaultTitle: "Checkout.PaymentMethods.title" }), U = q(() => {
+    const o = (a == null ? void 0 : a.Methods) ?? {};
+    return pt(jt, o);
+  }, [a == null ? void 0 : a.Methods]), R = d((o) => {
+    var m;
+    return (m = U[o.code]) == null ? void 0 : m.render;
+  }, [U]), j = q(() => (a == null ? void 0 : a.StoredMethods) ?? {}, [a == null ? void 0 : a.StoredMethods]), Z = Object.keys(j).length > 0, D = d((o) => Object.entries(j).find(([m, P]) => (P.tokenCode ?? m) === o.code), [j]), ie = d((o) => {
+    var m, P;
+    return (P = (m = D(o)) == null ? void 0 : m[1]) == null ? void 0 : P.render;
+  }, [D]), ee = d((o) => {
+    const m = D(o);
+    if (!m) return !1;
+    const [P, F] = m;
+    return F.enabled !== void 0 ? F.enabled : E.has(P);
+  }, [D, E]), g = d((o) => {
+    var m;
+    return se(o) ? ((m = D(o)) == null ? void 0 : m[0]) ?? o.code : o.code;
+  }, [D]), w = q(() => u.filter(ee), [u, ee]), H = de(/* @__PURE__ */ new Set()), L = de(null);
+  L.current = p;
+  const V = d((o, m) => [...o, ...m].find((P) => !H.current.has(Ne(P))) ?? null, []), Q = d((o) => {
+    const m = U[o.code];
+    return m ? m.autoSync !== !1 : n;
+  }, [n, U]), ce = d((o) => {
+    var m;
+    return j[o.code] ? !1 : ((m = U[o.code]) == null ? void 0 : m.enabled) !== !1;
+  }, [U, j]), te = d((o) => o.map((m) => {
+    const P = U[m.code];
+    return P ? { ...m, icon: P.icon } : m;
+  }), [U]), G = d((o) => {
+    b((m) => m && { ...m, additionalData: o });
+  }, []), K = d(() => {
+    c(null);
+  }, []), y = d((o) => {
+    c(null), L.current = o, b(o);
+  }, []), T = d(async (o, m) => {
+    if (!(It() || he()) || !Q(o)) return;
+    const P = pe(o), F = P ? (() => {
+      const ne = g(o);
+      return { code: ne, [ne]: { public_hash: P } };
+    })() : { code: o.code, ...o.additionalData };
+    Oe(F).then(() => {
+      H.current.clear();
+    }).catch((ne) => {
+      m === void 0 && H.current.add(Ne(o)), y(m ?? null), c(l ? null : z), l == null || l({ method: o, error: ne });
+    });
+  }, [z, g, Q, l, y]), N = d(async (o) => {
+    const m = W("selectedPaymentMethod");
+    y(o), _ == null || _(o), await T(o, m);
+  }, [_, y, T]), X = d((o) => {
+    if (!o || o.isEmpty) {
+      y(null), f([]), I(/* @__PURE__ */ new Set());
+      return;
+    }
+    const m = o.availablePaymentMethods ?? [], P = m.filter(ce);
+    if (f(P), I(new Set(m.map((Ue) => Ue.code))), P.length === 0) {
+      se(W("selectedPaymentMethod")) || y(null);
+      return;
+    }
+    const F = o.selectedPaymentMethod ?? null, ne = Ft(F), oe = W("selectedPaymentMethod"), Ee = se(oe) || be(oe, P), Fe = !!oe && !!F && F.code === g(oe);
+    if (oe && Ee && !Fe) {
+      T(oe, F);
+      return;
+    }
+    (!oe || !Ee) && ne && be(F, P) && y(F);
+  }, [ce, g, y, T]);
+  M(() => {
+    if (!B || !Z) {
+      O(!0);
+      return;
+    }
+    O(!1), kt().then(h).catch((o) => {
+      console.error("Failed to fetch stored payment methods:", o), h([]);
+    }).finally(() => {
+      O(!0);
+    });
+  }, [B, Z]), M(() => {
+    if (!r || !x) return;
+    const o = L.current;
+    if (o && (se(o) || be(o, s))) return;
+    const m = V(w, s);
+    m && (y(m), T(m));
+  }, [r, V, x, s, p, w, T, y]), M(() => {
+    if (!t) return;
+    const o = le();
+    if (o) {
+      S(!0);
+      const P = W("selectedPaymentMethod");
+      P && b(P), X(o);
+      return;
+    }
+    const m = A.on("checkout/initialized", (P) => {
+      S(!0), X(P);
+    }, { eager: !0 });
+    return () => {
+      m == null || m.off();
+    };
+  }, [t, X]), M(() => {
+    if (!t) return;
+    const o = A.on("checkout/updated", X, { eager: !1 });
+    return () => {
+      o == null || o.off();
+    };
+  }, [t, X]), M(() => {
+    ue({ selectedPaymentMethod: p, selectedPaymentMethodCartCode: p ? g(p) : null });
+  }, [p, g]);
+  const me = q(() => {
+    if (i) return k(re, { name: "checkout-payment-methods-title", slot: a == null ? void 0 : a.Title, children: k("h2", { children: Y }) });
+  }, [i, a == null ? void 0 : a.Title, Y]), He = q(() => {
+    if (!p || se(p)) return;
+    const o = R(p);
+    if (o) return k(re, { context: { additionalData: p.additionalData, cartId: J.cartId ?? "", replaceHTML(m) {
+      this.replaceWith(m);
+    }, setAdditionalData: G }, name: "PaymentMethodContent", slot: o }, p.code);
+  }, [R, p, G]), Le = q(() => w.map((o) => {
+    var m;
+    const P = ie(o), F = pe(o), ne = De(p, o);
+    return { content: P ? k(re, { context: { cartId: J.cartId ?? "", details: (m = o.additionalData) == null ? void 0 : m.details, publicHash: F, selected: ne, replaceHTML(oe) {
+      this.replaceWith(oe);
+    } }, name: "StoredPaymentMethodOption", slot: P }, F) : null, method: o, selected: ne };
+  }), [ie, p, w]), ke = w.length === 0 || !se(p), je = d(() => {
+    ke || s[0] && N(s[0]);
+  }, [ke, s, N]);
+  return k(nt, { UIComponentType: e, busy: $, error: v, initialized: r, isExpanded: ke, options: te(s), paymentMethodContent: He, selection: p, storedOptions: Le, title: me, visible: t, onDismissError: K, onPayAnotherWay: je, onSelectionChange: N });
+};
+Ut.displayName = "PaymentMethods";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const qt = ({ disabled: e = !1, active: t = !0, handleValidation: n, handlePlaceOrder: i, slots: a, ...l }) => {
+  const [_, v] = C(!1), [c, r] = C(!1), S = ye.value, p = ae({ CheckoutUnexpectedError: "Checkout.ServerError.unexpected", placeOrderButton: "Checkout.PlaceOrder.button" }), b = d((u) => {
+    const h = _t(u), x = h === bt.UNKNOWN_ERROR ? p.CheckoutUnexpectedError : u.message;
+    A.emit("checkout/error", { message: x, code: h });
+  }, [p]), s = d(async () => {
+    try {
+      if (n && !await n()) return;
+      await i({ cartId: J.cartId, quoteId: J.quoteId, code: W("selectedPaymentMethodCartCode") ?? "" });
+    } catch (u) {
+      b(u);
+    }
+  }, [n, i, b]), f = d((u) => {
+    (!u || "isEmpty" in u && u.isEmpty) && r(!1);
+  }, []);
+  return M(() => {
+    if (t === !1) return;
+    const u = A.on("cart/initialized", (h) => {
+      const x = (h == null ? void 0 : h.items) || [];
+      r(x.some((O) => O.outOfStock || O.insufficientQuantity));
+    }, { eager: !0 });
+    return () => {
+      u == null || u.off();
+    };
+  }, [t]), M(() => {
+    if (!t) return;
+    const u = le();
+    if (u) {
+      v(!0), f(u);
+      return;
+    }
+    const h = A.on("checkout/initialized", (x) => {
+      v(!0), f(x);
+    }, { eager: !0 });
+    return () => {
+      h == null || h.off();
+    };
+  }, [t, f]), M(() => {
+    if (!t) return;
+    const u = A.on("checkout/updated", (h) => {
+      f(h);
+    }, { eager: !1 });
+    return () => {
+      u == null || u.off();
+    };
+  }, [t, f]), k(ot, { ...l, disabled: e || c || S || Be.value, initialized: _, visible: t, onClick: s, children: k(re, { context: { code: W("selectedPaymentMethodCartCode") ?? "" }, name: "Content", slot: a == null ? void 0 : a.Content, children: p.placeOrderButton }) });
+};
+qt.displayName = "PlaceOrder";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const $t = ({ active: e = !0, onRetry: t, onServerError: n, autoScroll: i = !1 }) => {
+  const [a, l] = C(null), _ = de(null), v = async () => {
+    t == null || t(a), l(null);
+  };
+  return M(() => {
+    const c = A.on("checkout/error", (r) => {
+      l(r || null), r && n && n(r.message);
+    }, { eager: !0 });
+    return () => {
+      c == null || c.off();
+    };
+  }, [n]), M(() => {
+    !i || !a || !_.current || rt(_.current);
+  }, [a, i]), !e || !a ? null : k(at, { errorMessage: a.message, errorMessageRef: _, onClick: v });
+};
+$t.displayName = "ServerError";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+function xe(e, t) {
+  return e ? t.some((n) => Se(n, e)) : !1;
+}
+function Se(e, t) {
+  return !e || !t || e.amount.value !== t.amount.value ? !1 : e.code === t.code && e.carrier.code === t.carrier.code;
+}
+function Vt(e) {
+  const t = A.lastPayload("shipping/estimate");
+  t && A.emit("shipping/estimate", { ...t, shippingMethod: St(e) });
+}
+const Gt = ({ UIComponentType: e = "RadioButton", active: t = !0, autoSync: n = !0, displayTitle: i = !0, initialData: a, slots: l, onCartSyncError: _, onSelectionChange: v, ...c }) => {
+  const [r, S] = C(null), [p, b] = C(!1), [s, f] = C(), [u, h] = C(null), x = de(null), O = ye.value, E = xt.value, { cartSyncError: I, defaultTitle: B } = ae({ cartSyncError: "Checkout.ShippingMethods.cartSyncError", defaultTitle: "Checkout.ShippingMethods.title" }), $ = d((g) => {
+    if (!g || g.length === 0) return [];
+    const { shipping: w } = Ce.getConfig();
+    return w != null && w.filterOptions ? g.filter(w.filterOptions) : g;
+  }, []), z = d((g) => {
+    if (g.length === 0) return null;
+    const { defaults: w } = Ce.getConfig();
+    return w.selectedShippingMethod(g);
+  }, []), Y = q(() => $(s), [s, $]), U = d(() => {
+    S(null);
+  }, []), R = d((g) => {
+    S(null), h((w) => Se(w, g) ? w : (ue({ selectedShippingMethod: g }), g));
+  }, []), j = d(async (g, w) => {
+    if (!n || !he()) return;
+    const H = { carrierCode: g.carrier.code, methodCode: g.code };
+    Ct([H]).catch((L) => {
+      R(w ?? null), _ == null || _({ method: g, error: L }), _ || S(I);
+    });
+  }, [n, R, _, I]), Z = d(async (g) => {
+    const w = W("selectedShippingMethod");
+    R(g), v == null || v(g), he() || Vt(g), await j(g, w);
+  }, [v, R, j]), D = d((g) => {
+    var w;
+    const H = !g || g.isEmpty, L = !!(g != null && g.isVirtual);
+    if (H || L) {
+      b(L), R(null), f([]);
+      return;
+    }
+    const V = (w = g.shippingAddresses) == null ? void 0 : w[0];
+    if (!V) return;
+    const Q = V.availableShippingMethods ?? [];
+    Me() && !x.current && (x.current = Q);
+    const ce = Me() && x.current ? x.current : Q;
+    f(ce);
+    const te = $(ce);
+    if (te.length === 0) {
+      R(null);
+      return;
+    }
+    const G = V.selectedShippingMethod ?? null, K = W("selectedShippingMethod"), y = xe(K, te), T = Se(K, G);
+    if (K && y && !T) {
+      j(K, G);
+      return;
+    }
+    if ((!K || !y) && G && xe(G, te)) {
+      R(G);
+      return;
+    }
+    if ((!K || !y) && (!G || !xe(G, te))) {
+      const N = z(te);
+      R(N), N && j(N);
+    }
+  }, [$, z, R, j]), ie = d((g) => {
+    if (g === void 0) return;
+    const { shippingMethod: w, availableShippingMethods: H } = g, L = (H == null ? void 0 : H.find((V) => V.code === (w == null ? void 0 : w.methodCode) && V.carrier.code === (w == null ? void 0 : w.carrierCode))) ?? null;
+    f(H), R(L);
+  }, [R]);
+  M(() => {
+    if (!t) return;
+    const g = le();
+    if (g) {
+      const H = W("selectedShippingMethod");
+      H && h(H), D(g);
+      return;
+    }
+    const w = A.on("checkout/initialized", D, { eager: !0 });
+    return () => {
+      w == null || w.off();
+    };
+  }, [t, D]), M(() => {
+    if (!t) return;
+    const g = A.on("checkout/updated", D, { eager: !1 });
+    return () => {
+      g == null || g.off();
+    };
+  }, [t, D]), M(() => {
+    if (!t || he()) return;
+    const g = A.on("shipping/estimate", ie, { eager: !0 });
+    return () => {
+      g == null || g.off();
+    };
+  }, [t, ie]);
+  const ee = q(() => {
+    if (i) return k(re, { name: "checkout-shipping-methods-title", slot: l == null ? void 0 : l.Title, children: k("h3", { children: B }) });
+  }, [i, l == null ? void 0 : l.Title, B]);
+  return k(it, { ...c, UIComponentType: e, busy: O || E, error: r, initialized: s !== void 0, options: Y, selection: u, shippingMethodItemSlot: l == null ? void 0 : l.ShippingMethodItem, title: ee, visible: t && !p, onDismissError: U, onSelectionChange: Z });
+};
+Gt.displayName = "ShippingMethods";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+const Wt = ({ active: e = !0, slots: t, ...n }) => {
+  var i;
+  const [a, l] = C(!1), [_, v] = C(""), { errorMessage: c } = ae({ errorMessage: "Checkout.TermsAndConditions.error" }), r = ((i = J.config) == null ? void 0 : i.agreementsEnabled) === !1, S = () => {
+    v("");
+  }, p = () => {
+    v(c);
+  };
+  return M(() => {
+    if (!e || r) return;
+    if (le()) {
+      l(!0);
+      return;
+    }
+    const b = A.on("checkout/initialized", () => {
+      l(!0);
+    }, { eager: !0 });
+    return () => {
+      b == null || b.off();
+    };
+  }, [e, r]), k(lt, { ...n, agreements: k(re, { context: { appendAgreement(b) {
+    this._registerMethod((...s) => {
+      const f = b(...s);
+      if (!f) return;
+      const { mode: u, name: h, text: x, translationId: O } = f;
+      if (!x && !O) {
+        console.warn(`The agreement ${h} is misconfigured. Please provide a text or a translationId.`);
+        return;
+      }
+      const E = x ? k(ct, { html: x }) : k(wt, { id: O }), I = k(dt, { checked: u === Et.AUTO, label: E, name: h, required: !0, onChange: S, onInvalid: p });
+      this._setProps((B) => ({ children: [...B.children || [], I] }));
+    });
+  } }, name: "Agreements", slot: t == null ? void 0 : t.Agreements }), error: _, initialized: a, visible: e && !r });
+};
+Wt.displayName = "TermsAndConditions";
+/*! Copyright 2026 Adobe
+All Rights Reserved. */
+(function(e, t) {
+  try {
+    if (typeof document < "u") {
+      const n = t.styleId;
+      if (document.querySelector(`style[data-dropin="${n}"]`)) return;
+      const i = document.createElement("style");
+      for (const l in t.attributes) i.setAttribute(l, t.attributes[l]);
+      i.setAttribute("data-dropin", n), i.appendChild(document.createTextNode(e));
+      const a = document.querySelector('style[data-dropin="sdk"]');
+      if (a) a.after(i);
+      else {
+        const l = document.querySelector('link[rel="stylesheet"], style');
+        l ? l.before(i) : document.head.append(i);
+      }
+    }
+  } catch (n) {
+    console.error("dropin-styles (injectCodeFunction)", n);
+  }
+})(`.checkout-address-validation{display:grid;gap:var(--spacing-medium)}.checkout-address-validation__options--busy{opacity:.4;pointer-events:none}.checkout-address-validation__title{margin-bottom:var(--spacing-small)}.checkout-address-validation__subtitle{color:var(--color-neutral-700);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-address-validation__options{display:grid;gap:var(--spacing-xbig);grid-template-columns:1fr 1fr}.checkout-address-validation__option{margin:0}.checkout-address-validation__option-title{margin-bottom:var(--spacing-xsmall)}.checkout-bill-to-shipping-address label{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);gap:0}.checkout-bill-to-shipping-address__error{margin-top:var(--spacing-medium)}.checkout-estimate-shipping{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-xxsmall);align-items:center;color:var(--color-neutral-800)}.checkout-estimate-shipping__label,.checkout-estimate-shipping__price{font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing)}.checkout-estimate-shipping__label--muted{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);color:var(--color-neutral-700)}.checkout-estimate-shipping__price--muted{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-estimate-shipping__price{text-align:right}.checkout-estimate-shipping__label--bold,.checkout-estimate-shipping__price--bold{font:var(--type-body-1-emphasized-font);letter-spacing:var(--type-body-1-emphasized-letter-spacing)}.checkout-estimate-shipping__caption{font:var(--type-details-caption-2-font);letter-spacing:var(--type-details-caption-2-letter-spacing);color:var(--color-neutral-700)}.cart-order-summary__shipping .dropin-skeleton{grid-template-columns:1fr}.checkout-login-form__heading{display:grid;grid-template-columns:1fr max-content;grid-auto-rows:max-content;margin:0 0 var(--spacing-medium) 0;align-items:center}.checkout-login-form__heading:empty{display:none}.checkout-login-form__content{grid-auto-rows:max-content}.checkout-login-form__content .dropin-field__hint a{font-weight:400}.checkout-login-form__customer-details{display:grid;grid-auto-flow:row;gap:var(--spacing-xxsmall)}.checkout-login-form__customer-name{font:var(--type-body-1-strong-font);letter-spacing:var(--type-body-1-default-letter-spacing)}.checkout-login-form__customer-email{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);color:var(--color-neutral-700)}.checkout-login-form__title,.checkout-login-form__title h2{grid-column-start:1;color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0}.checkout-login-form__heading-label,.checkout-login-form__sign-in,.checkout-login-form__sign-out{grid-column-start:2;color:var(--color-neutral-800);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);justify-self:flex-end}.checkout-login-form__heading-label a,a.checkout-login-form__link{font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing);margin-left:var(--spacing-xxsmall)}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-login-form__heading{grid-template-columns:1fr;grid-template-rows:1fr}.checkout-login-form__heading-label{grid-column-start:1;align-self:flex-start;justify-self:flex-start;margin-top:var(--spacing-medium)}}.checkout-out-of-stock.dropin-card{border-color:var(--color-warning-500)}.checkout-out-of-stock .dropin-card__content{gap:var(--spacing-small);padding:var(--spacing-small)}.checkout-out-of-stock__title{color:var(--color-neutral-900);font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing);margin:0;display:flex;gap:var(--spacing-xxsmall);align-items:center;justify-content:left;text-align:center}.checkout-out-of-stock__message{color:var(--color-neutral-800);font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing);margin:0}.checkout-out-of-stock__items{display:grid;grid-template-columns:repeat(5,100px);grid-gap:var(--spacing-small);list-style:none;padding:0;margin:0}.checkout-out-of-stock__item img{width:100%;height:auto}.checkout-out-of-stock__actions{display:flex;gap:var(--spacing-small);justify-content:flex-end}a.checkout-out-of-stock__action{color:var(--color-brand-500);font:var(--type-details-caption-1-font);letter-spacing:var(--type-details-caption-1-letter-spacing)}.checkout-out-of-stock__action{color:var(--color-brand-500);font:var(--type-details-caption-1-font);letter-spacing:var(--type-details-caption-1-letter-spacing);background:none;border:none;padding:0;cursor:pointer}.checkout-out-of-stock__action:hover{--textColor: var(--color-brand-700);text-decoration:solid underline var(--textColor);text-underline-offset:6px}@media only screen and (width >= 320px) and (width <= 768px){.checkout-out-of-stock__items{grid-template-columns:repeat(3,100px)}}.checkout-payment-methods__title,.checkout-payment-methods__title h2{color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-payment-methods__wrapper{position:relative;display:grid}.checkout-payment-methods__wrapper--busy{opacity:.4;pointer-events:none}.checkout-payment-methods__methods{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-medium)}.checkout-payment-methods__content{font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);margin-top:var(--spacing-xbig)}.checkout-payment-methods__content>div[data-slot=PaymentMethodSlot]:not(:empty){margin-top:var(--spacing-medium)}.checkout-payment-methods--full-width{grid-template-columns:1fr}.checkout-payment-methods__spinner{margin:0 auto;position:absolute;z-index:999;left:0;right:0;top:calc(50% - (var(--size) / 2));bottom:0}.checkout__content [data-slot=PaymentMethods]:empty{display:none}.checkout-payment-methods__error{margin-top:var(--spacing-medium)}.checkout-payment-methods__stored-methods{display:flex;flex-direction:column;align-items:stretch;min-width:0;margin-bottom:var(--spacing-medium)}.checkout-payment-methods__stored-method-wrapper{position:relative}.checkout-payment-methods__stored-method-input{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden}.checkout-payment-methods__stored-method-input:focus+.checkout-payment-methods__stored-method{border:var(--shape-border-width-1) solid var(--color-neutral-900);outline:var(--spacing-xxsmall) solid var(--color-button-focus);position:relative;z-index:1}.checkout-payment-methods__stored-method{display:block;box-sizing:border-box;width:100%;min-width:0;overflow:hidden;border:var(--shape-border-width-2) solid var(--color-neutral-400);padding:var(--spacing-medium);cursor:pointer;background-color:var(--color-neutral-200);font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing);word-break:break-word}.checkout-payment-methods__stored-method--selected{border:var(--shape-border-width-1) solid var(--color-neutral-900);background-color:var(--color-neutral-50)}.checkout-payment-methods__methods-box{box-sizing:border-box;border:var(--shape-border-width-1) solid var(--color-neutral-900);background-color:var(--color-neutral-50);padding:var(--spacing-medium)}.checkout-payment-methods__methods-box-title{color:var(--color-neutral-800);font:var(--type-headline-2-default-font);letter-spacing:var(--type-headline-2-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-payment-methods__pay-another-way{width:100%;height:88px;display:flex;align-items:center;justify-content:space-between;border:var(--shape-border-width-2) solid var(--color-neutral-400);background-color:var(--color-neutral-200);padding:var(--spacing-xsmall) var(--spacing-medium);cursor:pointer}.checkout-payment-methods__pay-another-way-title{font:var(--type-button-2-font);letter-spacing:var(--type-button-2-letter-spacing);color:var(--color-neutral-800)}.checkout-payment-methods__pay-another-way svg{stroke:var(--shape-icon-stroke-4);color:var(--color-neutral-800)}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-payment-methods__methods{grid-template-columns:1fr}}.checkout-payment-on-account{margin-bottom:var(--spacing-medium)}.checkout-payment-on-account__form{width:100%}.checkout-payment-on-account__credit{display:flex;justify-content:space-between;align-items:center;padding:var(--spacing-small);margin-bottom:var(--spacing-medium);background-color:var(--color-neutral-100);border:1px solid var(--color-neutral-300);border-radius:4px;font-size:14px;line-height:1.4}.checkout-payment-on-account__credit-label{font-weight:500;color:var(--color-neutral-700)}.checkout-payment-on-account__credit-amount{font-weight:600;color:var(--color-success-600)}.checkout-payment-on-account__exceed-message{margin-top:var(--spacing-medium);margin-bottom:var(--spacing-medium)}.checkout-payment-on-account .dropin-field{margin-bottom:0}.checkout-place-order{display:grid;padding-bottom:var(--spacing-big)}.checkout-place-order__button{align-self:flex-end;justify-self:flex-end}@media only screen and (min-width: 320px) and (max-width: 768px){.checkout-place-order{background-color:var(--color-neutral-200);padding:var(--spacing-medium) var(--spacing-medium) var(--spacing-big) var(--spacing-medium)}.checkout-place-order__button{align-self:center;justify-self:stretch}}.checkout-purchase-order{margin-bottom:var(--spacing-medium)}.checkout-purchase-order__form{width:100%}.checkout-purchase-order .dropin-field{margin-bottom:0}.checkout-server-error{position:relative;text-align:center}.checkout-server-error__icon .error-icon{color:var(--color-alert-500)}.checkout-server-error a{font:var(--type-body-2-strong-font);letter-spacing:var(--type-body-2-strong-letter-spacing)}.checkout-shipping-methods__title,.checkout-shipping-methods__title h3{color:var(--color-neutral-800);font:var(--type-body-1-default-font);letter-spacing:var(--type-body-1-default-letter-spacing);margin:0 0 var(--spacing-medium) 0}.checkout-shipping-methods__content{position:relative;display:block}.checkout-shipping-methods__method{width:fit-content;cursor:pointer;font:var(--type-body-2-default-font);letter-spacing:var(--type-body-2-default-letter-spacing)}.checkout-shipping-methods__options>[data-slot^=checkout-shipping-method-item]{margin-bottom:var(--spacing-medium)}.checkout-shipping-methods__options>[data-slot^=checkout-shipping-method-item]:last-child{margin-bottom:0}.dropin-radio-button__label .dropin-price{color:var(--color-neutral-800);font-weight:400}.checkout-shipping-methods__price--original{margin-right:var(--spacing-xxsmall)}.checkout-shipping-methods__price-wrapper{display:flex;gap:var(--spacing-xxsmall);align-items:center}.checkout-shipping-methods__options--busy{opacity:.4;pointer-events:none}.checkout-shipping-methods__spinner{margin:0 auto;position:absolute;z-index:999;left:0;right:0;top:calc(50% - (var(--size) / 2));bottom:0}.checkout-shipping-methods__options--toggleButton{display:grid;grid-template-columns:1fr 1fr;gap:var(--spacing-medium)}.checkout-shipping-methods__options--toggleButton .dropin-toggle-button__content{justify-content:start;display:grid;grid-template-columns:1fr min-content}.checkout-shipping-methods__options--toggleButton .checkout-shipping-methods__method{width:auto}.checkout-shipping-methods__options--toggleButton>[data-slot^=checkout-shipping-method-item]{margin-bottom:0}.checkout-shipping-methods__error{margin-top:var(--spacing-medium)}.checkout-shipping-methods__sr-only{border:0;clip:rect(0 0 0 0);clip-path:inset(50%);height:1px;margin:0 -1px -1px 0;overflow:hidden;padding:0;position:absolute;width:1px}.checkout-terms-and-conditions{display:grid}.checkout-terms-and-conditions__error{font:var(--type-details-caption-2-font);letter-spacing:var(--type-details-caption-2-letter-spacing);color:var(--color-alert-800);text-align:left;margin-top:var(--spacing-xsmall)}.checkout-terms-and-conditions__error:empty{display:none}
+.checkout__banner{margin-bottom:var(--spacing-xbig)}`, { styleId: "checkout" });
+export {
+  At as AddressValidation,
+  Nt as BillToShippingAddress,
+  Pt as EstimateShipping,
+  Ht as HandlerCode,
+  Bt as LoginForm,
+  zt as MergedCartBanner,
+  Rt as OutOfStock,
+  Ut as PaymentMethods,
+  ze as PaymentOnAccount,
+  qt as PlaceOrder,
+  Re as PurchaseOrder,
+  $t as ServerError,
+  Gt as ShippingMethods,
+  Wt as TermsAndConditions,
+  Ae as createHandler,
+  jt as defaultHandlers,
+  Vt as emitShippingEstimateEvent,
+  Lt as handleRefNumberChange,
+  cn as resetHandlersCache
+};
 //# sourceMappingURL=containers.js.map

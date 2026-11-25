@@ -1,10 +1,10 @@
 # @dropins/storefront-checkout
 
-## 3.6.0-alpha-20261109151751
+## 3.6.0-alpha-20261125095226-29ff83c
 
 ### Minor Changes
 
-- 3833d22: Load containers through the consolidated `containers.js` bundle
+- 29ff83c: Load containers through the consolidated `containers.js` bundle
   instead of each container's individual entry point. This replaces one request
   per container with a single request, which reduces request pressure on EDS.
   The per-container entry points remain available for backwards compatibility.

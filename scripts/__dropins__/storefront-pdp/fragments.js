@@ -102,22 +102,24 @@ fragment PRODUCT_FRAGMENT on ProductView {
   urlKey
   externalId
 
-  images(roles: []) {
-    url
-    label
-    roles
+  gallery {
+    __typename
+    ... on ProductViewImage {
+      url
+      label
+      roles
+    }
+    ... on ProductViewVideo {
+      description
+      url
+      title
+      preview {
+        label
+        roles
+        url
+      }
+    }
   }
-
-  videos {
-		description
-		url
-		title
-		preview {
-			label
-			roles
-			url
-		}
-	}
 
   attributes(roles: []) {
     name

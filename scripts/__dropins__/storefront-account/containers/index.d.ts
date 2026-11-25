@@ -18,6 +18,7 @@ export * from './AddressForm';
 export * from './AddressValidation';
 export * from './Addresses';
 export * from './OrdersList';
+export * from './ProductReviews';
 export * from './CustomerInformation';
 export * from './SellerAssistedBuyingSettings';
 export * from './SellerAssistedBuyingActivity';

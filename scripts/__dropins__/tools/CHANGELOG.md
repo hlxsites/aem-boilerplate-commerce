@@ -1,6 +1,6 @@
 # @adobe-commerce/elsie
 
-## 3.1.0-alpha-20261109140213
+## 3.1.0-alpha-20261118092512
 
 ### Minor Changes
 
@@ -19,17 +19,49 @@
   + import { SignIn } from '@dropins/storefront-auth/containers.js';
   ```
 
-  `containers.js` is built from `src/containers/index.ts`. `elsie build` now
-  fails before building if that file does not export every container directory,
-  because a missing container would be absent from `containers.js` and could
-  break its per-container entry. Use `export * from '<path to container>';`
-  statements.
+  `containers.js` is built from the `index.ts` in the configured
+  `containers.root`. `elsie build` generates it in the same build as the
+  per-container entries, so both share the same chunks, and then inlines the
+  per-container entries into it so it loads in a single request. If that file
+  does not export every container directory, `elsie build` prints a warning (it
+  does not fail) and the missing containers are left out of `containers.js`. Use
+  `export * from '<path to container>';` or
+  `export { X } from '<path to container>';` statements.
 
+- cde654d: Add reusable `expectAccessibleLabel` and `expectAccessibleLink`
+  assertions to the shared DOM and Preact testing utilities, including the
+  legacy testing entry point. Support explicit accessible names, visible-label
+  inclusion, link roles, and destinations using Jest DOM matchers. Document
+  usage alongside Testing Library role and state queries, native and ARIA
+  semantics, and accessibility testing limitations.
+- 2bab780: Add shared `expectFieldError` and `expectFieldErrorCleared` DOM
+  assertions for accessible validation errors, unique error associations,
+  cleanup after revalidation, and preservation of help/status descriptions.
+  Export them through the DOM, Preact, and legacy testing entries without
+  changing form behavior.
+- 760e616: Add reusable shared assertions for visible field and group labels,
+  associated instructions, and required-field markers with explanatory text.
+  Export them through the DOM, Preact, and legacy testing entries, with
+  documentation and component-pattern regression tests; production form behavior
+  is unchanged.
+- fb197b5: Add shared `expectInputPurpose` and `expectNoInputPurpose` assertions
+  for rendered input autocomplete metadata through the DOM, Preact, and legacy
+  test entries, with field-specific diagnostics and prefixed-token coverage.
 - 0d54094: feat: add `StarRating` component that displays a 0-5 rating with
   partial star fill, optional value, review count and accessible label
+- 1a86a67: Add shared `expectInformativeImage` and `expectDecorativeImage`
+  accessibility assertions through the DOM, Preact, and legacy testing entries.
+  Cover rendered image names, explicit empty decorative alt, and aria-hidden
+  SVGs, with usage documentation and pilot regression tests for images, icons,
+  and image-only controls. Production markup and alternative-text fallback
+  policies are unchanged.
 
 ### Patch Changes
 
+- 72c1b72: `elsie serve` now consolidates `containers.js` after every rebuild,
+  the same way `elsie build` does. Previously the watch build left
+  `dist/containers.js` unconsolidated, so a dev server (and any test running
+  against it) did not serve the same file that gets published.
 - dc2c0f3: fix(elsie): render the latest context after an async slot callback
   resolves
 
