@@ -16,5 +16,5 @@
  *******************************************************************/
 import { FunctionComponent } from 'preact';
 import { HTMLAttributes } from 'preact/compat';
-import { SuccessNotificationFormProps } from '../../types';
+import { SuccessNotificationFormProps } from '../../types/index.d.ts';
 export declare const SuccessNotificationForm: FunctionComponent<SuccessNotificationFormProps & HTMLAttributes<HTMLDivElement>>;

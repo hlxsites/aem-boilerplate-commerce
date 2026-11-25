@@ -15,4 +15,3 @@
  */
 export * from './ProductCustomizableOptions';
 export { ProductCustomizableOptions as default } from './ProductCustomizableOptions';
-//# sourceMappingURL=index.d.ts.map

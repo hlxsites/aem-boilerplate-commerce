@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FormElementProps } from '../../../types';
+import { FormElementProps } from '../../../types/index.d.ts';
 export declare const TextAreaElement: ({ item, valueMessage, errorConfig, onBlur, onChange, className, itemClassName, loading, }: FormElementProps) => import("preact").JSX.Element;

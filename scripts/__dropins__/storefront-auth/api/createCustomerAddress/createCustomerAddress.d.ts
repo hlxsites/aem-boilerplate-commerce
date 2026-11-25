@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AddressFormProps } from '../../types';
+import { AddressFormProps } from '../../types/index.d.ts';
 export declare const createCustomerAddress: (address: AddressFormProps) => Promise<string>;

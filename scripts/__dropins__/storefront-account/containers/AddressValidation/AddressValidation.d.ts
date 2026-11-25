@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { Container } from '@dropins/tools/lib';
 import { CustomerAddressesModel } from '../../data/models';
 export interface AddressValidationProps {
     selectedAddress?: 'suggested' | 'original' | null;

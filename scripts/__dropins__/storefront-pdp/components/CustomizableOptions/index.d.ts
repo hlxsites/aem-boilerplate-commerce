@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './CustomizableOptions';
-export { CustomizableOptions as default } from './CustomizableOptions';
-//# sourceMappingURL=index.d.ts.map
+export * from './CustomizableOptions.js';
+export { CustomizableOptions as default } from './CustomizableOptions.js';

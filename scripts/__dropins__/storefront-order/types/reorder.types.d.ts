@@ -14,7 +14,7 @@
  * from Adobe.
  *******************************************************************/
 import { OrderDataModel } from '../data/models';
-import { UserInputErrorProps } from '.';
+import { UserInputErrorProps } from './index.js';
 export interface ReorderProps {
     orderData?: OrderDataModel;
     routeOnSuccess?: () => string;

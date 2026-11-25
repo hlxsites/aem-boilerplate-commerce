@@ -6,6 +6,6 @@
  * file in accordance with the terms of the Adobe license agreement
  * accompanying it.
  *******************************************************************/
-import { OrderCommentsProps } from '../../types';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { OrderCommentsProps } from '../../types/index.js';
+import { Container } from '@dropins/tools/lib';
 export declare const OrderComments: Container<OrderCommentsProps>;

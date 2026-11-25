@@ -13,6 +13,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  */
-export * from './ProductAttributes';
-export { ProductAttributes as default } from './ProductAttributes';
-//# sourceMappingURL=index.d.ts.map
+export * from './ProductAttributes.js';
+export { ProductAttributes as default } from './ProductAttributes.js';

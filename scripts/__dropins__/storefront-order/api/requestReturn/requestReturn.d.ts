@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { RequestReturnProps } from '../../types';
-import { RequestReturnModel } from '../../data/models';
+import { RequestReturnProps } from '../../types/index.js';
+import { RequestReturnModel } from '../../data/models/index.js';
 export declare const requestReturn: (form: RequestReturnProps) => Promise<RequestReturnModel | {}>;

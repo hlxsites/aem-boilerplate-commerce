@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './EmailConfirmationForm';
-export { EmailConfirmationForm as default } from './EmailConfirmationForm';
+export * from './EmailConfirmationForm.d.ts';
+export { EmailConfirmationForm as default } from './EmailConfirmationForm.d.ts';

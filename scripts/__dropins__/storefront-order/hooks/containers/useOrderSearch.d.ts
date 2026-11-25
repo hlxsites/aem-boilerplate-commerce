@@ -13,7 +13,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { FieldEnumList, inLineAlertProps, useOrderSearchProps } from '../../types';
+import { FieldEnumList, inLineAlertProps, useOrderSearchProps } from '../../types/index.js';
 export declare const useOrderSearch: ({ onError, isAuth, renderSignIn, routeCustomerOrder, routeGuestOrder, }: useOrderSearchProps) => {
     onSubmit: (event: Event, valid: boolean) => Promise<null | undefined>;
     inLineAlert: inLineAlertProps;

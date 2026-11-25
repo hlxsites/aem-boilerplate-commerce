@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderStatusProps } from '../../types';
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
+import { OrderStatusProps } from '../../types/index.js';
+import { Container } from '@dropins/tools/lib';
 export declare const OrderStatus: Container<OrderStatusProps>;

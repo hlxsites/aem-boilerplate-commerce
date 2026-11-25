@@ -14,5 +14,5 @@
  * from Adobe.
  *******************************************************************/
 import { FunctionComponent } from 'preact';
-import { ReturnReasonFormProps } from '../../types';
+import { ReturnReasonFormProps } from '../../types/index.js';
 export declare const ReturnReasonForm: FunctionComponent<ReturnReasonFormProps>;

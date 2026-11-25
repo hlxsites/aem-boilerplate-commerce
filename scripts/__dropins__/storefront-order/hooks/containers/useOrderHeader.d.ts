@@ -13,8 +13,8 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { OrderDataModel } from '../../data/models';
-import { UseOrderHeaderProps } from '../../types';
+import { OrderDataModel } from '../../data/models/index.js';
+import { UseOrderHeaderProps } from '../../types/index.js';
 export declare const useOrderHeader: ({ orderData, handleEmailAvailability, handleSignUpClick, }: UseOrderHeaderProps) => {
     order: OrderDataModel | undefined;
     onSignUpClickHandler: (() => void) | undefined;

@@ -16,4 +16,3 @@
 export declare function setUrlParams(params: Record<string, string | number | null>): void;
 export declare function getUrlParams(): Record<string, string>;
 export declare function getValidatedQuantityFromUrl(defaultQuantity?: number): number;
-//# sourceMappingURL=url-params.d.ts.map

@@ -1,11 +1,6 @@
 import { default as LocalizedError } from '../../lib/localizedError';
-import { PaymentLocation } from '../../api';
 
 export interface GooglePayProps {
-    /**
-     * Location where the Google Pay button is to be rendered.
-     */
-    location: PaymentLocation;
     /**
      * Called when the user clicks the Google Pay button. This callback receives a 'showPaymentSheet'
      * function as its only argument that must be called to begin the Google Pay checkout and show the
@@ -40,5 +35,5 @@ export interface GooglePayProps {
      */
     disabled?: boolean;
 }
-export declare const GooglePay: ({ location, onButtonClick, onSuccess, onError, hidden, disabled, }: GooglePayProps) => import("preact/compat").JSX.Element;
+export declare const GooglePay: ({ onButtonClick, onSuccess, onError, hidden, disabled, }: GooglePayProps) => import("preact/compat").JSX.Element;
 //# sourceMappingURL=GooglePay.d.ts.map

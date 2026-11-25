@@ -20,5 +20,5 @@ export interface InitializeWishlistOptions {
     currentPage?: number;
 }
 export declare const initializeWishlist: (options?: InitializeWishlistOptions) => Promise<Wishlist | null>;
-export declare function getDefaultWishlist(options?: InitializeWishlistOptions): Promise<any>;
-export declare function getGuestWishlist(): Promise<any>;
+export declare function getDefaultWishlist(options?: InitializeWishlistOptions): Promise<Wishlist | null>;
+export declare function getGuestWishlist(): Promise<Wishlist | null>;

@@ -14,6 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-import { UpdatePasswordProps } from '../../types';
+import { Container } from '@dropins/tools/lib';
+import { UpdatePasswordProps } from '../../types/index.d.ts';
 export declare const UpdatePassword: Container<UpdatePasswordProps>;

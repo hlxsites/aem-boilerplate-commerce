@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-export * from './ResetPasswordForm';
-export { ResetPasswordForm as default } from './ResetPasswordForm';
+export * from './ResetPasswordForm.d.ts';
+export { ResetPasswordForm as default } from './ResetPasswordForm.d.ts';

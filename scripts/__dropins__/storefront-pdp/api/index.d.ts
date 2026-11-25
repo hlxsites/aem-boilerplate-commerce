@@ -15,13 +15,12 @@
  */
 export * from './initialize';
 export * from './fetch-graphql';
-export * from './getProductData';
-export * from './getProductsData';
-export * from './getRefinedProduct';
-export * from './fetchProductData';
-export * from './setProductConfigurationValues';
-export * from './getProductConfigurationValues';
-export * from './setProductConfigurationValid';
-export * from './getFetchedProductData';
-export * from './isProductConfigurationValid';
-//# sourceMappingURL=index.d.ts.map
+export * from './getProductData/index.js';
+export * from './getProductsData/index.js';
+export * from './getRefinedProduct/index.js';
+export * from './fetchProductData/index.js';
+export * from './setProductConfigurationValues/index.js';
+export * from './getProductConfigurationValues/index.js';
+export * from './setProductConfigurationValid/index.js';
+export * from './getFetchedProductData/index.js';
+export * from './isProductConfigurationValid/index.js';

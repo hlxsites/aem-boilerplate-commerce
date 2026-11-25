@@ -13,15 +13,16 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Initializer, Model } from '../../../node_modules/@dropins/tools/src/lib';
-import { Lang } from '../../../node_modules/@dropins/tools/src/i18n';
-import { CustomerOrdersReturnModel, OrderDataModel, RequestReturnModel } from '../../data/models';
+import { Initializer, Model } from '@dropins/tools/lib';
+import { Lang } from '@dropins/tools/i18n';
+import { CustomerOrdersReturnModel, OrderDataModel, OrderInvoicesModel, RequestReturnModel } from '../../data/models/index.js';
 export type ConfigProps = {
     langDefinitions?: Lang;
     models?: {
         OrderDataModel?: Model<OrderDataModel>;
         CustomerOrdersReturnModel?: Model<CustomerOrdersReturnModel>;
         RequestReturnModel?: Model<RequestReturnModel>;
+        OrderInvoicesModel?: Model<OrderInvoicesModel>;
     };
     orderRef?: string;
     returnRef?: string;
@@ -29,4 +30,4 @@ export type ConfigProps = {
     routeOrdersList?: () => string;
 };
 export declare const initialize: Initializer<ConfigProps>;
-export declare const config: import("../../../node_modules/@dropins/tools/src/lib").Config<ConfigProps>;
+export declare const config: import("@dropins/tools/lib").Config<ConfigProps>;

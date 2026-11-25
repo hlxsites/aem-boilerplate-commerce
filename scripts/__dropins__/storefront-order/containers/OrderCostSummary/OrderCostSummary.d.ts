@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { Container } from '../../../node_modules/@dropins/tools/src/lib';
-import { OrderCostSummaryProps } from '../../types';
+import { Container } from '@dropins/tools/lib';
+import { OrderCostSummaryProps } from '../../types/index.js';
 export declare const OrderCostSummary: Container<OrderCostSummaryProps>;

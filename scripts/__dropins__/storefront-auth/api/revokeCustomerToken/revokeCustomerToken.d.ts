@@ -14,5 +14,5 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { RevokeCustomerTokenModel } from '../../data/models';
+import { RevokeCustomerTokenModel } from '../../data/models/index.d.ts';
 export declare const revokeCustomerToken: () => Promise<RevokeCustomerTokenModel>;

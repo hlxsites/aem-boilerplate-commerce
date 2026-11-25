@@ -1,3 +1,1 @@
-export * from './ProductDownloadableOptions/index'
-import _default from './ProductDownloadableOptions/index'
-export default _default
+export * from './ProductDownloadableOptions/index';

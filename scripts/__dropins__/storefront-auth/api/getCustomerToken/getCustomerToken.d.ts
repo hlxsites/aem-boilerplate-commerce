@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { InLineAlertInterface } from '../../types';
+import { InLineAlertInterface } from '../../types/index.d.ts';
 interface getCustomerTokenProps {
     email: string;
     password: string;

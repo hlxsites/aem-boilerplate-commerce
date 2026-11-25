@@ -13,6 +13,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { ShippingStatusCardProps } from '../../types';
+import { ShippingStatusCardProps } from '../../types/index.js';
 import { FunctionComponent } from 'preact';
 export declare const ShippingStatusCard: FunctionComponent<ShippingStatusCardProps>;

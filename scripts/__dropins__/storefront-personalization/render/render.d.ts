@@ -1,2 +1,2 @@
-import { Render } from '../../node_modules/@dropins/tools/src/lib';
+import { Render } from '@dropins/tools/lib';
 export declare const render: Render;

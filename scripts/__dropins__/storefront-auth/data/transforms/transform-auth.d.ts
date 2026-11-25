@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AccountModel, CustomerModel } from '../models';
+import { AccountModel, CustomerModel } from '../models/index.d.ts';
 /**
  * References:
  * https://github.com/adobe/commerce-events/blob/main/packages/storefront-events-collector/src/handlers/account/signInAEP.ts

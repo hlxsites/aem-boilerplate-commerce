@@ -18,19 +18,6 @@ import { HTMLAttributes } from 'preact/compat';
 import { Container, SlotProps } from '@dropins/tools/lib';
 import { CartModel } from '../../data/models';
 import { ImageProps } from '@dropins/tools/components';
-export interface MiniCartActionsContext {
-    data: CartModel | null;
-    checkout: {
-        show: boolean;
-        disabled: boolean;
-        url: string | undefined;
-        initiate: () => void;
-    };
-    viewCart: {
-        show: boolean;
-        url: string | undefined;
-    };
-}
 export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
     routeProduct?: (item: CartModel['items'][0]) => string;
     routeCart?: () => string;
@@ -40,7 +27,6 @@ export interface MiniCartProps extends HTMLAttributes<HTMLDivElement> {
         ProductList?: SlotProps;
         ProductListFooter?: SlotProps;
         PreCheckoutSection?: SlotProps;
-        Actions?: SlotProps<MiniCartActionsContext>;
         Thumbnail?: SlotProps<{
             item: CartModel['items'][number];
             defaultImageProps: ImageProps;

@@ -13,15 +13,15 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  *******************************************************************/
-import { AttributesFormModel, OrderItemModel } from '../../data/models';
-import { StepsTypes, UseCreateReturn } from '../../types';
+import { AttributesFormModel, OrderItemModel } from '../../data/models/index.js';
+import { StepsTypes, UseCreateReturn } from '../../types/index.js';
 import { RefObject } from 'preact';
 export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAlert, orderData, }: UseCreateReturn) => {
     order: {
         giftReceiptIncluded?: boolean | undefined;
         printedCardIncluded?: boolean | undefined;
         giftWrappingOrder?: {
-            price: import("../../types").MoneyProps;
+            price: import("../../types/index.js").MoneyProps;
             uid: string;
         } | undefined;
         placeholderImage?: string;
@@ -38,10 +38,10 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
         carrier?: string;
         orderDate?: string | undefined;
         adminAssistedOrder?: boolean;
-        comments?: import("../../types").OrderCommentItem[] | undefined;
-        returns?: import("../../data/models").OrdersReturnPropsModel[] | undefined;
+        comments?: import("../../types/index.js").OrderCommentItem[] | undefined;
+        returns?: import("../../data/models/index.js").OrdersReturnPropsModel[] | undefined;
         discounts?: {
-            amount: import("../../types").MoneyProps;
+            amount: import("../../types/index.js").MoneyProps;
             label: string;
         }[] | undefined;
         coupons?: {
@@ -56,34 +56,34 @@ export declare const useCreateReturn: ({ onSuccess, onError, handleSetInLineAler
             amount: number;
             currency: string;
         };
-        shipments?: import("../../data/models").ShipmentsModel[] | undefined;
+        shipments?: import("../../data/models/index.js").ShipmentsModel[] | undefined;
         items?: OrderItemModel[] | undefined;
-        totalGiftCard?: import("../../types").MoneyProps | undefined;
-        grandTotal?: import("../../types").MoneyProps | undefined;
-        grandTotalExclTax?: import("../../types").MoneyProps | undefined;
-        totalShipping?: import("../../types").MoneyProps;
-        subtotalExclTax?: import("../../types").MoneyProps | undefined;
-        subtotalInclTax?: import("../../types").MoneyProps | undefined;
-        totalTax?: import("../../types").MoneyProps | undefined;
-        shippingAddress?: import("../../data/models").OrderAddressModel | undefined;
+        totalGiftCard?: import("../../types/index.js").MoneyProps | undefined;
+        grandTotal?: import("../../types/index.js").MoneyProps | undefined;
+        grandTotalExclTax?: import("../../types/index.js").MoneyProps | undefined;
+        totalShipping?: import("../../types/index.js").MoneyProps;
+        subtotalExclTax?: import("../../types/index.js").MoneyProps | undefined;
+        subtotalInclTax?: import("../../types/index.js").MoneyProps | undefined;
+        totalTax?: import("../../types/index.js").MoneyProps | undefined;
+        shippingAddress?: import("../../data/models/index.js").OrderAddressModel | undefined;
         totalGiftOptions?: {
-            giftWrappingForItems: import("../../types").MoneyProps;
-            giftWrappingForItemsInclTax: import("../../types").MoneyProps;
-            giftWrappingForOrder: import("../../types").MoneyProps;
-            giftWrappingForOrderInclTax: import("../../types").MoneyProps;
-            printedCard: import("../../types").MoneyProps;
-            printedCardInclTax: import("../../types").MoneyProps;
+            giftWrappingForItems: import("../../types/index.js").MoneyProps;
+            giftWrappingForItemsInclTax: import("../../types/index.js").MoneyProps;
+            giftWrappingForOrder: import("../../types/index.js").MoneyProps;
+            giftWrappingForOrderInclTax: import("../../types/index.js").MoneyProps;
+            printedCard: import("../../types/index.js").MoneyProps;
+            printedCardInclTax: import("../../types/index.js").MoneyProps;
         } | undefined;
-        billingAddress?: import("../../data/models").OrderAddressModel | undefined;
-        availableActions?: import("../../types").AvailableActionsProps[] | undefined;
+        billingAddress?: import("../../data/models/index.js").OrderAddressModel | undefined;
+        availableActions?: import("../../types/index.js").AvailableActionsProps[] | undefined;
         taxes?: {
-            amount: import("../../types").MoneyProps;
+            amount: import("../../types/index.js").MoneyProps;
             rate: number;
             title: string;
         }[] | undefined;
         appliedGiftCards?: {
             code: string;
-            appliedBalance: import("../../types").MoneyProps;
+            appliedBalance: import("../../types/index.js").MoneyProps;
         }[] | undefined;
     };
     steps: StepsTypes;

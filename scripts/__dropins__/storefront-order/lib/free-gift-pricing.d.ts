@@ -4,7 +4,7 @@
  *  Copyright 2026 Adobe
  *  All Rights Reserved.
  *******************************************************************/
-import type { OrderItemModel } from '../data/models';
+import type { OrderItemModel } from '../data/models/index.js';
 type FreeGiftLineItem = Pick<OrderItemModel, 'price' | 'regularPrice' | 'totalQuantity' | 'itemPrices'>;
 /**
  * Unit amount shown for free-gift lines: line price when set (e.g. catalog special),
