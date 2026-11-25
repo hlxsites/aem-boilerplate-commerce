@@ -1,4 +1,4 @@
-import { TargetedBlock } from '@dropins/storefront-personalization/containers/TargetedBlock.js';
+import { TargetedBlock } from '@dropins/storefront-personalization/containers.js';
 import { render } from '@dropins/storefront-personalization/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
