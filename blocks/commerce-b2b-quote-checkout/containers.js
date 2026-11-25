@@ -7,26 +7,32 @@
 
 // Checkout Dropin
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
-import BillToShippingAddress from '@dropins/storefront-checkout/containers/BillToShippingAddress.js';
-import LoginForm from '@dropins/storefront-checkout/containers/LoginForm.js';
-import PaymentMethods from '@dropins/storefront-checkout/containers/PaymentMethods.js';
-import PlaceOrder from '@dropins/storefront-checkout/containers/PlaceOrder.js';
-import ServerError from '@dropins/storefront-checkout/containers/ServerError.js';
-import ShippingMethods from '@dropins/storefront-checkout/containers/ShippingMethods.js';
-import TermsAndConditions from '@dropins/storefront-checkout/containers/TermsAndConditions.js';
+import {
+  BillToShippingAddress,
+  LoginForm,
+  PaymentMethods,
+  PlaceOrder,
+  ServerError,
+  ShippingMethods,
+  TermsAndConditions,
+} from '@dropins/storefront-checkout/containers.js';
 import { render as CheckoutProvider } from '@dropins/storefront-checkout/render.js';
 
 // Auth Dropin
 import * as authApi from '@dropins/storefront-auth/api.js';
 
 // Account Dropin
-import Addresses from '@dropins/storefront-account/containers/Addresses.js';
-import AddressForm from '@dropins/storefront-account/containers/AddressForm.js';
+import {
+  Addresses,
+  AddressForm,
+} from '@dropins/storefront-account/containers.js';
 import { render as AccountProvider } from '@dropins/storefront-account/render.js';
 
 // Quote Management Dropin
-import OrderSummary from '@dropins/storefront-quote-management/containers/OrderSummary.js';
-import QuoteSummaryList from '@dropins/storefront-quote-management/containers/QuoteSummaryList.js';
+import {
+  OrderSummary,
+  QuoteSummaryList,
+} from '@dropins/storefront-quote-management/containers.js';
 import { render as QuoteManagementProvider } from '@dropins/storefront-quote-management/render.js';
 
 // Tools

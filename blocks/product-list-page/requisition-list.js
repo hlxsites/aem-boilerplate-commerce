@@ -24,7 +24,7 @@
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import {
   RequisitionListSelector,
-} from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
+} from '@dropins/storefront-requisition-list/containers.js';
 import { checkIsAuthenticated, rootLink } from '../../scripts/commerce.js';
 
 // Initialize dropins

@@ -1,5 +1,7 @@
 import { render } from '@dropins/storefront-company-switcher/render.js';
-import { CompanySwitcher } from '@dropins/storefront-company-switcher/containers/CompanySwitcher.js';
+import {
+  CompanySwitcher,
+} from '@dropins/storefront-company-switcher/containers.js';
 import '../../scripts/initializers/company-switcher.js';
 import {
   CUSTOMER_NEGOTIABLE_QUOTE_PATH,

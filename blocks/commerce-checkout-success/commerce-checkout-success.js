@@ -9,12 +9,14 @@ import { events } from '@dropins/tools/event-bus.js';
 // Order Dropin API
 import * as orderApi from '@dropins/storefront-order/api.js';
 import { render as OrderProvider } from '@dropins/storefront-order/render.js';
-import OrderHeader from '@dropins/storefront-order/containers/OrderHeader.js';
-import OrderStatus from '@dropins/storefront-order/containers/OrderStatus.js';
-import ShippingStatus from '@dropins/storefront-order/containers/ShippingStatus.js';
-import CustomerDetails from '@dropins/storefront-order/containers/CustomerDetails.js';
-import OrderCostSummary from '@dropins/storefront-order/containers/OrderCostSummary.js';
-import OrderProductList from '@dropins/storefront-order/containers/OrderProductList.js';
+import {
+  OrderHeader,
+  OrderStatus,
+  ShippingStatus,
+  CustomerDetails,
+  OrderCostSummary,
+  OrderProductList,
+} from '@dropins/storefront-order/containers.js';
 
 // Checkout API/utils used for header and DOM
 import * as checkoutApi from '@dropins/storefront-checkout/api.js';
@@ -22,11 +24,11 @@ import { createFragment, createScopedSelector } from '@dropins/storefront-checko
 
 // Cart (for gift options within order confirmation)
 import { render as CartProvider } from '@dropins/storefront-cart/render.js';
-import GiftOptions from '@dropins/storefront-cart/containers/GiftOptions.js';
+import { GiftOptions } from '@dropins/storefront-cart/containers.js';
 
 // Auth (for sign-up modal in header)
 import { render as AuthProvider } from '@dropins/storefront-auth/render.js';
-import SignUp from '@dropins/storefront-auth/containers/SignUp.js';
+import { SignUp } from '@dropins/storefront-auth/containers.js';
 
 // Commerce helpers
 import {

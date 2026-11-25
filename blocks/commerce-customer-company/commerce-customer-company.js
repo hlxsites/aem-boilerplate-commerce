@@ -14,7 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { CustomerCompanyInfo } from '@dropins/storefront-company-management/containers/CustomerCompanyInfo.js';
+import {
+  CustomerCompanyInfo,
+} from '@dropins/storefront-company-management/containers.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
 import { companyEnabled } from '@dropins/storefront-company-management/api.js';
 import {

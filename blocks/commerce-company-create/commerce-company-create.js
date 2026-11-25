@@ -1,5 +1,7 @@
 import { render as provider } from '@dropins/storefront-company-management/render.js';
-import { CompanyRegistration } from '@dropins/storefront-company-management/containers/CompanyRegistration.js';
+import {
+  CompanyRegistration,
+} from '@dropins/storefront-company-management/containers.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import {
   checkIsAuthenticated,

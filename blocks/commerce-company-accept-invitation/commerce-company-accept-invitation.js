@@ -16,7 +16,9 @@
  ****************************************************************** */
 
 /* eslint-disable import/no-unresolved */
-import { AcceptInvitation } from '@dropins/storefront-company-management/containers/AcceptInvitation.js';
+import {
+  AcceptInvitation,
+} from '@dropins/storefront-company-management/containers.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
 import {
   CUSTOMER_LOGIN_PATH, CUSTOMER_ACCOUNT_PATH, rootLink, checkIsAuthenticated,

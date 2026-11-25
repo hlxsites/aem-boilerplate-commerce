@@ -1,7 +1,9 @@
 import { render as provider } from '@dropins/storefront-requisition-list/render.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
-import { SignIn } from '@dropins/storefront-auth/containers/SignIn.js';
-import SharedRequisitionList from '@dropins/storefront-requisition-list/containers/SharedRequisitionList.js';
+import { SignIn } from '@dropins/storefront-auth/containers.js';
+import {
+  SharedRequisitionList,
+} from '@dropins/storefront-requisition-list/containers.js';
 
 import '../../scripts/initializers/auth.js';
 import '../../scripts/initializers/requisition-list.js';

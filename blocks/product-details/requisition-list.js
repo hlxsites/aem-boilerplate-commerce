@@ -27,7 +27,7 @@ import { events } from '@dropins/tools/event-bus.js';
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
 import {
   RequisitionListSelector,
-} from '@dropins/storefront-requisition-list/containers/RequisitionListSelector.js';
+} from '@dropins/storefront-requisition-list/containers.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 import { checkIsAuthenticated } from '../../scripts/commerce.js';
 

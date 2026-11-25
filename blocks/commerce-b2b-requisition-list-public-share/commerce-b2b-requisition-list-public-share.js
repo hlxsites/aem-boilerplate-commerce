@@ -1,5 +1,7 @@
 import { render as provider } from '@dropins/storefront-requisition-list/render.js';
-import SharedRequisitionList from '@dropins/storefront-requisition-list/containers/SharedRequisitionList.js';
+import {
+  SharedRequisitionList,
+} from '@dropins/storefront-requisition-list/containers.js';
 import * as cartApi from '@dropins/storefront-cart/api.js';
 
 import '../../scripts/initializers/requisition-list.js';

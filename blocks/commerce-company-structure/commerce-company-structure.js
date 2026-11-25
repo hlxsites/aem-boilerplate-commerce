@@ -16,7 +16,9 @@
  ****************************************************************** */
 
 import { render as provider } from '@dropins/storefront-company-management/render.js';
-import { CompanyStructure } from '@dropins/storefront-company-management/containers/CompanyStructure.js';
+import {
+  CompanyStructure,
+} from '@dropins/storefront-company-management/containers.js';
 import {
   checkIsAuthenticated,
   rootLink,
