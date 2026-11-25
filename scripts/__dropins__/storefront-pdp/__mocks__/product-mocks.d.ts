@@ -13,8 +13,7 @@ export declare const MOCK_DATA_BUNDLE: {
     url: string;
     urlKey: string;
     externalId: string;
-    gallery: {
-        __typename: string;
+    images: {
         url: string;
         label: string;
         roles: string[];
@@ -132,8 +131,7 @@ export declare const MOCK_DATA_BUNDLE_TRANSFORMED: {
     metaKeyword: string;
     metaTitle: string;
     description: string;
-    gallery: {
-        type: string;
+    images: {
         url: string;
         label: string;
         width: number;

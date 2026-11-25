@@ -25,7 +25,8 @@ export interface ProductModel {
     metaKeyword?: string;
     metaTitle?: string;
     description?: string;
-    gallery?: GalleryItem[];
+    images?: Image[];
+    videos?: Video[];
     prices?: Prices;
     attributes?: Attribute[];
     options?: Option[];
@@ -38,13 +39,14 @@ export interface ProductModel {
     variantName?: string;
     productType?: ProductType | undefined;
 }
-export type GalleryItem = {
-    type: 'image';
+interface Image {
     url: string;
     label: string;
+    width: number;
+    height: number;
     roles?: string[];
-} | {
-    type: 'video';
+}
+interface Video {
     url: string;
     title?: string;
     description?: string;
@@ -53,7 +55,7 @@ export type GalleryItem = {
         label?: string;
         roles?: string[];
     };
-};
+}
 interface Price {
     amount?: number;
     currency?: string;
