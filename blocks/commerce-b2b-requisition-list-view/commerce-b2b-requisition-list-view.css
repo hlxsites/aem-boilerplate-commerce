@@ -1,1 +1,7 @@
-/* stylelint-disable no-empty-source */
+@media print {
+  body.requisition-list-printing > header,
+  body.requisition-list-printing > main,
+  body.requisition-list-printing > footer {
+    display: none;
+  }
+}

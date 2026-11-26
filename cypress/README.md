@@ -56,6 +56,33 @@ All commands use a base config, defined in `cypress.base.config.js` and extend i
 
 ## Debugging Tests
 
+### Requisition-list export and print
+
+The existing authenticated workflow in
+`src/tests/b2b/verifyB2BRequisitionLists.spec.js` exercises the real detail block,
+initializer and catalog adapters with simple, configurable and bundle lines.
+It verifies the downloaded `sku,qty` CSV against returned list data, screen/print
+price and quantity consistency, duplicate-print protection, `afterprint` cleanup,
+unchanged screen rows, list-loading failure feedback without a new download or
+print dialog, and hidden actions after the list becomes empty. On Chromium,
+print-media emulation also checks that the host header/main/footer are hidden
+while the separate print root remains visible; teardown restores screen media.
+The same flow checks delayed explicit print recovery when no completion event
+arrives, followed by cleanup and a harmless late `afterprint` event.
+
+Run it with the existing B2B Cypress runner and an AEM server serving B2B content:
+
+```sh
+npm run cypress:b2b:saas:run -- --spec src/tests/b2b/verifyB2BRequisitionLists.spec.js --env grep="Verify B2B Requisition is available for authenticated users" --config retries=0
+```
+
+The tested drop-in bundle must contain the export/print feature and the shared
+screen/print pricing renderer. The native `window.print` call is stubbed so the
+test can inspect prepared rows and dispatch `afterprint`; this does not prove
+native PDF pagination or authoritative pricing.
+Full-list pagination and calculation edge cases remain covered in drop-in tests;
+native browser/PDF checks are still required.
+
 ### Common Issues
 - **Tests timing out:** Increase wait times or check if local server is running
 - **Authentication errors:** Verify environment variables are set correctly

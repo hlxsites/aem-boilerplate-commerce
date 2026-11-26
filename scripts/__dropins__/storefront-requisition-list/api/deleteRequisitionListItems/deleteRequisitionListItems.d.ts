@@ -15,5 +15,5 @@
  * from Adobe.
  *******************************************************************/
 import { RequisitionList } from '../../data/models/requisitionList';
-import { Item } from '../../data/models/item';
-export declare const deleteRequisitionListItems: (requisitionListUid: string, items: Array<string>, pageSize: number, currentPage: number, enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>) => Promise<RequisitionList | null>;
+import { ConfigurableEnricher, ListLoadContext } from '../../types/list-load';
+export declare const deleteRequisitionListItems: (requisitionListUid: string, items: Array<string>, pageSize: number, currentPage: number, enrichConfigurableProducts?: ConfigurableEnricher, context?: ListLoadContext) => Promise<RequisitionList | null>;

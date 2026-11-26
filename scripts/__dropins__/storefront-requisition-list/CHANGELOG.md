@@ -1,5 +1,36 @@
 # @dropins/storefront-requisition-list
 
+## 2.1.0-preview-20261126103129-7696915
+
+### Minor Changes
+
+- 8e0eee4: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+- d8d080a: Add reusable page and full-list product-data loading with bounded
+  enrichment, progress, cancellation and structured warnings. Reuse it for
+  paginated list loading and refreshes, and preserve absent configurable prices
+  instead of manufacturing zero prices.
+- 6cefbd9: Add full-list print preparation, isolated print layout, bounded image
+  readiness and cancellation cleanup. Render selected configurable, bundle and
+  customizable options beneath the SKU in the shared screen table and print
+  layout.
+
+  Align printed prices, discounts and subtotals with the existing list-view
+  pricing rules through a shared renderer. Authoritative configured-line pricing
+  remains pending USF-4546; the interim implementation retains existing screen
+  limitations.
+
+  Offer explicit delayed recovery for print operations whose completion events
+  never arrive, without automatically removing content from an open print
+  dialog.
+
+- 0baa70c: Add full-list CSV export to the owner-view requisition list header,
+  with abortable pagination, preserved parent SKUs and duplicate lines,
+  localized loading/error feedback, and UTF-8 downloads compatible with Order by
+  SKU.
+
 ## 2.0.1
 
 ### Patch Changes
