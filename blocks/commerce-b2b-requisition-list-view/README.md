@@ -61,10 +61,16 @@ variant is accepted; a parent fallback is reported as unavailable.
 
 Product lookups and configurable refinement use at most four concurrent requests
 per adapter invocation. Parent lookups are shared within an enrichment operation.
+Failed parent lookups are shared too, with a warning for each affected line.
+A subsequent enrichment operation performs a fresh lookup; there are no automatic
+retries within the failed operation.
 The full-list loader separately batches product SKUs in groups of 50.
 
-Only exact prices with the catalog `visible` role are exposed. Genuine zero
-amounts remain zero; absent final amounts are not replaced with regular prices,
+Only exact prices with the catalog `visible` role are exposed. Amounts require
+a finite numeric value and a nonempty currency. Currency-less
+amounts are omitted, not assigned a guessed currency; missing final variant
+prices use the existing `price-unavailable` warning.
+Genuine zero amounts remain zero; absent final amounts are not replaced with regular prices,
 parent prices or range minima. Range-only products do not receive a calculated
 unit price. Existing table handling of absent prices is unchanged.
 

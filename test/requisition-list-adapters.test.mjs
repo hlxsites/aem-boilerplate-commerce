@@ -67,6 +67,87 @@ test('retains successful SKU results and reports failed and omitted lookups', as
   assert.deepEqual(warnings.find(({ code }) => code === 'request-failed').skus, ['failed']);
 });
 
+test('rejects currency-less amounts without fallback and warns for incomplete variant prices', async () => {
+  const missingFinalCurrency = {
+    ...product('missing-final-currency'),
+    price: { roles: ['visible'], final: { amount: { value: 0 } }, regular: amount(10) },
+  };
+  const missingRegularCurrency = {
+    ...product('missing-regular-currency'),
+    price: { roles: ['visible'], final: amount(5), regular: { amount: { value: 10, currency: '' } } },
+  };
+  const warnings = [];
+  const adapters = createRequisitionListAdapters({
+    getProductData: async (sku) => {
+      if (sku === missingFinalCurrency.sku) return missingFinalCurrency;
+      if (sku === missingRegularCurrency.sku) return missingRegularCurrency;
+      return parent();
+    },
+    getRefinedProduct: async () => ({ ...variant(), price: missingFinalCurrency.price }),
+  });
+  const products = await adapters.getProductData([
+    missingFinalCurrency.sku, missingRegularCurrency.sku,
+  ]);
+  assert.deepEqual(products[0].price, { regular: amount(10) });
+  assert.deepEqual(products[1].price, { final: amount(5) });
+  const items = [line()];
+  const results = await adapters.enrichConfigurableProducts(items, {
+    onWarning: (warning) => warnings.push(warning),
+  });
+  assert.equal(results[0].configured_product.sku, 'child');
+  assert.deepEqual(results[0].configured_product.price, { regular: amount(10) });
+  assert.equal(items[0].configured_product, undefined);
+  assert.deepEqual(warnings, [{
+    stage: 'configurables',
+    code: 'price-unavailable',
+    skus: ['parent'],
+    itemUids: ['1'],
+  }]);
+});
+
+test('shares a failed parent lookup per operation, warns per line and retries on the next operation', async () => {
+  let lookups = 0;
+  let refinements = 0;
+  let fail = true;
+  const adapters = createRequisitionListAdapters({
+    getProductData: async () => {
+      lookups += 1;
+      if (fail) throw new Error('Parent lookup failed');
+      return parent();
+    },
+    getRefinedProduct: async () => {
+      refinements += 1;
+      return variant();
+    },
+  });
+  const items = Array.from({ length: 6 }, (_, i) => line(String(i + 1)));
+  const warnings = [];
+  const context = { onWarning: (warning) => warnings.push(warning) };
+  const failed = await adapters.enrichConfigurableProducts(items, context);
+  assert.equal(lookups, 1);
+  assert.equal(refinements, 0);
+  failed.forEach((item, index) => assert.equal(item, items[index]));
+  assert.deepEqual(warnings, items.map((item) => ({
+    stage: 'configurables',
+    code: 'request-failed',
+    skus: ['parent'],
+    itemUids: [item.uid],
+  })));
+
+  fail = false;
+  warnings.length = 0;
+  const recovered = await adapters.enrichConfigurableProducts(items, context);
+  assert.equal(lookups, 2);
+  assert.equal(refinements, items.length);
+  assert.deepEqual(recovered.map(({ uid }) => uid), items.map(({ uid }) => uid));
+  recovered.forEach((item, index) => {
+    assert.equal(item.configured_product.sku, 'child');
+    assert.equal(item.quantity, items[index].quantity);
+    assert.equal(items[index].configured_product, undefined);
+  });
+  assert.deepEqual(warnings, []);
+});
+
 test('resolves catalog option IDs from line SKU, deduplicates parents and keeps variant identity', async () => {
   let lookups = 0;
   const adapters = createRequisitionListAdapters({
