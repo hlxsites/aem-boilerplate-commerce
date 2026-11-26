@@ -3,6 +3,7 @@ import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {
+  AlertBanner,
   InLineAlert,
   Icon,
   provider as UI,
@@ -45,29 +46,39 @@ export default async function decorate(block) {
   let currentModal = null;
   let currentCartNotification = null;
 
-  // Create a container for the update message
-  const updateMessage = document.createElement('div');
-  updateMessage.className = 'commerce-mini-cart__update-message';
-  updateMessage.setAttribute('role', 'status');
-  updateMessage.setAttribute('aria-live', 'polite');
+  // Container for the AlertBanner messages
+  const messageContainer = document.createElement('div');
+  messageContainer.className = 'commerce-mini-cart__message';
+  // Dismissing detaches the button before the header's outside-click handler runs
+  messageContainer.addEventListener('click', (event) => event.stopPropagation());
 
-  // Create shadow wrapper
-  const shadowWrapper = document.createElement('div');
-  shadowWrapper.className = 'commerce-mini-cart__message-wrapper';
-  shadowWrapper.appendChild(updateMessage);
+  let currentMessage = null;
+  let messageTimeout = null;
 
-  const showMessage = (message) => {
-    updateMessage.textContent = message;
-    updateMessage.classList.add('commerce-mini-cart__update-message--visible');
-    shadowWrapper.classList.add('commerce-mini-cart__message-wrapper--visible');
-    setTimeout(() => {
-      updateMessage.classList.remove(
-        'commerce-mini-cart__update-message--visible',
-      );
-      shadowWrapper.classList.remove(
-        'commerce-mini-cart__message-wrapper--visible',
-      );
-    }, 3000);
+  const hideMessage = () => {
+    clearTimeout(messageTimeout);
+    currentMessage?.remove();
+    currentMessage = null;
+  };
+
+  // AlertBanner has no error variant: 'warning' is the red one.
+  const showMessage = async (message, { variant = 'success', autoDismiss = true } = {}) => {
+    hideMessage();
+    if (!message) return;
+
+    const isError = variant === 'warning';
+    currentMessage = await UI.render(AlertBanner, {
+      variant,
+      icon: h(Icon, { source: isError ? 'WarningWithCircle' : 'CheckWithCircle' }),
+      message: h('span', null, message),
+      role: isError ? 'alert' : 'status',
+      'aria-live': isError ? 'assertive' : 'polite',
+      onDismiss: hideMessage,
+    })(messageContainer);
+
+    if (autoDismiss) {
+      messageTimeout = setTimeout(hideMessage, 3000);
+    }
   };
 
   // Handle Edit Button Click
@@ -133,9 +144,9 @@ export default async function decorate(block) {
       console.error('Error opening mini PDP modal:', error);
 
       // Show error message using mini-cart's message system
-      showMessage(
-        placeholders?.Global?.ProductLoadError,
-      );
+      showMessage(placeholders?.Global?.ProductLoadError, {
+        variant: 'warning',
+      });
     }
   }
 
@@ -224,10 +235,10 @@ export default async function decorate(block) {
   // Find the products container and add the message div at the top
   const productsContainer = block.querySelector('.cart-mini-cart__products');
   if (productsContainer) {
-    productsContainer.insertBefore(shadowWrapper, productsContainer.firstChild);
+    productsContainer.insertBefore(messageContainer, productsContainer.firstChild);
   } else {
     console.info('Products container not found, appending message to block');
-    block.appendChild(shadowWrapper);
+    block.appendChild(messageContainer);
   }
 
   return block;
