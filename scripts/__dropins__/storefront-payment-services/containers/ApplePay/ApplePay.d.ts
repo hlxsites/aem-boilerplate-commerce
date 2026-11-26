@@ -1,5 +1,6 @@
 import { default as LocalizedError } from '../../lib/localizedError';
 import { PaymentLocation } from '../../api';
+import { CartItem } from '../../lib/cartItem';
 
 export interface ApplePayProps {
     /**
@@ -54,18 +55,4 @@ export interface ApplePayProps {
     disabled?: boolean;
 }
 export declare const ApplePay: ({ location, getCartId, createCart, onButtonClick, onSuccess, onError, hidden, disabled, }: ApplePayProps) => import("preact/compat").JSX.Element;
-/**
- * See https://developer.adobe.com/commerce/webapi/graphql-api/index.html#definition-CartItemInput.
- */
-interface CartItem {
-    sku: string;
-    quantity: number;
-    parentSku?: string;
-    selectedOptions?: (string | number)[];
-    enteredOptions?: {
-        uid: string | number;
-        value: string;
-    }[];
-}
-export {};
 //# sourceMappingURL=ApplePay.d.ts.map

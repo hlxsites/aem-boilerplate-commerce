@@ -29,6 +29,7 @@ export interface PaymentServicesErrorCode {
     'payment-services/unsupported-payment-method': void;
     'payment-services/dropin-not-initialized': void;
     'payment-services/missing-cart-data': void;
+    'payment-services/missing-pdp-data': void;
 }
 export type PaymentServicesErrorOptions = ErrorOptions & {
     code?: keyof PaymentServicesErrorCode;
@@ -53,6 +54,9 @@ export declare class PaymentMethodNotSupportedError extends PaymentServicesError
 }
 export declare class MissingCartDataError extends PaymentServicesError {
     constructor(missingFields: string[]);
+}
+export declare class MissingPdpDataError extends PaymentServicesError {
+    constructor();
 }
 export declare function asError(unknownError: unknown): Error;
 //# sourceMappingURL=error.d.ts.map
