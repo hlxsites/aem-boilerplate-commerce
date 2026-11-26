@@ -1,4 +1,4 @@
-import { SignUp } from '@dropins/storefront-auth/containers/SignUp.js';
+import { SignUp } from '@dropins/storefront-auth/containers.js';
 import { render as authRenderer } from '@dropins/storefront-auth/render.js';
 import {
   CUSTOMER_ACCOUNT_PATH,

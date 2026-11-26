@@ -263,14 +263,13 @@ describe('Invoice host routing and initialization', () => {
         body: 'export const render = { render: (_, props) => async () => { window.invoiceProps = props; } };',
       });
     }
-    for (const [dropin, container] of [
-      ['storefront-order', 'OrderInvoices'],
-      ['storefront-order', 'InvoiceDetails'],
-      ['storefront-auth', 'SignIn'],
+    for (const [dropin, containers] of [
+      ['storefront-order', ['OrderInvoices', 'InvoiceDetails']],
+      ['storefront-auth', ['SignIn']],
     ]) {
-      cy.intercept('GET', `**/scripts/__dropins__/${dropin}/containers/${container}.js`, {
+      cy.intercept('GET', `**/scripts/__dropins__/${dropin}/containers.js`, {
         headers: { 'content-type': 'application/javascript' },
-        body: `export const ${container} = () => {};`,
+        body: containers.map((container) => `export const ${container} = () => {};`).join('\n'),
       });
     }
     cy.intercept('GET', '**/placeholders/order.json', { body: { data: [] } });

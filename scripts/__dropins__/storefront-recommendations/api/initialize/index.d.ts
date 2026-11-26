@@ -15,4 +15,3 @@
  * from Adobe.
  *******************************************************************/
 export * from './initialize';
-//# sourceMappingURL=index.d.ts.map

@@ -8,7 +8,13 @@ const e=`
     queryType
     visibility
     inStock
+    attributes(roles: []) {
+      name
+      value
+    }
     images {
+      label
+      roles
       url
     }
     urlKey
@@ -43,7 +49,7 @@ const e=`
       }
     }
   }
-`,n=`
+`,r=`
   fragment RECOMMENDATION_UNIT_FRAGMENT on RecommendationUnit {
     displayOrder
     productsView {
@@ -58,5 +64,5 @@ const e=`
   }
 
   ${e}
-`;export{e as PRODUCTS_VIEW_FRAGMENT,n as RECOMMENDATION_UNIT_FRAGMENT};
+`;export{e as PRODUCTS_VIEW_FRAGMENT,r as RECOMMENDATION_UNIT_FRAGMENT};
 //# sourceMappingURL=fragments.js.map

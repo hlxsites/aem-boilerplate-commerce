@@ -1,7 +1,7 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
 // Requires an Order drop-in release exporting the invoice containers.
 // eslint-disable-next-line import/no-unresolved
-import { InvoiceDetails } from '@dropins/storefront-order/containers/InvoiceDetails.js';
+import { InvoiceDetails } from '@dropins/storefront-order/containers.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';
 import { rootLink } from '../../scripts/commerce.js';
 import loadInvoicePdfBranding from './invoice-pdf-branding.js';

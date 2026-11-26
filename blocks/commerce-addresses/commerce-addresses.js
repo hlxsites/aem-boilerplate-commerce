@@ -1,4 +1,4 @@
-import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
+import { Addresses } from '@dropins/storefront-account/containers.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import {

@@ -25,8 +25,11 @@ export interface ProductModel {
     metaKeyword?: string;
     metaTitle?: string;
     description?: string;
-    images?: Image[];
-    videos?: Video[];
+    /** @deprecated Use gallery instead; this list cannot represent mixed media order. */
+    images?: ProductImage[];
+    /** @deprecated Use gallery instead; this list cannot represent mixed media order. */
+    videos?: ProductVideo[];
+    gallery?: GalleryItem[];
     prices?: Prices;
     attributes?: Attribute[];
     options?: Option[];
@@ -39,14 +42,14 @@ export interface ProductModel {
     variantName?: string;
     productType?: ProductType | undefined;
 }
-interface Image {
+export interface ProductImage {
     url: string;
     label: string;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     roles?: string[];
 }
-interface Video {
+export interface ProductVideo {
     url: string;
     title?: string;
     description?: string;
@@ -56,6 +59,14 @@ interface Video {
         roles?: string[];
     };
 }
+export type GalleryItem = {
+    type: 'image';
+    url: string;
+    label: string;
+    roles?: string[];
+} | (ProductVideo & {
+    type: 'video';
+});
 interface Price {
     amount?: number;
     currency?: string;

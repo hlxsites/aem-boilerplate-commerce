@@ -10,12 +10,12 @@ import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import * as cartApi from '@dropins/storefront-cart/api.js';
 
 // Recommendations Dropin
-import ProductList from '@dropins/storefront-recommendations/containers/ProductList.js';
+import { ProductList } from '@dropins/storefront-recommendations/containers.js';
 import { render as provider } from '@dropins/storefront-recommendations/render.js';
 import { publishRecsItemAddToCartClick } from '@dropins/storefront-recommendations/api.js';
 
 // Wishlist Dropin
-import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
+import { WishlistToggle } from '@dropins/storefront-wishlist/containers.js';
 import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js';
 
 // Block-level
