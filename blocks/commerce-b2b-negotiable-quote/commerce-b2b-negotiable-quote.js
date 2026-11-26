@@ -155,7 +155,9 @@ export default async function decorate(block) {
       children: placeholders?.Cart?.PriceSummary?.checkout,
       disabled: !checkoutEnabled,
       onClick: () => {
-        window.location.href = `/b2b/quote-checkout?quoteId=${quoteId}`;
+        window.location.href = rootLink(
+          `/b2b/quote-checkout?quoteId=${encodeURIComponent(quoteId)}`,
+        );
       },
     })(checkoutButtonContainer);
   };
