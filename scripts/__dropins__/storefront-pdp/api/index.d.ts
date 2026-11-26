@@ -15,6 +15,7 @@
  */
 export * from './initialize';
 export * from './fetch-graphql';
+export type { ProductImage, ProductVideo } from '../data/models/index.js';
 export * from './getProductData/index.js';
 export * from './getProductsData/index.js';
 export * from './getRefinedProduct/index.js';
