@@ -109,15 +109,34 @@ fragment PRODUCT_FRAGMENT on ProductView {
   }
 
   videos {
-		description
-		url
-		title
-		preview {
-			label
-			roles
-			url
-		}
-	}
+    description
+    url
+    title
+    preview {
+      label
+      roles
+      url
+    }
+  }
+
+  gallery {
+    __typename
+    ... on ProductViewImage {
+      url
+      label
+      roles
+    }
+    ... on ProductViewVideo {
+      description
+      url
+      title
+      preview {
+        label
+        roles
+        url
+      }
+    }
+  }
 
   attributes(roles: []) {
     name

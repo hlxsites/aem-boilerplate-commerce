@@ -1,10 +1,24 @@
 # @dropins/storefront-pdp
 
-## 3.4.0-alpha-20261109151740
+## 4.0.0-alpha-20261126113627
+
+### Major Changes
+
+- 6e667f1: Render ProductGallery from Catalog Service's unified products.gallery
+  field, preserving the returned image/video order in the carousel, thumbnails
+  and preview overlay. Videos remain opt-in; the legacy videos.position option
+  no longer overrides Catalog Service order. Custom product transformers and
+  initialData must provide gallery items with type: 'image' or type: 'video'.
+  ProductDetails now renders media and thumbnails from gallery as well. The
+  ProductModel images and videos fields remain available for existing consumers
+  but are deprecated in favor of gallery. ProductImage and ProductVideo types
+  are exported; image width and height are optional because they are not
+  returned by the default query. Direct videos in ProductDetails reload when
+  their gallery URL changes.
 
 ### Minor Changes
 
-- 8ad0710: Load containers through the consolidated `containers.js` bundle
+- 99d9a0d: Load containers through the consolidated `containers.js` bundle
   instead of each container's individual entry point. This replaces one request
   per container with a single request, which reduces request pressure on EDS.
   The per-container entry points remain available for backwards compatibility.
@@ -41,6 +55,9 @@
 
 ### Patch Changes
 
+- 2b93728: Keep the deprecated `images` and `videos` fields available in
+  `ProductModel` alongside `gallery`, so existing consumers keep working while
+  they migrate.
 - b489882: Fix accessibility issues in the product image preview modal: keyboard
   focus is now trapped inside the dialog while open and restored to the trigger
   on close, and the carousel slide indicators now expose their selected state to

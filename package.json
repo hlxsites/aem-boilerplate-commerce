@@ -47,7 +47,7 @@
     "@dropins/storefront-company-switcher": "1.4.0-alpha-20261124121018-d7038bf",
     "@dropins/storefront-order": "5.0.0-alpha-20261125095223-ce2a481",
     "@dropins/storefront-payment-services": "4.3.0",
-    "@dropins/storefront-pdp": "3.4.0-alpha-20261109151740",
+    "@dropins/storefront-pdp": "4.0.0-alpha-20261126113627",
     "@dropins/storefront-personalization": "3.3.0-alpha-20261125101542-2fd96ed",
     "@dropins/storefront-product-discovery": "3.1.4-alpha-20261125101525",
     "@dropins/storefront-purchase-order": "1.3.0-alpha-20261124095526-8cf3d3b",
