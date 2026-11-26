@@ -1,5 +1,22 @@
 # @dropins/storefront-auth
 
+## 4.2.0-alpha-20261126102441-eb2614f
+
+### Minor Changes
+
+- 7db8c65: Load containers through the consolidated `containers.js` bundle
+  instead of each container's individual entry point. This replaces one request
+  per container with a single request, which reduces request pressure on EDS.
+  The per-container entry points remain available for backwards compatibility.
+
+### Patch Changes
+
+- eb2614f: Fix the password validation feedback in `UpdatePassword` and `SignUp`
+  not being painted: the character-class indicator stayed pending until the next
+  keystroke, and submitting a password that does not meet the requirements did
+  not show the error state. The Form slot context now includes the password
+  validation statuses so the slot re-renders when they change.
+
 ## 4.1.1
 
 ### Patch Changes
