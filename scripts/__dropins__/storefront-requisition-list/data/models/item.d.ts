@@ -61,14 +61,14 @@ interface ConfiguredProduct {
     images?: [{
         url: string;
     }];
-    price: {
+    price?: {
         regular?: {
             amount: {
                 value: number;
                 currency: string;
             };
         };
-        final: {
+        final?: {
             amount: {
                 value: number;
                 currency: string;

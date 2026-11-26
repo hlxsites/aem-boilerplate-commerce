@@ -139,10 +139,25 @@ function assertExportAndPrint(listName) {
     expect(Array.from($row.find(prices), (price) => price.textContent)).to.deep.equal(displayedRows[index].amounts);
   });
 
+  cy.clock(null, ['setTimeout', 'clearTimeout']);
+  cy.get(printButton).click();
+  cy.get('.requisition-list-print-root').should('exist');
+  cy.tick(5000);
+  cy.get('@printRequisitionList').should('have.been.calledTwice');
+  cy.tick(60000);
+  cy.get('.requisition-list-print-root').should('exist');
+  cy.get(printButton).should('have.attr', 'aria-busy', 'true');
+  cy.contains('button', 'Reset print operation').click();
+  cy.get('.requisition-list-print-root').should('not.exist');
+  cy.get('body').should('not.have.class', 'requisition-list-printing');
+  cy.get(printButton).should('have.attr', 'aria-busy', 'false');
+  cy.window().then((win) => win.dispatchEvent(new win.Event('afterprint')));
+  cy.clock().invoke('restore');
+
   cy.then(() => { failListLoad = true; });
   cy.get(printButton).click();
   cy.contains('[role="alert"]', 'Unable to prepare the requisition list for printing.').should('be.visible');
-  cy.get('@printRequisitionList').should('have.been.calledOnce');
+  cy.get('@printRequisitionList').should('have.been.calledTwice');
   cy.get('.requisition-list-print-root').should('not.exist');
   cy.get(printButton).should('have.attr', 'aria-busy', 'false');
   cy.get(exportButton).click();

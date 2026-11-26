@@ -67,6 +67,8 @@ unchanged screen rows, list-loading failure feedback without a new download or
 print dialog, and hidden actions after the list becomes empty. On Chromium,
 print-media emulation also checks that the host header/main/footer are hidden
 while the separate print root remains visible; teardown restores screen media.
+The same flow checks delayed explicit print recovery when no completion event
+arrives, followed by cleanup and a harmless late `afterprint` event.
 
 Run it with the existing B2B Cypress runner and an AEM server serving B2B content:
 

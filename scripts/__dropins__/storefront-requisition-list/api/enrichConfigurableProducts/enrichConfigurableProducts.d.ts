@@ -15,6 +15,7 @@
  * from Adobe.
  *******************************************************************/
 import { Item } from '../../data/models/item';
+import { ListLoadContext } from '../../types/list-load';
 /**
  * Default variant resolver for configurable requisition list items.
  *
@@ -25,4 +26,4 @@ import { Item } from '../../data/models/item';
  * price and thumbnail can reflect the selected variant, consistent with
  * the cart.
  */
-export declare const enrichConfigurableProducts: (items: Item[]) => Promise<Item[]>;
+export declare const enrichConfigurableProducts: (items: Item[], context?: ListLoadContext) => Promise<Item[]>;

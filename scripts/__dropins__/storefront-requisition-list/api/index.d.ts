@@ -20,6 +20,8 @@ export * from './getStoreConfig';
 export * from './enrichConfigurableProducts';
 export * from './getRequisitionLists';
 export * from './getRequisitionList';
+export * from './getAllRequisitionListItems';
+export * from './loadRequisitionListData';
 export * from './createRequisitionList';
 export * from './updateRequisitionList';
 export * from './deleteRequisitionList';

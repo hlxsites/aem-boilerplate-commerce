@@ -21,6 +21,18 @@ export interface RequisitionListHeaderProps extends HTMLAttributes<HTMLDivElemen
     description?: string;
     showPublicTag?: boolean;
     publicTagLabel?: string;
+    exportAction?: {
+        onClick: () => void;
+        label: string;
+        loading: boolean;
+        loadingLabel: string;
+    };
+    printAction?: {
+        onClick: () => void;
+        label: string;
+        loading: boolean;
+        loadingLabel: string;
+    };
     backLink?: {
         url: string;
         label: string;

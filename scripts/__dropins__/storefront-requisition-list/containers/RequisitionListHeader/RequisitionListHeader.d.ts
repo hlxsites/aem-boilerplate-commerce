@@ -16,7 +16,7 @@
  *******************************************************************/
 import { Container } from '@dropins/tools/lib';
 import { RequisitionList } from '../../data/models/requisitionList';
-import { Item } from '../../data/models/item';
+import { ConfigurableEnricher, ProductDataLoader } from '../../api/loadRequisitionListData';
 export interface RequisitionListHeaderProps {
     requisitionList: RequisitionList;
     routeRequisitionListGrid?: () => string | void;
@@ -26,7 +26,8 @@ export interface RequisitionListHeaderProps {
         type: string;
         context: string;
     }) => void;
-    enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>;
+    enrichConfigurableProducts?: ConfigurableEnricher;
+    getProductData?: ProductDataLoader;
     currentCustomerEmail?: string;
     routeSharedRequisitionList?: (relativeUrl: string) => string;
 }
