@@ -1,6 +1,7 @@
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import RequisitionListView
-  from '@dropins/storefront-requisition-list/containers/RequisitionListView.js';
+import {
+  RequisitionListView,
+} from '@dropins/storefront-requisition-list/containers.js';
 import { getCustomerData } from '@dropins/storefront-auth/api.js';
 
 import {

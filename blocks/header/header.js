@@ -429,7 +429,7 @@ export default async function decorate(block) {
         ] = await Promise.all([
           import('@dropins/storefront-product-discovery/api.js'),
           import('@dropins/storefront-product-discovery/render.js'),
-          import('@dropins/storefront-product-discovery/containers/SearchResults.js'),
+          import('@dropins/storefront-product-discovery/containers.js'),
           import('@dropins/tools/components.js'),
           import('@dropins/tools/lib.js'),
         ]);

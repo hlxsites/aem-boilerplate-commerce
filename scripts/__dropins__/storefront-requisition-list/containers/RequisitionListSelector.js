@@ -1,4 +1,4 @@
 /*! Copyright 2026 Adobe
 All Rights Reserved. */
-import{b as u,b as c}from"./SharedRequisitionList.js";import"@dropins/tools/lib.js";import"@dropins/tools/i18n.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/components.js";import"@dropins/tools/preact-bundle.js";import"../api.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/preact.js";export{u as RequisitionListSelector,c as default};
+import{c as u,c as d}from"./RequisitionListForm.js";import"@dropins/tools/lib.js";import"@dropins/tools/i18n.js";import"@dropins/tools/preact-bundle.js";import"../api.js";import"@dropins/tools/event-bus.js";import"@dropins/tools/fetch-graphql.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/preact-bundle.js";import"@dropins/tools/components.js";import"@dropins/tools/preact.js";export{u as RequisitionListSelector,d as default};
 //# sourceMappingURL=RequisitionListSelector.js.map

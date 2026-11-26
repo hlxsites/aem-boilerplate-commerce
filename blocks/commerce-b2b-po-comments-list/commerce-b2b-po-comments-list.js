@@ -1,5 +1,7 @@
 import { render as purchaseOrderRenderer } from '@dropins/storefront-purchase-order/render.js';
-import { PurchaseOrderCommentsList } from '@dropins/storefront-purchase-order/containers/PurchaseOrderCommentsList.js';
+import {
+  PurchaseOrderCommentsList,
+} from '@dropins/storefront-purchase-order/containers.js';
 import { PO_PERMISSIONS } from '@dropins/storefront-purchase-order/api.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { getConfigValue } from '@dropins/tools/lib/aem/configs.js';

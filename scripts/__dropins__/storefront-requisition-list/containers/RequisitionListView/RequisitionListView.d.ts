@@ -1,4 +1,4 @@
-import { Item, Product } from '../../data/models/item';
+import { ProductDataLoader, ConfigurableEnricher } from '../../api/loadRequisitionListData';
 import { Container } from '@dropins/tools/lib';
 import { HTMLAttributes } from 'preact/compat';
 export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement> {
@@ -29,14 +29,14 @@ export interface RequisitionListViewProps extends HTMLAttributes<HTMLDivElement>
      * Defaults to '/customer/account'
      */
     fallbackRoute?: string;
-    getProductData: (skus: string[]) => Promise<Product[] | null>;
+    getProductData: ProductDataLoader;
     /**
      * Resolves the selected variant (SKU, price, thumbnail) for configurable
      * requisition list items. Defaults to a built-in resolver that queries
      * `ConfigurableProduct.variants`; pass a custom implementation to route
      * variant lookups elsewhere (e.g. a separate Catalog Service endpoint).
      */
-    enrichConfigurableProducts?: (items: Item[]) => Promise<Item[]>;
+    enrichConfigurableProducts?: ConfigurableEnricher;
     currentCustomerEmail?: string;
     routeSharedRequisitionList?: (relativeUrl: string) => string;
 }

@@ -10,23 +10,29 @@ import { render as wishlistRender } from '@dropins/storefront-wishlist/render.js
 import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
 
 // Quick Order Dropin
-import QuickOrderVariantsGrid from '@dropins/storefront-quick-order/containers/QuickOrderVariantsGrid.js';
+import {
+  QuickOrderVariantsGrid,
+} from '@dropins/storefront-quick-order/containers.js';
 
 // Wishlist Dropin
-import { WishlistToggle } from '@dropins/storefront-wishlist/containers/WishlistToggle.js';
-import { WishlistAlert } from '@dropins/storefront-wishlist/containers/WishlistAlert.js';
+import {
+  WishlistToggle,
+  WishlistAlert,
+} from '@dropins/storefront-wishlist/containers.js';
 
 // PDP Containers
-import ProductHeader from '@dropins/storefront-pdp/containers/ProductHeader.js';
-import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
-import ProductShortDescription from '@dropins/storefront-pdp/containers/ProductShortDescription.js';
-import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
-import ProductQuantity from '@dropins/storefront-pdp/containers/ProductQuantity.js';
-import ProductDescription from '@dropins/storefront-pdp/containers/ProductDescription.js';
-import ProductAttributes from '@dropins/storefront-pdp/containers/ProductAttributes.js';
-import ProductGallery from '@dropins/storefront-pdp/containers/ProductGallery.js';
-import ProductGiftCardOptions from '@dropins/storefront-pdp/containers/ProductGiftCardOptions.js';
-import ProductCustomizableOptions from '@dropins/storefront-pdp/containers/ProductCustomizableOptions.js';
+import {
+  ProductHeader,
+  ProductPrice,
+  ProductShortDescription,
+  ProductOptions,
+  ProductQuantity,
+  ProductDescription,
+  ProductAttributes,
+  ProductGallery,
+  ProductGiftCardOptions,
+  ProductCustomizableOptions,
+} from '@dropins/storefront-pdp/containers.js';
 
 // Libs
 import { rootLink, fetchPlaceholders, checkIsAuthenticated } from '../../scripts/commerce.js';

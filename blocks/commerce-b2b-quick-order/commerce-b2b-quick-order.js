@@ -2,14 +2,18 @@ import { Header, provider as UI } from '@dropins/tools/components.js';
 
 // Quick Order Drop-in
 import { render as quickOrderProvider } from '@dropins/storefront-quick-order/render.js';
-import QuickOrderMultipleSku from '@dropins/storefront-quick-order/containers/QuickOrderMultipleSku.js';
-import QuickOrderCsvUpload from '@dropins/storefront-quick-order/containers/QuickOrderCsvUpload.js';
-import QuickOrderItems from '@dropins/storefront-quick-order/containers/QuickOrderItems.js';
+import {
+  QuickOrderMultipleSku,
+  QuickOrderCsvUpload,
+  QuickOrderItems,
+} from '@dropins/storefront-quick-order/containers.js';
 
 // PDP Drop-in
 import { render as pdpProvider } from '@dropins/storefront-pdp/render.js';
-import ProductPrice from '@dropins/storefront-pdp/containers/ProductPrice.js';
-import ProductOptions from '@dropins/storefront-pdp/containers/ProductOptions.js';
+import {
+  ProductPrice,
+  ProductOptions,
+} from '@dropins/storefront-pdp/containers.js';
 import * as pdpApi from '@dropins/storefront-pdp/api.js';
 
 // Cart Drop-in

@@ -1,6 +1,7 @@
 import { render as rlRenderer } from '@dropins/storefront-requisition-list/render.js';
-import RequisitionListGrid
-  from '@dropins/storefront-requisition-list/containers/RequisitionListGrid.js';
+import {
+  RequisitionListGrid,
+} from '@dropins/storefront-requisition-list/containers.js';
 
 import {
   checkIsAuthenticated,

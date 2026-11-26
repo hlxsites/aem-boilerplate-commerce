@@ -1,5 +1,5 @@
 import { render as provider } from '@dropins/storefront-cart/render.js';
-import MiniCart from '@dropins/storefront-cart/containers/MiniCart.js';
+import { MiniCart } from '@dropins/storefront-cart/containers.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {

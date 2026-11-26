@@ -1,4 +1,4 @@
-import CustomerInformation from '@dropins/storefront-account/containers/CustomerInformation.js';
+import { CustomerInformation } from '@dropins/storefront-account/containers.js';
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
 import {
   CUSTOMER_LOGIN_PATH,

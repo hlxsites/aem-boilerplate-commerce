@@ -16,7 +16,9 @@
  ****************************************************************** */
 
 import { render as provider } from '@dropins/storefront-company-management/render.js';
-import { CompanyHierarchy } from '@dropins/storefront-company-management/containers/CompanyHierarchy.js';
+import {
+  CompanyHierarchy,
+} from '@dropins/storefront-company-management/containers.js';
 import { checkIsAuthenticated, rootLink, CUSTOMER_LOGIN_PATH } from '../../scripts/commerce.js';
 
 // Initialize dropins

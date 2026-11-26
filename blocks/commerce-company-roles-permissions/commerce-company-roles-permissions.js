@@ -1,5 +1,7 @@
 import { render as provider } from '@dropins/storefront-company-management/render.js';
-import { RolesAndPermissions } from '@dropins/storefront-company-management/containers/RolesAndPermissions.js';
+import {
+  RolesAndPermissions,
+} from '@dropins/storefront-company-management/containers.js';
 import {
   checkIsAuthenticated,
   rootLink,

@@ -29,8 +29,10 @@ import {
 import { render as negotiableQuoteRenderer } from '@dropins/storefront-quote-management/render.js';
 
 // Containers
-import { ManageNegotiableQuote } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuote.js';
-import { QuotesListTable } from '@dropins/storefront-quote-management/containers/QuotesListTable.js';
+import {
+  ManageNegotiableQuote,
+  QuotesListTable,
+} from '@dropins/storefront-quote-management/containers.js';
 
 // API
 import { setShippingAddress } from '@dropins/storefront-quote-management/api.js';

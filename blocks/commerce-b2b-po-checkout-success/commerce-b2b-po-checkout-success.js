@@ -4,7 +4,9 @@
 import { Button, provider as UI } from '@dropins/tools/components.js';
 
 // Purchase Order Dropin
-import PurchaseOrderConfirmation from '@dropins/storefront-purchase-order/containers/PurchaseOrderConfirmation.js';
+import {
+  PurchaseOrderConfirmation,
+} from '@dropins/storefront-purchase-order/containers.js';
 import { render as POProvider } from '@dropins/storefront-purchase-order/render.js';
 
 // Checkout API/utils

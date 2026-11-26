@@ -1,5 +1,5 @@
 import { render as orderRenderer } from '@dropins/storefront-order/render.js';
-import { ShippingStatus } from '@dropins/storefront-order/containers/ShippingStatus.js';
+import { ShippingStatus } from '@dropins/storefront-order/containers.js';
 import { tryRenderAemAssetsImage } from '@dropins/tools/lib/aem/assets.js';
 import {
   UPS_TRACKING_URL,

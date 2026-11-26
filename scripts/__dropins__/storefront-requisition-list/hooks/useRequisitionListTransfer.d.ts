@@ -21,13 +21,14 @@ export interface UseRequisitionListTransferOptions {
     selectedItems: Set<string>;
     currentPageSize: number;
     currentPage: number;
-    enrichConfigurableProductsInList: (list: RequisitionList) => Promise<RequisitionList>;
-    fetchAndMergeProducts: (list: RequisitionList) => Promise<RequisitionList>;
+    enrichConfigurableProductsInList: (list: RequisitionList, signal: AbortSignal) => Promise<RequisitionList>;
+    fetchAndMergeProducts: (list: RequisitionList, signal: AbortSignal) => Promise<RequisitionList>;
+    beginLoad: () => AbortController;
     setCurrentRequisitionList: (list: RequisitionList) => void;
     setSelectedItems: (items: Set<string>) => void;
     handleRequisitionListAlert: (payload: RequisitionListActionPayload) => void;
 }
-export declare function useRequisitionListTransfer({ sourceListUid, selectedItems, currentPageSize, currentPage, enrichConfigurableProductsInList, fetchAndMergeProducts, setCurrentRequisitionList, setSelectedItems, handleRequisitionListAlert, }: UseRequisitionListTransferOptions): {
+export declare function useRequisitionListTransfer({ sourceListUid, selectedItems, currentPageSize, currentPage, enrichConfigurableProductsInList, fetchAndMergeProducts, setCurrentRequisitionList, setSelectedItems, handleRequisitionListAlert, beginLoad, }: UseRequisitionListTransferOptions): {
     showMoveToListModal: boolean;
     setShowMoveToListModal: import("preact/hooks").Dispatch<import("preact/hooks").StateUpdater<boolean>>;
     movingToList: boolean;

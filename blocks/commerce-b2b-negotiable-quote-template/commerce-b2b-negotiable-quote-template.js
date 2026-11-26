@@ -28,8 +28,10 @@ import {
 } from '@dropins/tools/components.js';
 
 // Containers
-import { QuoteTemplatesListTable } from '@dropins/storefront-quote-management/containers/QuoteTemplatesListTable.js';
-import { ManageNegotiableQuoteTemplate } from '@dropins/storefront-quote-management/containers/ManageNegotiableQuoteTemplate.js';
+import {
+  QuoteTemplatesListTable,
+  ManageNegotiableQuoteTemplate,
+} from '@dropins/storefront-quote-management/containers.js';
 
 // API
 import { addQuoteTemplateShippingAddress } from '@dropins/storefront-quote-management/api.js';

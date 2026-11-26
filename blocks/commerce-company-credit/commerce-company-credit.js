@@ -14,7 +14,9 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe.
  ****************************************************************** */
-import { CompanyCredit } from '@dropins/storefront-company-management/containers/CompanyCredit.js';
+import {
+  CompanyCredit,
+} from '@dropins/storefront-company-management/containers.js';
 import { render as companyRenderer } from '@dropins/storefront-company-management/render.js';
 import { companyEnabled, checkCompanyCreditEnabled } from '@dropins/storefront-company-management/api.js';
 import {

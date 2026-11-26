@@ -21,7 +21,7 @@
 // "what the document already holds" the same way.
 
 import { render as accountRenderer } from '@dropins/storefront-account/render.js';
-import { Addresses } from '@dropins/storefront-account/containers/Addresses.js';
+import { Addresses } from '@dropins/storefront-account/containers.js';
 import {
   getCompanyAddressBook,
   getCustomerAddress,
