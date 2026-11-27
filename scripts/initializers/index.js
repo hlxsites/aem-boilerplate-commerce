@@ -8,6 +8,10 @@ import { getCustomerData } from '@dropins/storefront-auth/api.js';
 import { CORE_FETCH_GRAPHQL, CS_FETCH_GRAPHQL, fetchPlaceholders } from '../commerce.js';
 
 const DROPIN_WEBSITE_COOKIE = 'dropin_website_path';
+const COMPANY_CONTEXT_KEYS = [
+  'DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT',
+  'DROPIN__COMPANYSWITCHER__GROUP__CONTEXT',
+];
 const DEFAULT_NLI_CUSTOMER_GROUP_ID = 'b6589fc6ab0dc82cf12099d1c2d40ab994e8410c';
 // Catalog Service headers mirrored onto Core GraphQL requests in ACO mode (case-insensitive).
 const CORE_OPTIMIZER_HEADERS = ['AC-View-ID', 'AC-Price-Book-ID', 'AC-Catalog-View-Access-Token'];
@@ -19,15 +23,21 @@ let currentCustomerGroupId;
 
 export const getUserTokenCookie = () => getCookie('auth_dropin_user_token');
 
+const clearCompanyContext = () => {
+  COMPANY_CONTEXT_KEYS.forEach((key) => {
+    sessionStorage.removeItem(key);
+    localStorage.removeItem(key);
+  });
+  CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('X-Adobe-Company');
+};
+
 const setAuthHeaders = (state) => {
   if (state) {
     const token = getUserTokenCookie();
     CORE_FETCH_GRAPHQL.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
     CS_FETCH_GRAPHQL.setFetchGraphQlHeader('Authorization', `Bearer ${token}`);
   } else {
-    sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT');
-    sessionStorage.removeItem('DROPIN__COMPANYSWITCHER__GROUP__CONTEXT');
-    CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('X-Adobe-Company');
+    clearCompanyContext();
     CORE_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
     CS_FETCH_GRAPHQL.removeFetchGraphQlHeader('Authorization');
   }
@@ -186,6 +196,7 @@ export default async function initializeDropins() {
       sessionStorage.removeItem('DROPIN__CART__CART__DATA');
       sessionStorage.removeItem('DROPIN__CART__SHIPPING__DATA');
       localStorage.removeItem('DROPIN__CART__CART__AUTHENTICATED');
+      clearCompanyContext();
     }
     document.cookie = `${DROPIN_WEBSITE_COOKIE}=${currentWebsitePath}; path=/`;
 
@@ -212,12 +223,7 @@ export default async function initializeDropins() {
      * and that the company context is not lost when the tab is closed
      * or the browser is closed.
      */
-    const SYNC_KEYS = [
-      'DROPIN__COMPANYSWITCHER__COMPANY__CONTEXT',
-      'DROPIN__COMPANYSWITCHER__GROUP__CONTEXT',
-    ];
-
-    SYNC_KEYS.forEach((key) => {
+    COMPANY_CONTEXT_KEYS.forEach((key) => {
       const sessionValue = sessionStorage.getItem(key);
       if (sessionValue) {
         // Session has value — mirror it to localStorage for other tabs
@@ -233,7 +239,7 @@ export default async function initializeDropins() {
 
     // Sync cross-tab changes in localStorage to sessionStorage
     window.addEventListener('storage', (event) => {
-      if (event.key && SYNC_KEYS.includes(event.key)) {
+      if (event.key && COMPANY_CONTEXT_KEYS.includes(event.key)) {
         if (event.newValue === null) {
           sessionStorage.removeItem(event.key);
         } else {
@@ -266,7 +272,7 @@ export default async function initializeDropins() {
     // Clear company context from localStorage when not authenticated
     events.on('authenticated', (isAuthenticated) => {
       if (!isAuthenticated) {
-        SYNC_KEYS.forEach((key) => {
+        COMPANY_CONTEXT_KEYS.forEach((key) => {
           localStorage.removeItem(key);
         });
       }
