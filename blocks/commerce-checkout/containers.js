@@ -514,7 +514,7 @@ export const renderOrderSummary = async (container) => renderContainer(
 export const renderCartSummaryList = async (container) => renderContainer(
   CONTAINERS.CART_SUMMARY_LIST,
   async () => {
-    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+    const placeholders = await fetchPlaceholders('placeholders.json', 'checkout');
 
     return CartProvider.render(CartSummaryList, {
       variant: 'secondary',
@@ -601,7 +601,7 @@ export const renderPlaceOrder = async (container, options = {}) => renderContain
 export const renderCustomerShippingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_SHIPPING_ADDRESSES,
   async () => {
-    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+    const placeholders = await fetchPlaceholders('placeholders.json', 'checkout');
 
     const cartShippingAddress = getCartAddress(data, 'shipping');
 
@@ -674,7 +674,7 @@ export const renderCustomerShippingAddresses = async (container, formRef, data) 
 export const renderCustomerBillingAddresses = async (container, formRef, data) => renderContainer(
   CONTAINERS.CUSTOMER_BILLING_ADDRESSES,
   async () => {
-    const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+    const placeholders = await fetchPlaceholders('placeholders.json', 'checkout');
 
     const cartBillingAddress = getCartAddress(data, 'billing');
 
@@ -746,7 +746,7 @@ export const renderAddressForm = async (container, formRef, data, addressType) =
   return renderContainer(
     containerKey,
     async () => {
-      const placeholders = await fetchPlaceholders('placeholders/checkout.json');
+      const placeholders = await fetchPlaceholders('placeholders.json', 'checkout');
 
       // Get address type specific configurations
       const cartAddress = getCartAddress(data, addressType);

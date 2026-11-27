@@ -37,7 +37,7 @@ await initializeDropin(async () => {
   const isTokenProvided = orderRef && orderRef.length > 20;
 
   // Fetch placeholders
-  const labels = await fetchPlaceholders('placeholders/order.json');
+  const labels = await fetchPlaceholders('placeholders.json', 'order');
   const langDefinitions = {
     default: {
       ...labels,

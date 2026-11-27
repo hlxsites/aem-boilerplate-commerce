@@ -198,8 +198,8 @@ export default async function initializeDropins() {
     // Set up AEM Assets image parameter conversion
     setupAemAssetsImageParams();
 
-    // Fetch global placeholders
-    await fetchPlaceholders('placeholders/global.json');
+    // Fetch global placeholders and cache the consolidated document before loading drop-ins.
+    await fetchPlaceholders('placeholders.json', 'global');
 
     // Initialize Global Drop-ins
     await import('./auth.js');
