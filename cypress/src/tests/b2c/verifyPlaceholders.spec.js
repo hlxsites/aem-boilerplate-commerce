@@ -11,12 +11,28 @@ const sheets = {
   cart: sheet('Cart.marker', 'cart label'),
 };
 
-function expectLoadedLabels() {
+function expectLoadedLabels(cartLabel = 'cart label') {
   cy.window().its('placeholders._merged').should((labels) => {
     expect(labels.Global?.marker).to.equal('global label');
     expect(labels.Auth?.marker).to.equal('auth label');
-    expect(labels.Cart?.marker).to.equal('cart label');
+    expect(labels.Cart?.marker).to.equal(cartLabel);
   });
+}
+
+function visitWithOverrides() {
+  cy.intercept({ pathname: '/' }, (request) => {
+    request.continue((response) => {
+      response.body = response.body.replace(
+        '</head>',
+        '<meta name="placeholders" content="/test-overrides.json"></head>',
+      );
+    });
+  });
+  cy.intercept({ pathname: '/test-overrides.json' }, {
+    body: sheet('Cart.marker', 'custom cart label'),
+    headers: { 'cache-control': 'no-store' },
+  }).as('overrides');
+  cy.visit('/');
 }
 
 describe('Commerce placeholder sources', () => {
@@ -38,10 +54,11 @@ describe('Commerce placeholder sources', () => {
     }).as('consolidated');
   });
 
-  it('loads named sheets with one request to the consolidated file', () => {
-    cy.visit('/');
+  it('loads named sheets once and gives metadata overrides priority', () => {
+    visitWithOverrides();
     cy.wait('@consolidated');
-    expectLoadedLabels();
+    cy.wait('@overrides');
+    expectLoadedLabels('custom cart label');
     cy.get('@consolidated.all').should('have.length', 1);
     cy.then(() => expect(individualRequests).to.deep.equal([]));
   });
@@ -63,5 +80,17 @@ describe('Commerce placeholder sources', () => {
     cy.then(() => {
       expect(individualRequests).to.deep.equal(['/placeholders/cart.json']);
     });
+  });
+
+  it('keeps metadata overrides when the consolidated request fails', () => {
+    cy.intercept({ pathname: '/placeholders.json' }, {
+      statusCode: 503,
+      headers: { 'cache-control': 'no-store' },
+    }).as('failedConsolidated');
+    visitWithOverrides();
+    cy.wait('@failedConsolidated');
+    cy.wait('@overrides');
+    cy.window().its('placeholders._merged.Cart.marker').should('equal', 'custom cart label');
+    cy.then(() => expect(individualRequests).to.deep.equal([]));
   });
 });

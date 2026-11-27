@@ -394,6 +394,7 @@ export function applyTemplates(doc) {
  * then merges them together. It implements request deduplication to prevent multiple simultaneous
  * requests for the same resources and caches results for optimal performance.
  * Named sheets share a cached document; individual files remain supported without a sheet name.
+ * The placeholders metadata override must use the single-sheet Key/Value format.
  *
  * @param {string} [path] - Optional path to a specific placeholders file to include in the merge.
  *                         If provided, this file's data will be merged with fallback data.
@@ -501,12 +502,18 @@ export async function fetchPlaceholders(path, sheet) {
         if (sheet) {
           const selectedSheet = jsons[0][sheet];
           if (!Array.isArray(selectedSheet?.data)) {
-            throw new Error(`Missing or invalid placeholder sheet: ${sheet}`);
+            console.warn(`Missing or invalid placeholder sheet: ${sheet} in ${path}`);
+            jsons[0] = { data: [] };
+          } else {
+            if (selectedSheet.total > selectedSheet.data.length) {
+              throw new Error(`Incomplete placeholder sheet: ${sheet}`);
+            }
+            jsons[0] = selectedSheet;
           }
-          if (selectedSheet.total > selectedSheet.data.length) {
-            throw new Error(`Incomplete placeholder sheet: ${sheet}`);
-          }
-          jsons[0] = selectedSheet;
+        }
+
+        if (fallback && !Array.isArray(jsons[1]?.data)) {
+          console.warn(`Placeholder override must use the single-sheet Key/Value format: ${fallback}`);
         }
 
         // Early return if no data
